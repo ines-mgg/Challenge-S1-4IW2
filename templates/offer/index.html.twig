@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Offer index{% endblock %}
+
+{% block body %}
+    <h1>Offer index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Allowed_accountant</th>
+                <th>Price</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for offer in offers %}
+            <tr>
+                <td>{{ offer.id }}</td>
+                <td>{{ offer.name }}</td>
+                <td>{{ offer.allowedAccountant }}</td>
+                <td>{{ offer.price }}</td>
+                <td>
+                    <a href="{{ path('app_offer_show', {'id': offer.id}) }}">show</a>
+                    <a href="{{ path('app_offer_edit', {'id': offer.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_offer_new') }}">Create new</a>
+{% endblock %}
