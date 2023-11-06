@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quotation index{% endblock %}
+
+{% block body %}
+    <h1>Quotation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Created_at</th>
+                <th>Updated_at</th>
+                <th>User_id</th>
+                <th>Status</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for quotation in quotations %}
+            <tr>
+                <td>{{ quotation.id }}</td>
+                <td>{{ quotation.createdAt ? quotation.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ quotation.updatedAt ? quotation.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ quotation.userId }}</td>
+                <td>{{ quotation.status }}</td>
+                <td>
+                    <a href="{{ path('app_quotation_show', {'id': quotation.id}) }}">show</a>
+                    <a href="{{ path('app_quotation_edit', {'id': quotation.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_quotation_new') }}">Create new</a>
+{% endblock %}

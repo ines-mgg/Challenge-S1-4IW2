@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Quotation{% endblock %}
+
+{% block body %}
+    <h1>Edit Quotation</h1>
+
+    {{ include('quotation/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_quotation_index') }}">back to list</a>
+
+    {{ include('quotation/_delete_form.html.twig') }}
+{% endblock %}
