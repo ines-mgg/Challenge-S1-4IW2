@@ -14,6 +14,10 @@ module.exports = {
         height: {
             '7.125': '1.75rem',
         },
+        // add new margin
+        margin: {
+          '610px': '1100px'
+        }
     },
   },
   plugins: [],
