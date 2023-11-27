@@ -1,8 +1,8 @@
 <header class="flex flex-row bg-light-dark h-28">
-  <nav class=" flex flex-row my-10">
+  <nav class="flex flex-row my-10 gap-96">
     {# section logo/nav #}
     <section
-      class="flex flex-row justify-center items-center ml-5 gap-20 mr-610px"
+      class="flex flex-row justify-center items-center ml-5 gap-20"
     >
       <a href="{{ path('showcase_index') }}">
         <img
@@ -20,7 +20,8 @@
     {# section login/register #}
     <section class="flex flex-row gap-10 items-center text-white">
       <a href="/">Se connecter</a>
-      <button>Ouvrir un compte</button>
+      {% embed '_composants/buttons/_button.html.twig' %} {% block title %}
+      Ouvrir un compte {% endblock %}{% endembed %}
     </section>
   </nav>
 </header>
