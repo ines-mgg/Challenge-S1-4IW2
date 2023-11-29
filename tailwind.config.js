@@ -14,7 +14,13 @@ module.exports = {
         // add new height of 7.125rem
         height: {
             '7.125': '1.75rem',
+            '114': '42rem',
         },
+        width: {
+          '102' : '30rem',
+          '110 ': '39rem',
+          '162' : '90rem',
+        }
     },
   },
   plugins: [],
