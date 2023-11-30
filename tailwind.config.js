@@ -10,6 +10,7 @@ module.exports = {
             'light-dark': '#1C1C1A',
             'light-white': '#F9F9F9',
             'beige': '#F6F5EF',
+            'electric-blue': '#1B24E0',
         },
         // add new height of 7.125rem
         height: {
