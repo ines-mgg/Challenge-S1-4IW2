@@ -43,6 +43,7 @@
         "symfony/validator": "6.*",
         "symfony/web-link": "6.*",
         "symfony/yaml": "6.*",
+        "symfonycasts/verify-email-bundle": "^1.14",
         "twig/extra-bundle": "3.*",
         "twig/twig": "3.*"
     },
