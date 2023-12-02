@@ -39,61 +39,20 @@
       alt="Mec bannière début"
     />
   </article>
-  <article class="flex bg-light-dark h-114 justify-center">
-    <h1 class="h-1 font-bold text-4xl text-white leading-10 mt-20">
+  <article class="flex flex-col bg-light-dark h-103">
+    <h1 class="h-1 font-bold text-4xl text-white leading-10 my-20 self-center">
       Gérer votre facturation n'aura jamais été aussi simple
     </h1>
-    <section class="text-white">// les avantages ici</section>
+    <section class="flex mx-20 mb-20 gap-20">
+      {% include '_composants/advantages/_efficiency.html.twig' %}
+      {% include '_composants/advantages/_organisation.html.twig' %}
+      {% include '_composants/advantages/_vision.html.twig' %}
+      {% include '_composants/advantages/_partitioning.html.twig' %}
+    </section>
   </article>
+  <article class="bg-beige flex h-120"></article>
 </main>
 {#
-<section>
-  <h1>Une unique solution, Une infinité de possibilités.</h1>
-  <p>
-    Un logiciel qui allie puissance et simplicité pour gérer vos devis, vos
-    factures et vos clients sur une plateforme unique qui évolue au rythme de
-    votre activité.
-  </p>
-  <div>
-    <button>Ouvrir un compte gratuit</button>
-    <button>Consulter nos offres -></button>
-  </div>
-</section>
-<section>
-  <h2>Gérer votre facturation n'aura jamais été aussi simple.</h2>
-  <div>
-    LOGO EFFICACITÉ
-    <span>Efficacité</span>
-    <p>
-      Créez vos factures et vos devis de la plus rapide des manières : un simple
-      clic.
-    </p>
-  </div>
-  <div>
-    LOGO ORGANISATION
-    <span>Organisation</span>
-    <p>
-      Retrouvez toutes vos factures dans un unique espace. Accessible partout,
-      n’importe quand.
-    </p>
-  </div>
-  <div>
-    LOGO VISION GLOBALE
-    <span>Vision globale</span>
-    <p>
-      Ayez une vision globale de l’état de votre entreprise grâce à nos rapports
-      financiers détaillés.
-    </p>
-  </div>
-  <div>
-    LOGO CLOISONNEMENT
-    <span>Cloisonnement</span>
-    <p>
-      Donnez un accès restreint aux personnes ayant besoin d’accéder à certaines
-      données (brouillon mdr)
-    </p>
-  </div>
-</section>
 <section>
   <div>
     PHOTO CARD
