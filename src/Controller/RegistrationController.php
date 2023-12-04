@@ -75,19 +75,87 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(EmailStepFormType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
+            // if email already exsits
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            if ($user) {
+                dd($user);
+            }
 
+
+            if ($form->isValid()) {
+                $entityManager->persist($user);
+                $entityManager->flush();
+            }
         }
 
         return $this->render('registration/register.html.twig', [
-            'step' => $this->steps["confirm"],
+            'step' => $this->steps["email"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),
         ]);
     }
+
+    #[Route('/informations', name: 'informations')]
+    public function informations(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    {
+
+
+        $user = new User();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            // generate a signed url and email it to the user
+            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+                (new TemplatedEmail())
+                    ->from(new Address('a@o.ocm', 'Facturo Account Service'))
+                    ->to($user->getEmail())
+                    ->subject('Please Confirm your Email')
+                    ->htmlTemplate('registration/confirmation_email.html.twig')
+            );
+            // do anything else you need here, like send an email
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('registration/register.html.twig', [
+            'step' => $this->steps["informations"],
+            'stepTotal' => count($this->steps),
+            'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/company', name: 'company')]
+    public function company(): Response
+    {
+        return $this->render('registration/register.html.twig', [
+            'step' => $this->steps["company"],
+            'stepTotal' => count($this->steps),
+        ]);
+    }
+
+    #[Route('/end', name: 'end')]
+    public function end(): Response
+    {
+        return $this->render('registration/register.html.twig', [
+            'step' => $this->steps["confirm"],
+            'stepTotal' => count($this->steps),
+        ]);
+    }
+
 
     /*
      * SAVE old register() for email confirmation
