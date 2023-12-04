@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\Registration\EmailStepFormType;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
@@ -35,34 +36,47 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
+
+        // TODO: Voir comment Quonto gère la reprise d'inscription
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(EmailStepFormType::class, $user);
         $form->handleRequest($request);
 
+//        $user = new User();
+//        $form = $this->createForm(RegistrationFormType::class, $user);
+//        $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
-            );
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('replace-me@facturo.com', 'Facturo Account Service'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-            // do anything else you need here, like send an email
-
-            return $this->redirectToRoute('app_login');
         }
+
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            // encode the plain password
+//            $user->setPassword(
+//                $userPasswordHasher->hashPassword(
+//                    $user,
+//                    $form->get('password')->getData()
+//                )
+//            );
+//
+//            $entityManager->persist($user);
+//            $entityManager->flush();
+//
+//            // generate a signed url and email it to the user
+//            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+//                (new TemplatedEmail())
+//                    ->from(new Address('replace-me@facturo.com', 'Facturo Account Service'))
+//                    ->to($user->getEmail())
+//                    ->subject('Please Confirm your Email')
+//                    ->htmlTemplate('registration/confirmation_email.html.twig')
+//            );
+//            // do anything else you need here, like send an email
+//
+//            return $this->redirectToRoute('app_login');
+//        }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
