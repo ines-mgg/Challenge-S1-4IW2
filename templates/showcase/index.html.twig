@@ -44,13 +44,20 @@
       Gérer votre facturation n'aura jamais été aussi simple
     </h1>
     <section class="flex mx-20 mb-20 gap-20">
-      {% include '_composants/advantages/_efficiency.html.twig' %}
-      {% include '_composants/advantages/_organisation.html.twig' %}
-      {% include '_composants/advantages/_vision.html.twig' %}
-      {% include '_composants/advantages/_partitioning.html.twig' %}
+      {% include '_composants/advantages/_efficiency.html.twig' %} {% include
+      '_composants/advantages/_organisation.html.twig' %} {% include
+      '_composants/advantages/_vision.html.twig' %} {% include
+      '_composants/advantages/_partitioning.html.twig' %}
     </section>
   </article>
-  <article class="bg-beige flex h-120"></article>
+  <article class="bg-beige flex h-120">
+    {% embed '_composants/cards/_cardPicture.html.twig' %} {% block picture
+    %}"{{ asset("build/images/ceo_card.jpg") }}" {% endblock %} {% block
+    paragraph %}« Facturo me permet de consacrer le minimum de temps à mes
+    factures, de quoi mettre toute mon énergie dans mes sites internet. »{%
+    endblock %} {% block title %}{% endblock %}{% endembed %}
+    <section></section>
+  </article>
 </main>
 {#
 <section>

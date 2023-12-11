@@ -20,10 +20,14 @@ module.exports = {
             '120': '48rem',
         },
         width: {
+          '7' : '25rem',
           '102' : '30rem',
           '110 ': '39rem',
           '162' : '90rem',
         },
+        boxShadow: {
+          'custom-beige' : '12px 12px 0 -1px #FCF7DE, 12px 12px 0 0 #1C1C1A', 
+        }
     },
   },
   plugins: [],
