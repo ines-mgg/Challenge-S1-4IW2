@@ -78,7 +78,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route(['', '/start'], name: 'start')]
-    public function start(Request $request, EntityManagerInterface $entityManager, Security $security): Response
+    public function start(Request $request, EntityManagerInterface $entityManager, Security $security, SessionInterface $session): Response
     {
         // TODO: Voir comment Qonto gère la reprise d'inscription
         $user = new User();
@@ -94,6 +94,15 @@ class RegistrationController extends AbstractController
                 if ($form->isValid()) {
                     $entityManager->persist($user);
                     $entityManager->flush();
+                } else {
+                    $errors = [];
+                    foreach ($form->getErrors(true) as $error) {
+                        $errors[]["message"] = $error->getMessage();
+                    }
+                    // Save form errors in the session
+                    $session->getFlashBag()->add('form_errors', $errors);
+                    // Redirect back to the form
+                    return $this->redirectToRoute('app_register_start');
                 }
             }
 
@@ -103,10 +112,13 @@ class RegistrationController extends AbstractController
             }
         }
 
+        // Retrieve form errors from the session
+        $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
         return $this->render('registration/register.html.twig', [
             'step' => $this->steps["email"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),
+            'formErrors' => $formErrors,
         ]);
     }
 

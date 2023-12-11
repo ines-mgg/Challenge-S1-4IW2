@@ -3,9 +3,14 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% for error in formErrors %}
+        <div class="alert alert-danger" role="alert">
+            {{ error.message }}
+        </div>
     {% endfor %}
+{#    {% for flash_error in app.flashes('verify_email_error') %}#}
+{#        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>#}
+{#    {% endfor %}#}
 
     <h1>Étape {{ step.order }}/{{ stepTotal }} | {{ step.label }} </h1>
 
