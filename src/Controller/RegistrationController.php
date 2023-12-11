@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\Registration\EmailStepConfirmationFormType;
 use App\Form\Registration\EmailStepFormType;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
@@ -10,9 +11,11 @@ use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
@@ -36,27 +39,35 @@ class RegistrationController extends AbstractController
                 'label' => 'Email',
                 'form' => EmailStepFormType::class,
                 'route' => 'app_register_email',
-                'next' => 'informations',
+                'next' => 'email_confirmation',
                 'previous' => null,
             ],
-            'informations' => [
+            'email_confirmation' => [
                 'order' => 2,
+                'label' => 'Taper le code reçu par mail',
+                'form' => EmailStepConfirmationFormType::class,
+                'route' => 'app_register_email',
+                'next' => 'informations',
+                'previous' => 'email',
+            ],
+            'informations' => [
+                'order' => 3,
                 'label' => 'Informations',
                 'form' => RegistrationFormType::class,
                 'route' => 'app_register_informations',
-                'next' => 'password',
-                'previous' => 'email',
+                'next' => 'informations',
+                'previous' => 'company',
             ],
             'company' => [
-                'order' => 3,
+                'order' => 4,
                 'label' => 'Société',
                 'form' => RegistrationFormType::class,
                 'route' => 'app_register_company',
-                'next' => 'password',
+                'next' => 'confirm',
                 'previous' => 'informations',
             ],
             'confirm' => [
-                'order' => 4,
+                'order' => 5,
                 'label' => 'Confirmation',
                 'form' => RegistrationFormType::class,
                 'route' => 'app_register_confirm',
@@ -66,27 +77,29 @@ class RegistrationController extends AbstractController
         ];
     }
 
-    #[Route('/start', name: 'start')]
-    public function start(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    #[Route(['', '/start'], name: 'start')]
+    public function start(Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
-
-        // TODO: Voir comment Quonto gère la reprise d'inscription
+        // TODO: Voir comment Qonto gère la reprise d'inscription
         $user = new User();
-        $form = $this->createForm(EmailStepFormType::class, $user);
+        $form = $this->createForm($this->steps["email"]["form"], $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            // if email already exsits
-            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+            // if email already exists
+            $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+            $user = $existingUser ?? $user;
 
-            if ($user) {
-                dd($user);
+            if (is_null($existingUser)) {
+                if ($form->isValid()) {
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                }
             }
 
-
-            if ($form->isValid()) {
-                $entityManager->persist($user);
-                $entityManager->flush();
+            if ($form->isValid() || !is_null($existingUser)) {
+                $security->login($user);
+                return $this->redirectToRoute('app_register_identity-confirm');
             }
         }
 
@@ -95,6 +108,11 @@ class RegistrationController extends AbstractController
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    #[Route('/identity-confirm', name: 'identity-confirm')]
+    public function identityConfirm(): Response {
+        dd("identity confirm");
     }
 
     #[Route('/informations', name: 'informations')]
