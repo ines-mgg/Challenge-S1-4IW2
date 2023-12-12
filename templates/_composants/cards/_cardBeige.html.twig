@@ -1,24 +1,18 @@
 <div
   class="w-7 h-103 flex flex-col rounded border border-solid border-light-dark bg-white shadow-custom-beige"
 >
-  <img
-    src={%
-    block
-    picture
-    %}
-    {%
-    endblock
-    %}
-    alt="Picture card"
-    width="400px"
-    height="388px"
-  />
-  <section class="w-7 h-28 top-96 ">
+  {% block picture %} {% endblock %}
+
+  <section class="w-7 h-28 top-96">
     <p
       class="w-80 h-14 text-light-dark text-sm font-medium leading-normal ml-4 mt-3.5 mr-8 mb-2"
     >
       {% block paragraph %} {% endblock %}
     </p>
-    <h1 class="w-96 h-5 text-light-dark text-lg font-semibold leading-normal ml-4 mr-2.5 mb-2.5">{% block title %}{% endblock %}</h1>
+    <h1
+      class="w-96 h-5 text-light-dark text-lg font-semibold leading-normal ml-4 mr-2.5 mb-2.5"
+    >
+      {% block title %}{% endblock %}
+    </h1>
   </section>
 </div>

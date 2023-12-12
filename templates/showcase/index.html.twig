@@ -54,12 +54,12 @@
   </article>
   <article class="bg-beige flex justify-center h-120">
     <section class="mt-28 mb-32 flex">
-      {% embed '_composants/cards/_cardBeige.html.twig' %} {% block picture
-      %}"{{ asset("build/images/ceo_card.jpg") }}" {% endblock %} {% block
-      paragraph %}« Facturo me permet de consacrer le minimum de temps à mes
-      factures, de quoi mettre toute mon énergie dans mes sites internet. »{%
-      endblock %} {% block title %}Bertrand - CEO de Monsupersite.fr{% endblock
-      %}{% endembed %}
+      {% embed '_composants/cards/_cardBeige.html.twig' %} {% block picture %}
+      <img src="{{ asset("build/images/ceo_card.jpg") }}" alt="Picture card" width="400px" height="388px" />{% endblock %} {%
+      block paragraph %}« Facturo me permet de consacrer le minimum de temps à
+      mes factures, de quoi mettre toute mon énergie dans mes sites internet.
+      »{% endblock %} {% block title %}Bertrand - CEO de Monsupersite.fr{%
+      endblock %}{% endembed %}
       <aside class="ml-36 pl-8 border-l border-light-dark">
         <h1 class="w-105 mb-8 text-black text-4xl font-bold leading-normal">
           Dépensez votre temps pour ce qui compte vraiment.
