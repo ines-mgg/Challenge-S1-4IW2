@@ -2,12 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\OneTimeCode;
 use App\Entity\User;
+use App\Form\Registration\CompanyStepFormType;
 use App\Form\Registration\EmailStepConfirmationFormType;
 use App\Form\Registration\EmailStepFormType;
+use App\Form\Registration\InformationsStepFormType;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,24 +51,24 @@ class RegistrationController extends AbstractController
                 'label' => 'Taper le code reçu par mail',
                 'form' => EmailStepConfirmationFormType::class,
                 'route' => 'app_register_email',
-                'next' => 'informations',
+                'next' => 'company',
                 'previous' => 'email',
             ],
-            'informations' => [
-                'order' => 3,
-                'label' => 'Informations',
-                'form' => RegistrationFormType::class,
-                'route' => 'app_register_informations',
-                'next' => 'informations',
-                'previous' => 'company',
-            ],
             'company' => [
-                'order' => 4,
+                'order' => 3,
                 'label' => 'Société',
-                'form' => RegistrationFormType::class,
+                'form' => CompanyStepFormType::class,
                 'route' => 'app_register_company',
+                'next' => 'informations',
+                'previous' => 'email_confirmation',
+            ],
+            'informations' => [
+                'order' => 4,
+                'label' => 'Informations',
+                'form' => InformationsStepFormType::class,
+                'route' => 'app_register_informations',
                 'next' => 'confirm',
-                'previous' => 'informations',
+                'previous' => 'company',
             ],
             'confirm' => [
                 'order' => 5,
@@ -72,7 +76,7 @@ class RegistrationController extends AbstractController
                 'form' => RegistrationFormType::class,
                 'route' => 'app_register_confirm',
                 'next' => null,
-                'previous' => 'company',
+                'previous' => 'informations',
             ],
         ];
     }
@@ -80,7 +84,6 @@ class RegistrationController extends AbstractController
     #[Route(['', '/start'], name: 'start')]
     public function start(Request $request, EntityManagerInterface $entityManager, Security $security, SessionInterface $session): Response
     {
-        // TODO: Voir comment Qonto gère la reprise d'inscription
         $user = new User();
         $form = $this->createForm($this->steps["email"]["form"], $user);
         $form->handleRequest($request);
@@ -100,6 +103,7 @@ class RegistrationController extends AbstractController
                         $errors[]["message"] = $error->getMessage();
                     }
                     // Save form errors in the session
+                    // Post/Redirect/Get pattern to avoid form resubmission
                     $session->getFlashBag()->add('form_errors', $errors);
                     // Redirect back to the form
                     return $this->redirectToRoute('app_register_start');
@@ -113,6 +117,7 @@ class RegistrationController extends AbstractController
         }
 
         // Retrieve form errors from the session
+        // Un nouveau tableau est créé (expliquant le [0] ?? []) car le flashbag est un tableau de tableaux
         $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
         return $this->render('registration/register.html.twig', [
             'step' => $this->steps["email"],
@@ -123,19 +128,82 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/identity-confirm', name: 'identity-confirm')]
-    public function identityConfirm(): Response {
-        dd("identity confirm");
+    public function identityConfirm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, SessionInterface $session): Response {
+        $user = $this->getUser();
+
+        $form = $this->createForm($this->steps["email_confirmation"]["form"]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            //find latest oneTimeCode for this user
+            $oneTimeCode = $entityManager->getRepository(OneTimeCode::class)->findOneBy(['user' => $user], ['created_at' => 'DESC']);
+            if (!is_null($oneTimeCode) && $oneTimeCode->getCode() == $form->get('code')->getData()) {
+                $isExpired = $oneTimeCode->getExpiresAt() < new DateTimeImmutable();
+                if (!$isExpired) {
+                    $oneTimeCode->setUsed(true);
+                    $entityManager->persist($oneTimeCode);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('app_register_company');
+                } else {
+                    $session->getFlashBag()->add('form_errors',  [["message" => "Le code de confirmation a expiré"]]);
+                }
+            }else{
+                $session->getFlashBag()->add('form_errors',  [["message" => "Le code de confirmation est invalide"]]);
+            }
+        } else {
+            $oneTimeCode = new OneTimeCode();
+            $oneTimeCode->setUser($user);
+            $duration = $oneTimeCode->getExpiresAt()->diff($oneTimeCode->getCreatedAt());
+
+            $entityManager->persist($oneTimeCode);
+            $entityManager->flush();
+
+            // TODO : Améliorer le mail
+            $email = (new Email())
+                ->from(new Address('noreply@facturo.com', 'Facturo.fr'))
+                ->to($user->getEmail())
+                ->subject('Please Confirm your Email')
+                ->text('Voici votre code de confirmation : ' . $oneTimeCode->getCode(). ' Il expirera dans ' . $duration->format('%i minutes'));
+            $mailer->send($email);
+        }
+        $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
+        return $this->render('registration/register.html.twig', [
+            'step' => $this->steps["email_confirmation"],
+            'stepTotal' => count($this->steps),
+            'registrationForm' => $form->createView(),
+            'formErrors' => $formErrors,
+        ]);
+    }
+
+    #[Route('/company', name: 'company')]
+    public function company(Request $request): Response
+    {
+        $formErrors = [];
+
+        $form = $this->createForm($this->steps["company"]["form"]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            // TODO : éditer $formErrors et faire la création de l'entité company
+            return $this->redirectToRoute('app_register_informations');
+        }
+
+        return $this->render('registration/register.html.twig', [
+            'step' => $this->steps["company"],
+            'stepTotal' => count($this->steps),
+            'registrationForm' => $form->createView(),
+            'formErrors' => $formErrors
+        ]);
     }
 
     #[Route('/informations', name: 'informations')]
     public function informations(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-
+        // TODO : éditer $formErrors
+        $formErrors = [];
 
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm($this->steps["informations"]["form"], $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
@@ -165,24 +233,18 @@ class RegistrationController extends AbstractController
             'step' => $this->steps["informations"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/company', name: 'company')]
-    public function company(): Response
-    {
-        return $this->render('registration/register.html.twig', [
-            'step' => $this->steps["company"],
-            'stepTotal' => count($this->steps),
+            'formErrors' => $formErrors
         ]);
     }
 
     #[Route('/end', name: 'end')]
     public function end(): Response
     {
+        $formErrors = [];
         return $this->render('registration/register.html.twig', [
             'step' => $this->steps["confirm"],
             'stepTotal' => count($this->steps),
+            'formErrors' => $formErrors
         ]);
     }
 

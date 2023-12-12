@@ -5,21 +5,22 @@ namespace App\Form\Registration;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EmailStepConfirmationFormType extends AbstractType
+class CompanyStepFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('code', NumberType::class, [
-                'label' => 'Code de confirmation',
+            ->add('company', TextType::class, [
+                'label' => '(TODO) Nom de votre entreprise',
                 'attr' => [
-                    'placeholder' => 'X X X X X X'
+                    'placeholder' => 'Votre entreprise'
                 ]
             ])
             ->add('submit', SubmitType::class, [

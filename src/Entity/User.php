@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -19,6 +21,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->created_at = new \DateTimeImmutable();
         $this->updated_at = new \DateTimeImmutable();
+        $this->oneTimeCodes = new ArrayCollection();
     }
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?string $password = null;
 
     #[ORM\Column(type: 'boolean')]
@@ -52,6 +55,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at;
+
+    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: OneTimeCode::class, orphanRemoval: true)]
+    private Collection $oneTimeCodes;
 
     public function getId(): ?int
     {
@@ -179,6 +185,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OneTimeCode>
+     */
+    public function getOneTimeCodes(): Collection
+    {
+        return $this->oneTimeCodes;
+    }
+
+    public function addOneTimeCode(OneTimeCode $oneTimeCode): static
+    {
+        if (!$this->oneTimeCodes->contains($oneTimeCode)) {
+            $this->oneTimeCodes->add($oneTimeCode);
+            $oneTimeCode->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOneTimeCode(OneTimeCode $oneTimeCode): static
+    {
+        if ($this->oneTimeCodes->removeElement($oneTimeCode)) {
+            // set the owning side to null (unless already changed)
+            if ($oneTimeCode->getUserId() === $this) {
+                $oneTimeCode->setUserId(null);
+            }
+        }
 
         return $this;
     }
