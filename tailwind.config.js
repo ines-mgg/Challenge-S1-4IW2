@@ -29,11 +29,12 @@ module.exports = {
           '105' : '33rem',
           '109' : '38rem',
           '110 ': '39rem',
+          '118' : '47rem',
           '162' : '90rem',
         },
         boxShadow: {
           'custom-beige' : '12px 12px 0 -1px #FCF7DE, 12px 12px 0 0 #1C1C1A', 
-        }
+        },
     },
   },
   plugins: [],
