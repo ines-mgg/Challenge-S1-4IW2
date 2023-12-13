@@ -42,7 +42,7 @@ class RegistrationController extends AbstractController
                 'order' => 1,
                 'label' => 'Email',
                 'form' => EmailStepFormType::class,
-                'route' => 'app_register_email',
+                'route' => 'app_register_start',
                 'next' => 'email_confirmation',
                 'previous' => null,
             ],
@@ -50,7 +50,7 @@ class RegistrationController extends AbstractController
                 'order' => 2,
                 'label' => 'Taper le code reçu par mail',
                 'form' => EmailStepConfirmationFormType::class,
-                'route' => 'app_register_email',
+                'route' => 'app_register_identity-confirm',
                 'next' => 'company',
                 'previous' => 'email',
             ],
@@ -81,6 +81,21 @@ class RegistrationController extends AbstractController
         ];
     }
 
+//    public function handleStep(SessionInterface $session, Security $security, $comparingStep){
+//        $step = $session->get('step');
+//        // if user in session and is verified then redirect to /
+//        if ($security->getUser() && $security->getUser()->isVerified()) {
+//            return $this->redirectToRoute('default_index');
+//        }
+//
+//        if ($security->getUser())
+//
+//
+//        $step = is_null($step)
+//            ? $this->steps["email"]
+//            : $this->steps[$step];
+//    }
+
     #[Route(['', '/start'], name: 'start')]
     public function start(Request $request, EntityManagerInterface $entityManager, Security $security, SessionInterface $session): Response
     {
@@ -89,8 +104,11 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
+
             // if email already exists
-            $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+            $existingUser = $entityManager->getRepository(User::class)->findOneBy([
+                'email' => $user->getEmail(),
+            ]);
             $user = $existingUser ?? $user;
 
             if (is_null($existingUser)) {
@@ -106,13 +124,21 @@ class RegistrationController extends AbstractController
                     // Post/Redirect/Get pattern to avoid form resubmission
                     $session->getFlashBag()->add('form_errors', $errors);
                     // Redirect back to the form
-                    return $this->redirectToRoute('app_register_start');
+                    return $this->redirectToRoute($this->steps["email"]["route"]);
+                }
+            } else {
+                if ($user->isVerified()) {
+                    $session->getFlashBag()->add('form_errors',  [
+                        ["message" => "Cet email est déjà associé à un compte Facturo"]
+                    ]);
+                    return $this->redirectToRoute($this->steps["email"]["route"]);
                 }
             }
 
             if ($form->isValid() || !is_null($existingUser)) {
+                $session->set('step', $this->steps["email"]["next"]);
                 $security->login($user);
-                return $this->redirectToRoute('app_register_identity-confirm');
+                return $this->redirectToRoute($this->steps[$this->steps["email"]["next"]]["route"]);
             }
         }
 
@@ -128,7 +154,8 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/identity-confirm', name: 'identity-confirm')]
-    public function identityConfirm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, SessionInterface $session): Response {
+    public function identityConfirm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, SessionInterface $session): Response
+    {
         $user = $this->getUser();
 
         $form = $this->createForm($this->steps["email_confirmation"]["form"]);
@@ -159,7 +186,7 @@ class RegistrationController extends AbstractController
 
             // TODO : Améliorer le mail
             $email = (new Email())
-                ->from(new Address('noreply@facturo.com', 'Facturo.fr'))
+                ->from(new Address('noreply@facturo.fr', 'Facturo.fr'))
                 ->to($user->getEmail())
                 ->subject('Please Confirm your Email')
                 ->text('Voici votre code de confirmation : ' . $oneTimeCode->getCode(). ' Il expirera dans ' . $duration->format('%i minutes'));
@@ -270,7 +297,7 @@ class RegistrationController extends AbstractController
      *      // generate a signed url and email it to the user
      *      $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
      *          (new TemplatedEmail())
-     *              ->from(new Address('replace-me@facturo.com', 'Facturo Account Service'))
+     *              ->from(new Address('replace-me@facturo.fr', 'Facturo Account Service'))
      *              ->to($user->getEmail())
      *              ->subject('Please Confirm your Email')
      *              ->htmlTemplate('registration/confirmation_email.html.twig')
