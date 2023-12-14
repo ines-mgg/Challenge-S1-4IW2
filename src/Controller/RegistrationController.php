@@ -29,9 +29,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
-#[Route(path: '/register', name: 'app_register_')]
+#[Route(path: '/register', name: self::ROUTE_PREFIX)]
 class RegistrationController extends AbstractController
 {
+    private const ROUTE_PREFIX = 'app_register_';
     private EmailVerifier $emailVerifier;
     private array $steps;
     public function __construct(EmailVerifier $emailVerifier)
@@ -42,41 +43,41 @@ class RegistrationController extends AbstractController
                 'order' => 1,
                 'label' => 'Email',
                 'form' => EmailStepFormType::class,
-                'route' => 'app_register_start',
-                'next' => 'email_confirmation',
+                'route' => self::ROUTE_PREFIX.'start',
                 'previous' => null,
+                'next' => 'email_confirmation',
             ],
             'email_confirmation' => [
                 'order' => 2,
                 'label' => 'Taper le code reçu par mail',
                 'form' => EmailStepConfirmationFormType::class,
-                'route' => 'app_register_identity-confirm',
-                'next' => 'company',
+                'route' => self::ROUTE_PREFIX.'identity-confirm',
                 'previous' => 'email',
+                'next' => 'company',
             ],
             'company' => [
                 'order' => 3,
                 'label' => 'Société',
                 'form' => CompanyStepFormType::class,
-                'route' => 'app_register_company',
-                'next' => 'informations',
+                'route' => self::ROUTE_PREFIX.'company',
                 'previous' => 'email_confirmation',
+                'next' => 'informations',
             ],
             'informations' => [
                 'order' => 4,
                 'label' => 'Informations',
                 'form' => InformationsStepFormType::class,
-                'route' => 'app_register_informations',
-                'next' => 'confirm',
+                'route' => self::ROUTE_PREFIX.'informations',
                 'previous' => 'company',
+                'next' => 'confirm',
             ],
             'confirm' => [
                 'order' => 5,
                 'label' => 'Confirmation',
                 'form' => RegistrationFormType::class,
-                'route' => 'app_register_confirm',
-                'next' => null,
+                'route' => self::ROUTE_PREFIX.'confirm',
                 'previous' => 'informations',
+                'next' => null,
             ],
         ];
     }
