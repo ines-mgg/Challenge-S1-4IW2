@@ -9,7 +9,6 @@ use App\Form\Registration\EmailStepConfirmationFormType;
 use App\Form\Registration\EmailStepFormType;
 use App\Form\Registration\InformationsStepFormType;
 use App\Form\RegistrationFormType;
-use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,13 +20,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 #[Route(path: '/register', name: self::ROUTE_PREFIX)]
 class RegistrationController extends AbstractController
@@ -82,24 +78,65 @@ class RegistrationController extends AbstractController
         ];
     }
 
-//    public function handleStep(SessionInterface $session, Security $security, $comparingStep){
-//        $step = $session->get('step');
-//        // if user in session and is verified then redirect to /
-//        if ($security->getUser() && $security->getUser()->isVerified()) {
-//            return $this->redirectToRoute('default_index');
-//        }
-//
-//        if ($security->getUser())
-//
-//
-//        $step = is_null($step)
-//            ? $this->steps["email"]
-//            : $this->steps[$step];
-//    }
+    // TODO : Voir note
+    /**
+     * Permet de vérifier si l'utilisateur est bien authentifié pour accéder à la page
+     * @param SessionInterface $session
+     * @return RedirectResponse|null
+     */
+    function handleSecurity(SessionInterface $session, Security $security): ?RedirectResponse
+    {
+        $loggedUser = $security->getUser();
+        if ($loggedUser) {
+            if ($loggedUser->isVerified()) {
+                return $this->redirectToRoute('default_index');
+            }
+
+            $registrationStatus = $session->get("registration_auth");
+            if ($registrationStatus["expires_at"] < new DateTimeImmutable()) {
+                $session->getFlashBag()->add('form_errors',  [
+                    ["message" => "Votre session d'inscription a expiré"],
+                    ["message" => "Nous avons sauvegardé votre état d'avancement pour que vous puissiez reprendre plus tard"]
+                ]);
+                $session->remove("registration_auth");
+                return $this->redirectToRoute("app_register_start");
+            }
+
+            if ($session->get('registration_auth')) {
+                return $this->redirectToRoute('app_register_company');
+            }
+        }
+
+        $registrationStatus = $session->get("registration_auth");
+        if (!$registrationStatus) {
+            return $this->redirectToRoute("app_register_start");
+        }
+
+        if ($registrationStatus["expires_at"] < new DateTimeImmutable()) {
+            $session->getFlashBag()->add('form_errors',  [
+                ["message" => "Votre session d'inscription a expiré"],
+                ["message" => "Nous avons sauvegardé votre état d'avancement pour que vous puissiez reprendre plus tard"]
+            ]);
+            $session->remove("registration_auth");
+            return $this->redirectToRoute("app_register_start");
+        }
+        return null;
+    }
+
 
     #[Route(['', '/start'], name: 'start')]
     public function start(Request $request, EntityManagerInterface $entityManager, Security $security, SessionInterface $session): Response
     {
+        $loggedUser = $security->getUser();
+        if ($loggedUser) {
+            if ($loggedUser->isVerified()) {
+                return $this->redirectToRoute('default_index');
+            }
+
+            if ($session->get('registration_auth')) {
+                return $this->redirectToRoute('app_register_company');
+            }
+        }
         $user = new User();
         $form = $this->createForm($this->steps["email"]["form"], $user);
         $form->handleRequest($request);
@@ -170,6 +207,12 @@ class RegistrationController extends AbstractController
                     $oneTimeCode->setUsed(true);
                     $entityManager->persist($oneTimeCode);
                     $entityManager->flush();
+
+                    $session->set("registration_auth", [
+                        "status" => true,
+                        "expires_at" => new DateTimeImmutable('+1 hour')
+                    ]);
+
                     return $this->redirectToRoute('app_register_company');
                 } else {
                     $session->getFlashBag()->add('form_errors',  [["message" => "Le code de confirmation a expiré"]]);
@@ -203,8 +246,13 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/company', name: 'company')]
-    public function company(Request $request): Response
+    public function company(Request $request, SessionInterface $session): Response
     {
+        $handleSecurityResponse = $this->handleSecurity($session);
+        if ($handleSecurityResponse instanceof RedirectResponse) {
+            return $handleSecurityResponse;
+        }
+
         $formErrors = [];
 
         $form = $this->createForm($this->steps["company"]["form"]);
@@ -309,33 +357,33 @@ class RegistrationController extends AbstractController
      *  }
      */
 
-    #[Route('/verify/email', name: 'verify_email')]
-    public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
-    {
-        $id = $request->query->get('id');
-
-        if (null === $id) {
-            return $this->redirectToRoute('app_register');
-        }
-
-        $user = $userRepository->find($id);
-
-        if (null === $user) {
-            return $this->redirectToRoute('app_register');
-        }
-
-        // validate email confirmation link, sets User::isVerified=true and persists
-        try {
-            $this->emailVerifier->handleEmailConfirmation($request, $user);
-        } catch (VerifyEmailExceptionInterface $exception) {
-            $this->addFlash('verify_email_error', $exception->getReason());
-
-            return $this->redirectToRoute('app_register');
-        }
-
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
-
-        return $this->redirectToRoute('app_register');
-    }
+//    #[Route('/verify/email', name: 'verify_email')]
+//    public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
+//    {
+//        $id = $request->query->get('id');
+//
+//        if (null === $id) {
+//            return $this->redirectToRoute('app_register');
+//        }
+//
+//        $user = $userRepository->find($id);
+//
+//        if (null === $user) {
+//            return $this->redirectToRoute('app_register');
+//        }
+//
+//        // validate email confirmation link, sets User::isVerified=true and persists
+//        try {
+//            $this->emailVerifier->handleEmailConfirmation($request, $user);
+//        } catch (VerifyEmailExceptionInterface $exception) {
+//            $this->addFlash('verify_email_error', $exception->getReason());
+//
+//            return $this->redirectToRoute('app_register');
+//        }
+//
+//        // @TODO Change the redirect on success and handle or remove the flash message in your templates
+//        $this->addFlash('success', 'Your email address has been verified.');
+//
+//        return $this->redirectToRoute('app_register');
+//    }
 }
