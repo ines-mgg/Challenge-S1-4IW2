@@ -33,7 +33,9 @@ module.exports = {
           '162' : '90rem',
         },
         boxShadow: {
-          'custom-beige' : '12px 12px 0 -1px #FCF7DE, 12px 12px 0 0 #1C1C1A', 
+          'custom-beige' : '12px 12px 0 -1px #FCF7DE, 12px 12px 0 0 #1C1C1A',
+          'custom-purple' : '12px 12px 0 -1px #F2DFFC, 12px 12px 0 0 #1C1C1A',
+          'custom-blue' : '12px 12px 0 -1px #2730FE, 12px 12px 0 0 #1C1C1A'
         },
     },
   },

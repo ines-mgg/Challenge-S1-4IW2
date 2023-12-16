@@ -15,23 +15,12 @@
         </p>
       </div>
       <div class="flex gap-6">
-        {% embed '_composants/buttons/_buttonBlack.html.twig' %} {% block title
-        %} Créer un compte gratuit {% endblock %}{% endembed %} {% embed
-        '_composants/buttons/_buttonBlue.html.twig' %} {% block title %}
-        Consulter nos offres
-        <svg
-          width="22"
-          height="23"
-          viewBox="0 0 22 23"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M21.0607 12.5607C21.6464 11.9749 21.6464 11.0251 21.0607 10.4393L11.5147 0.893399C10.9289 0.307612 9.97919 0.307612 9.3934 0.893399C8.80761 1.47919 8.80761 2.42893 9.3934 3.01472L17.8787 11.5L9.3934 19.9853C8.80761 20.5711 8.80761 21.5208 9.3934 22.1066C9.97918 22.6924 10.9289 22.6924 11.5147 22.1066L21.0607 12.5607ZM-1.31134e-07 13L20 13L20 10L1.31134e-07 10L-1.31134e-07 13Z"
-            fill="#F9F9F9"
-          />
-        </svg>
-        {% endblock %}{% endembed %}
+        {% embed '_composants/buttons/_button.html.twig' with {'buttonColor':
+        'bg-black','buttonTextColor': 'text-light-white','textButton': 'Créer un
+        compte gratuit','arrowButton': false}%} {% endembed %} {% embed
+        '_composants/buttons/_button.html.twig' with {'buttonColor':
+        'bg-electric-blue','buttonTextColor': 'text-light-white','textButton':
+        'Consulter nos offres','arrowButton': true}%} {% endembed %}
       </div>
     </section>
     <section class="mt-24 mr-20 w-102 h-103">
@@ -54,12 +43,12 @@
   </article>
   <article class="bg-beige flex justify-center h-120">
     <section class="mt-28 mb-32 flex">
-      {% embed '_composants/cards/_cardBeige.html.twig' %} {% block picture %}
-      <img src="{{ asset("build/images/ceo_card.jpg") }}" alt="Picture card"
-      width="400px" height="388px" />{% endblock %} {% block paragraph %}«
-      Facturo me permet de consacrer le minimum de temps à mes factures, de quoi
-      mettre toute mon énergie dans mes sites internet. »{% endblock %} {% block
-      title %}Bertrand - CEO de Monsupersite.fr{% endblock %}{% endembed %}
+      {% embed '_composants/cards/_card.html.twig' with {'cardShadow':
+      'shadow-custom-beige', 'pictureName': 'ceo_card.jpg', 'pictureHeight':
+      '388px', 'paragraphCard': '« Facturo me permet de consacrer le minimum de
+      temps à mes factures, de quoi mettre toute mon énergie dans mes sites
+      internet. »', 'subtitleCard': 'Bertrand - CEO de Monsupersite.fr'} %}{%
+      endembed %}
       <aside class="ml-36 pl-8 border-l border-light-dark">
         <h1 class="w-105 mb-8 text-black text-4xl font-bold leading-normal">
           Dépensez votre temps pour ce qui compte vraiment.
@@ -76,33 +65,19 @@
             long de fou qui parle de création de devis etc;
           </p>
         </div>
-        <div class="">
-          <h1 class="text-black text-2xl font-bold leading-normal">
-            Relance de factures
-          </h1>
-          <p
-            class="w-22.125 h-4.625 text-black text-sm font-bold leading-normal mb-6"
-          >
-            Texte super long de fou qui parle de création de devis etc; Texte
-            super long de fou qui parle de création de devis etc; Texte super
-            long de fou qui parle de création de devis etc;
-          </p>
-          {% embed '_composants/buttons/_buttonBlack.html.twig' %} {% block
-          title %} Ouvrir un compte
-          <svg
-            width="22"
-            height="23"
-            viewBox="0 0 22 23"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M21.0607 12.5607C21.6464 11.9749 21.6464 11.0251 21.0607 10.4393L11.5147 0.893399C10.9289 0.307612 9.97919 0.307612 9.3934 0.893399C8.80761 1.47919 8.80761 2.42893 9.3934 3.01472L17.8787 11.5L9.3934 19.9853C8.80761 20.5711 8.80761 21.5208 9.3934 22.1066C9.97918 22.6924 10.9289 22.6924 11.5147 22.1066L21.0607 12.5607ZM-1.31134e-07 13L20 13L20 10L1.31134e-07 10L-1.31134e-07 13Z"
-              fill="#F9F9F9"
-            />
-          </svg>
-          {% endblock %}{% endembed %}
-        </div>
+        <h1 class="text-black text-2xl font-bold leading-normal">
+          Relance de factures
+        </h1>
+        <p
+          class="w-22.125 h-4.625 text-black text-sm font-bold leading-normal mb-6"
+        >
+          Texte super long de fou qui parle de création de devis etc; Texte
+          super long de fou qui parle de création de devis etc; Texte super long
+          de fou qui parle de création de devis etc;
+        </p>
+        {% embed '_composants/buttons/_button.html.twig' with {'buttonColor':
+        'bg-black','buttonTextColor': 'text-light-white','textButton': 'Ouvrir
+        un compte','arrowButton': true}%} {% endembed %}
       </aside>
     </section>
   </article>
@@ -110,114 +85,42 @@
     class="h-64 bg-banner-motif flex justify-center items-center"
     style="background-image:url('{{ asset('build/images/banner_motif.jpg') }}')"
   >
-    {% embed '_composants/buttons/_button.html.twig' %} {% block title %}
-    Découvrir nos offres
-    <svg
-      width="22"
-      height="23"
-      viewBox="0 0 22 23"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M21.0607 12.5607C21.6464 11.9749 21.6464 11.0251 21.0607 10.4393L11.5147 0.893399C10.9289 0.307612 9.97919 0.307612 9.3934 0.893399C8.80761 1.47919 8.80761 2.42893 9.3934 3.01472L17.8787 11.5L9.3934 19.9853C8.80761 20.5711 8.80761 21.5208 9.3934 22.1066C9.97918 22.6924 10.9289 22.6924 11.5147 22.1066L21.0607 12.5607ZM-1.31134e-07 13L20 13L20 10L1.31134e-07 10L-1.31134e-07 13Z"
-        fill="#1C1C1A"
-      />
-    </svg>
-    {% endblock %}{% endembed %}
+    {% embed '_composants/buttons/_button.html.twig' with {'buttonColor':
+    'bg-white','buttonTextColor': 'text-light-dark','textButton': 'Découvrir nos
+    offres','arrowButton': true,'arrowColor': "#1C1C1A"}%} {% endembed %}
   </article>
   <article class="h-122 bg-lilac flex flex-col items-center">
     <h1 class="w-118 text-4xl font-bold leading-normal mt-12">
       Plus de 184 000 clients nous font confiance pour soutenir leur croissance
     </h1>
     <section class="mt-16 flex gap-40">
-      {% embed '_composants/cards/_cardBeige.html.twig' %} {% block picture %}
-      <img src="{{ asset("build/images/ceo_card.jpg") }}" alt="Picture card"
-      width="400px" height="388px" />{% endblock %} {% block paragraph %}«
-      Facturo me permet de consacrer le minimum de temps à mes factures, de quoi
-      mettre toute mon énergie dans mes sites internet. »{% endblock %} {% block
-      title %}Bertrand - CEO de Monsupersite.fr{% endblock %}{% endembed %} {%
-      embed '_composants/cards/_cardBeige.html.twig' %} {% block picture %} <img
-      src="{{ asset("build/images/ceo_card.jpg") }}" alt="Picture card"
-      width="400px" height="388px" />{% endblock %} {% block paragraph %}«
-      Facturo me permet de consacrer le minimum de temps à mes factures, de quoi
-      mettre toute mon énergie dans mes sites internet. »{% endblock %} {% block
-      title %}Bertrand - CEO de Monsupersite.fr{% endblock %}{% endembed %}
+      {% embed '_composants/cards/_card.html.twig' with {'cardShadow':
+      'shadow-custom-purple', 'pictureName': 'two_woman_card.jpg', 'titleCard':
+      'Titre carte','paragraphCard': 'Lorem ipsum dolor sit amet, consectetur
+      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+      ugu poao tus tatos vas abano vui.', 'linkCard': 'En savoir plus'} %}{%
+      endembed %}
+      {% embed '_composants/cards/_card.html.twig' with {'cardShadow':
+      'shadow-custom-purple', 'pictureName': 'team_card.jpg', 'titleCard':
+      'Titre carte', 'paragraphCard': 'Lorem ipsum dolor sit amet, consectetur
+      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+      ugu poao tus tatos vas abano vui.', 'linkCard': 'En savoir plus'} %}{%
+      endembed %}
+    </section>
+  </article>
+  <article class="bg-light-dark h-72 flex flex-col items-center">
+    <h1 class="text-light-white text-4xl font-bold leading-normal mt-12">
+      Tout est prêt, il ne manque plus que vous.
+    </h1>
+    <section class="flex gap-10 mt-16">
+      {% embed '_composants/buttons/_button.html.twig' with {'textButton':
+      'Ouvrir un compte','arrowButton': false}%} {% endembed %} {% embed
+      '_composants/buttons/_button.html.twig' with {'buttonColor':
+      'bg-electric-blue','buttonTextColor': 'text-light-white','textButton':
+      'Consulter nos offres','arrowButton': true}%} {% endembed %}
     </section>
   </article>
 </main>
-{#
-<section>
-  <div>
-    PHOTO CARD
-    <p>
-      « Facturo me permet de consacrer le minimum de temps à mes factures, de
-      quoi mettre toute mon énergie dans mes sites internet. »
-    </p>
-    <span>Bertrand - CEO de Monsupersite.fr</span>
-  </div>
-  <h2>Dépensez votre temps pour ce qui compte vraiment.</h2>
-  <span>Création de devis personnalisé</span>
-  <p>Texte</p>
-  <span>Relance de factures</span>
-  <p>Texte</p>
-  <button>Ouvrir un compte</button>
-</section>
-<section>
-  <div>BANNIERE COLORÉE</div>
-  <button>Découvrir nos offres -></button>
-</section>
-<section>
-  <h2>
-    Plus de 184 000 clients nous font confiance pour soutenir leur croissance
-  </h2>
-  <div>
-    PHOTO CARD
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco ugu poao tus tatos vas abano
-      vui.
-    </p>
-    <button>En savoir plus -></button>
-  </div>
-  <div>
-    PHOTO CARD
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco ugu poao tus tatos vas abano
-      vui.
-    </p>
-    <button>En savoir plus -></button>
-  </div>
-</section>
-<section>
-  <h2>Tout est prêt, il ne manque plus que vous.</h2>
-  <button>Ouvrir un compte</button>
-  <button>Consulter nos offres -></button>
-</section>
-<footer>
-  Facturo
-  <nav>
-    <ul>
-      <li>Nos offres</li>
-      <li>Contact</li>
-      <li>À propos</li>
-    </ul>
-  </nav>
-  <div>
-    Abonnez vous à notre newsletter
-    <input type="email" placeholder="E-mail" />
-  </div>
-  <ul>
-    <li>FACEBOOK</li>
-    <li>LINKEDIN</li>
-    <li>INSTAGRAM</li>
-    <li>X</li>
-    <li>YOUTUBE</li>
-    <li>TIKTOK</li>
-  </ul>
-  <span>&copy; 2024 Facturo Co.</span>
-</footer>
-#} {% endblock %}
+{% include '_composants/footers/_footer.html.twig' %} {% endblock %}
