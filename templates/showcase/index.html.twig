@@ -20,7 +20,8 @@
         compte gratuit','arrowButton': false}%} {% endembed %} {% embed
         '_composants/buttons/_button.html.twig' with {'buttonColor':
         'bg-electric-blue','buttonTextColor': 'text-light-white','textButton':
-        'Consulter nos offres','arrowButton': true}%} {% endembed %}
+        'Consulter nos offres','arrowButton': true, 'buttonLink':
+        'showcase_pricing'}%} {% endembed %}
       </div>
     </section>
     <section class="mt-24 mr-20 w-102 h-103">
@@ -82,12 +83,13 @@
     </section>
   </article>
   <article
-    class="h-64 bg-banner-motif flex justify-center items-center"
+    class="h-64 flex justify-center items-center"
     style="background-image:url('{{ asset('build/images/banner_motif.jpg') }}')"
   >
     {% embed '_composants/buttons/_button.html.twig' with {'buttonColor':
     'bg-white','buttonTextColor': 'text-light-dark','textButton': 'Découvrir nos
-    offres','arrowButton': true,'arrowColor': "#1C1C1A"}%} {% endembed %}
+    offres','arrowButton': true,'arrowColor': "#1C1C1A", 'buttonLink':
+    'showcase_pricing'}%} {% endembed %}
   </article>
   <article class="h-122 bg-lilac flex flex-col items-center">
     <h1 class="w-118 text-4xl font-bold leading-normal mt-12">
@@ -100,14 +102,13 @@
       adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
       magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
       ugu poao tus tatos vas abano vui.', 'linkCard': 'En savoir plus'} %}{%
-      endembed %}
-      {% embed '_composants/cards/_card.html.twig' with {'cardShadow':
-      'shadow-custom-purple', 'pictureName': 'team_card.jpg', 'titleCard':
-      'Titre carte', 'paragraphCard': 'Lorem ipsum dolor sit amet, consectetur
-      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-      ugu poao tus tatos vas abano vui.', 'linkCard': 'En savoir plus'} %}{%
-      endembed %}
+      endembed %} {% embed '_composants/cards/_card.html.twig' with
+      {'cardShadow': 'shadow-custom-purple', 'pictureName': 'team_card.jpg',
+      'titleCard': 'Titre carte', 'paragraphCard': 'Lorem ipsum dolor sit amet,
+      consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+      dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+      ullamco ugu poao tus tatos vas abano vui.', 'linkCard': 'En savoir plus'}
+      %}{% endembed %}
     </section>
   </article>
   <article class="bg-light-dark h-72 flex flex-col items-center">
@@ -119,7 +120,8 @@
       'Ouvrir un compte','arrowButton': false}%} {% endembed %} {% embed
       '_composants/buttons/_button.html.twig' with {'buttonColor':
       'bg-electric-blue','buttonTextColor': 'text-light-white','textButton':
-      'Consulter nos offres','arrowButton': true}%} {% endembed %}
+      'Consulter nos offres','arrowButton': true, 'buttonLink':
+      'showcase_pricing'}%} {% endembed %}
     </section>
   </article>
 </main>

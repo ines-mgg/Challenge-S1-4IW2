@@ -16,7 +16,6 @@
 <body>
 {% block body %}{% endblock %}
 
-<br>
 {% for type, flashMessages in app.flashes %}
     {% for message in flashMessages %}
         {{ type }} - {{ message }} <br>
