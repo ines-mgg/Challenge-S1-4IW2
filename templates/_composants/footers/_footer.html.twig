@@ -1,6 +1,6 @@
-<footer class="bg-light-white h-96 grid">
-  <section class="mt-12 ml-12">
-    <nav class="inline-flex items-start gap-122">
+<footer class="bg-light-white h-96 flex flex-col justify-between">
+  <section class="mt-12 ml-12 flex flex-col">
+    <nav class="inline-flex items-start justify-between">
       <a href="{{ path('showcase_index') }}">
         <svg
           width="132"
@@ -15,7 +15,7 @@
           />
         </svg>
       </a>
-      <ul>
+      <ul class="mr-12">
         <li class="flex items-start gap-24 text-light-dark">
           <a
             href="{{ path('showcase_pricing') }}"
@@ -38,7 +38,7 @@
       'email', 'inputPlaceholder': 'E-mail', 'inputSize': '37'}%} {% endembed %}
     </aside>
   </section>
-  <section class="flex flex-col items-center gap-4 mb-3 justify-self-center self-end">
+  <section class="flex flex-col items-center gap-4 mb-3 ">
     <aside class="flex items-center gap-14">
       <svg
         width="24"
