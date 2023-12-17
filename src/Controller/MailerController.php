@@ -24,6 +24,9 @@ class MailerController extends AbstractController
 
         try {
             $mailer->send($email);
+            return $this->render('mailer/index.html.twig', [
+                'controller_name' => 'Test ok',
+            ]);
         } catch (TransportExceptionInterface $e) {
             var_dump($e->getMessage());
         }

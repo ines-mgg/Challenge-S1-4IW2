@@ -13,10 +13,9 @@ class ContactType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('fullName', null, [
+            ->add('firstName', null, [
                 'label' => 'Nom complet',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'Entrez votre nom complet',
                     'type' => 'text'
                 ]
@@ -24,7 +23,6 @@ class ContactType extends AbstractType
             ->add('lastName', null, [
                 'label' => 'Nom',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'Entrez votre nom',
                     'type' => 'text'
                 ]
@@ -32,7 +30,6 @@ class ContactType extends AbstractType
             ->add('email', null, [
                 'label' => 'Adresse email',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'Entrez votre adresse email',
                     'type' => 'email'
                 ]
@@ -40,7 +37,6 @@ class ContactType extends AbstractType
             ->add('phoneNumber', null, [
                 'label' => 'Numéro de téléphone',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'Entrez votre numéro de téléphone',
                     'type' => 'tel'
                 ]
@@ -49,20 +45,18 @@ class ContactType extends AbstractType
             ->add('subject', null, [
                 'label' => 'Sujet',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'Entrez le sujet de votre message',
                     'type' => 'text'
                 ]
             ])
             ->add('message', TextareaType::class, [
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 10
                 ]
             ])
             ->add('envoyer', SubmitType::class, [
                 'attr' => [
-                    'class' => 'btn btn-primary btn-block',
+                    'class' => ' mt-3 flex justify-center items-center gap-1.5 rounded bg-electric-blue text-white font-bold h-14 px-4 py-5',
                     'type' => 'submit'
                 ]
             ])

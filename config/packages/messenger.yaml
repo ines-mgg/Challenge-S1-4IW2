@@ -9,6 +9,8 @@ framework:
                 options:
                     use_notify: true
                     check_delayed_interval: 60000
+                    auto_setup: false
+
                 retry_strategy:
                     max_retries: 3
                     multiplier: 2

@@ -1,6 +1,8 @@
 framework:
     mailer:
        dsn: '%env(MAILER_DSN)%'
+       message_bus: false
+
 #        envelope:
 #            sender: 'fabien@example.com'
 #            recipients: [ 'foo@example.com', 'bar@example.com' ]
