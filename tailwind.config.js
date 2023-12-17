@@ -11,7 +11,8 @@ module.exports = {
             'light-white': '#F9F9F9',
             'beige': '#F6F5EF',
             'electric-blue': '#1B24E0',
-            'lilac': '#EFE9FE'
+            'lilac': '#EFE9FE',
+            'grey' : '#AAAAA9'
         },
         // add new height of 7.125rem
         height: {
@@ -37,6 +38,10 @@ module.exports = {
           'custom-purple' : '12px 12px 0 -1px #F2DFFC, 12px 12px 0 0 #1C1C1A',
           'custom-blue' : '12px 12px 0 -1px #2730FE, 12px 12px 0 0 #1C1C1A'
         },
+        gap: {
+          '114' : '42rem',
+          '122': '50rem'
+        }
     },
   },
   plugins: [],

@@ -1,0 +1,14 @@
+{% set inputType = inputType ?? "text" %} 
+{% set inputId = inputId ?? "" %} 
+{% set inputName = inputName ?? "" %}
+{% set inputPlaceholder = inputPlaceholder ?? "" %}
+{% set inputSize = inputSize ?? ""%}
+
+<input
+  class="bg-light-white border-b border-light-dark text-grey text-xs font-bold leading-normal"
+  type = {{inputType}}
+  name = {{inputName}}
+  id = {{inputId}}
+  placeholder="{{inputPlaceholder}}"
+  size="{{inputSize}}"
+/>
