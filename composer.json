@@ -8,7 +8,6 @@
     "require": {
         "php": ">=8.1",
         "ext-ctype": "*",
-        "ext-http": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "2.*",
@@ -47,7 +46,8 @@
         "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "6.*",
         "twig/extra-bundle": "3.*",
-        "twig/twig": "3.*"
+        "twig/twig": "3.*",
+        "ext-http": "*"
     },
     "config": {
         "allow-plugins": {

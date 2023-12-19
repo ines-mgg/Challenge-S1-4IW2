@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use http\Client\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -17,13 +16,13 @@ use Symfony\Component\Mailer\MailerInterface;
 class PdfGeneratorController extends AbstractController
 {
     #[Route('/pdf/generator', name: 'app_pdf_generator')]
-    public function index(MailerInterface $mailer,Request $request): Response
+    public function index(MailerInterface $mailer): Response
     {
 
         $data = [
             'title' => "Welcome to our PDF Test"
         ];
-        $form = $this->createForm(ContactType::class, $data);
+//        $form = $this->createForm(ContactType::class, $data);
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
         $dompdf = new Dompdf($pdfOptions);
