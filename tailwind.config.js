@@ -17,8 +17,10 @@ module.exports = {
         },
         // add new height of 7.125rem
         height: {
+            '5.25': '5.25rem',
             '7.125': '1.75rem',
             '103': '31rem',
+            '106' : '34rem',
             '114': '42rem',
             '120': '48rem',
             '122': '50rem',
@@ -27,19 +29,21 @@ module.exports = {
         width: {
           '7' : '25rem',
           '22.125': '22.125rem',
+          '22.3125' : '22.3125rem',
           '285.445' : '285.445px',
           '288.852' : '288.852px',
           '102' : '30rem',
           '105' : '33rem',
           '109' : '38rem',
-          '110 ': '39rem',
+          '110': '39rem',
           '118' : '47rem',
           '162' : '90rem',
         },
         boxShadow: {
           'custom-beige' : '12px 12px 0 -1px #FCF7DE, 12px 12px 0 0 #1C1C1A',
           'custom-purple' : '12px 12px 0 -1px #F2DFFC, 12px 12px 0 0 #1C1C1A',
-          'custom-blue' : '12px 12px 0 -1px #2730FE, 12px 12px 0 0 #1C1C1A'
+          'custom-blue' : '12px 12px 0 -1px #2730FE, 12px 12px 0 0 #1C1C1A',
+          'custom-white' : '12px 12px 0 -1px #F3F3F3, 12px 12px 0 0 #1C1C1A'
         },
         gap: {
           '114' : '42rem',
@@ -48,12 +52,12 @@ module.exports = {
         gridTemplateRows: {
             '[auto,auto,1fr]': 'auto auto 1fr',
         },
+        padding: {
+          '1.875': '1.875rem',
+          '2.125': '2.125rem',
+        }
     },
   },
-  plugins: [
-      require("@tailwindcss/forms"),
-      require('@tailwindcss/aspect-ratio'),
-
-  ],
+  plugins: [],
 }
 

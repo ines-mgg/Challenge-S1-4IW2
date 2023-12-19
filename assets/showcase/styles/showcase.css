@@ -2,8 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap');
-body {
-    background-color: #f1efef;
-    font-family: 'Raleway', sans-serif;
+@layer base {
+    @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap');
+    body {
+        background-color: #F6F5EF;
+        font-family: 'Raleway', sans-serif;
+    }
+}
+
+@layer components {
+    .customBanner {
+        background-image: url(../../../public/build/images/banner_motif.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .customBackground {
+        background-image: url(../../../public/build/images/backgroundmotif.jpg);
+        background-repeat: no-repeat;
+        background-size: auto;
+    }
 }

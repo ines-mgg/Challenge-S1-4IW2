@@ -1,13 +1,6 @@
-{% extends 'showcase/base.html.twig' %} {% block title %}Facturo{% endblock %}
-{% block body %} {% include '_composants/headers/_header.html.twig' %}
-<main
-  class="flex flex-col justify-center items-center"
-  {#
-  style="background-image:url('{{
-    asset('build/images/backgroundmotif.jpg')
-  }}')"
-  #}
->
+{% extends 'base.html.twig' %} {% block title %}Facturo{% endblock %} {% block
+body %} {% include '_composants/headers/_header.html.twig' %}
+<main class="flex flex-col justify-center items-center customBackground">
   <section class="flex flex-col items-center gap-10 mt-16 mb-12 bg-none">
     <h1 class="text-light-dark text-3xl font-bold leading-normal">
       Comparaison de nos forfaits

@@ -24,12 +24,4 @@ class ShowcaseController extends AbstractController
             'controller_name' => 'ShowcaseController',
         ]);
     }
-
-    #[Route('/contact', name: 'contact')]
-    public function contact(): Response
-    {
-        return $this->render('showcase/index.html.twig', [
-            'controller_name' => 'ShowcaseController',
-        ]);
-    }
 }

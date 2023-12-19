@@ -10,21 +10,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ContactController extends AbstractController
 {
-    #[Route('/contact', name: 'app_contact')]
+    #[Route('/contact', name: 'showcase_contact')]
     public function index(Request $request): Response
     {
         $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $contactFormData = $form->getData();
             flush('success', 'Le formulaire a bien été envoyé');
             dump($contactFormData);
         }
-        return $this->render('contact/index.html.twig', [
+        return $this->render('showcase/contact.html.twig', [
             'controller_name' => 'ContactController',
             'form' => $form
         ]);
     }
-
-
 }
