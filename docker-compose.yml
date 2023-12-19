@@ -63,6 +63,11 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data:rw
 
+  mailer:
+    image: schickling/mailcatcher
+    ports: [1025, 1080]
+
+
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
 volumes:

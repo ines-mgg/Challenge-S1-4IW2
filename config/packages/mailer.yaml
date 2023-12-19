@@ -1,3 +1,12 @@
 framework:
     mailer:
-        dsn: '%env(MAILER_DSN)%'
+       dsn: '%env(MAILER_DSN)%'
+       message_bus: false
+
+#        envelope:
+#            sender: 'fabien@example.com'
+#            recipients: [ 'foo@example.com', 'bar@example.com' ]
+#            headers:
+#                    From: 'Fabien <fabien@example.com>'
+#                    Bcc: 'baz@example.com'
+#                    X-Custom-Header: 'foobar'
