@@ -1,0 +1,73 @@
+{% use 'tailwind_2_layout.html.twig' %}
+
+        {%- block form_row -%}
+            {%- set row_attr = row_attr|merge({ class: row_attr.class|default(row_class|default('sm:col-span-2 mt-2.5 ')) }) -%}
+            {{- parent() -}}
+        {%- endblock form_row -%}
+
+
+        {%- block form_label -%}
+            {%- set label_class = label_class|default('block text-sm font-semibold leading-6 text-gray-900') -%}
+            {{- parent() -}}
+        {%- endblock form_label -%}
+        {%- block widget_attributes -%}
+                {%- set widget_class = widget_class|default('block  mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50') -%}
+                {%- set widget_disabled_class = widget_disabled_class|default('my disabled widget classes') -%}
+                {%- set widget_errors_class = widget_errors_class|default('my widget with error classes') -%}
+                {{- parent() -}}
+
+        {%- endblock widget_attributes -%}
+        {%- block form_help -%}
+            {%- set help_class = help_class|default('my label classes') -%}
+            {{- parent() -}}
+        {%- endblock form_help -%}
+
+        {%- block form_errors -%}
+            {%- if errors|length > 0 -%}
+                <ul>
+                    {%- for error in errors -%}
+                        <li class="{{ error_item_class|default('text-red-700') }}">{{ error.message }}</li>
+                    {%- endfor -%}
+                </ul>
+            {%- endif -%}
+        {%- endblock form_errors -%}
+
+        {%- block choice_widget_expanded -%}
+            {%- set attr = attr|merge({ class: attr.aclass|default('mt-2') }) -%}
+            <div {{ block('widget_container_attributes') }}>
+                {%- for child in form %}
+                    <div class="flex items-center">
+                        {{- form_widget(child) -}}
+                        {{- form_label(child, null, { translation_domain: choice_translation_domain }) -}}
+                    </div>
+                {% endfor -%}
+            </div>
+        {%- endblock choice_widget_expanded -%}
+
+{#{%- block checkbox_row -%}#}
+{#    {%- set row_attr = row_attr|merge({ class: row_attr.class|default(row_class|default('mb-6')) }) -%}#}
+{#    {%- set widget_attr = {} -%}#}
+{#    {%- if help is not empty -%}#}
+{#        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}#}
+{#    {%- endif -%}#}
+{#    <div{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}>#}
+{#        {{- form_errors(form) -}}#}
+{#        <div class="inline-flex items-center">#}
+{#            {{- form_widget(form, widget_attr) -}}#}
+{#            {{- form_label(form) -}}#}
+{#        </div>#}
+{#        {{- form_help(form) -}}#}
+{#    </div>#}
+{#{%- endblock checkbox_row -%}#}
+
+{#{%- block checkbox_widget -%}#}
+{#    {%- set widget_class = widget_class|default('mr-2') -%}#}
+{#    {{- parent() -}}#}
+{#{%- endblock checkbox_widget -%}#}
+
+{#{%- block radio_widget -%}#}
+{#    {%- set widget_class = widget_class|default('mr-2') -%}#}
+{#    {{- parent() -}}#}
+{#{%- endblock radio_widget -%}#}
+    </div>
+</div>

@@ -9,6 +9,8 @@ framework:
                 options:
                     use_notify: true
                     check_delayed_interval: 60000
+                    auto_setup: false
+
                 retry_strategy:
                     max_retries: 3
                     multiplier: 2
@@ -16,9 +18,14 @@ framework:
             # sync: 'sync://'
 
         routing:
-            Symfony\Component\Mailer\Messenger\SendEmailMessage: async
-            Symfony\Component\Notifier\Message\ChatMessage: async
-            Symfony\Component\Notifier\Message\SmsMessage: async
+            # Commenté pour que le mail soit synchrone (sans messenger)
+            #Symfony\Component\Mailer\Messenger\SendEmailMessage: async
+            # Pour le SendEmailMessage, voir configuration de ce repo
+            # Repository symfony avec messenger et supervisor
+            #[Lien repository](https://github.com/Eddaoust/Docker-Symfony/blob/main/docker-compose.yml)
+            #
+            #Symfony\Component\Notifier\Message\ChatMessage: async
+            #Symfony\Component\Notifier\Message\SmsMessage: async
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
