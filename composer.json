@@ -38,17 +38,18 @@
         "symfony/runtime": "6.*",
         "symfony/security-bundle": "6.*",
         "symfony/serializer": "6.*",
+        "symfony/stimulus-bundle": "^2.13",
         "symfony/string": "6.*",
         "symfony/translation": "6.*",
         "symfony/twig-bundle": "6.*",
+        "symfony/ux-chartjs": "^2.13",
         "symfony/validator": "6.*",
         "symfony/web-link": "6.*",
         "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "6.*",
         "symfonycasts/verify-email-bundle": "^1.14",
         "twig/extra-bundle": "3.*",
-        "twig/twig": "3.*",
-        "ext-http": "*"
+        "twig/twig": "3.*"
     },
     "config": {
         "allow-plugins": {
