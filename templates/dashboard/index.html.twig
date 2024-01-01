@@ -5,7 +5,7 @@
 
 {% block body %}
     <div>
-        {% include '_composants/headers/_sidebar.html.twig' %}
+{#        {% include '_composants/headers/_sidebar.html.twig' %}#}
         <div class="pl-72">
             <div class="min-h-full">
                 <nav class="bg-gray-800">
@@ -126,7 +126,8 @@
                 </header>
                 <main>
                     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-                        <!-- Your content -->
+                        {{ render_chart(chart) }}
+
                     </div>
                 </main>
             </div>

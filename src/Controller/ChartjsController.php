@@ -16,7 +16,7 @@ class ChartjsController extends AbstractController
     {
 //        $dailyResults = $dailyResultRepository->findAll();
         $labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October','November','December'];
-        $data = [];
+        $data = [0, 10, 5, 2, 20, 30, 45];
 //        foreach ($dailyResults as $dailyResult) {
 ////            $data[] = $dailyResult->getDate()->format('Y-m-d');
 //            $data[] = $dailyResult->getValue();
@@ -27,18 +27,21 @@ class ChartjsController extends AbstractController
             'datasets' => [
                 [
                     'label' => 'My First dataset',
-                    'backgroundColor' => 'rgb(255, 99, 132)',
-                    'borderColor' => 'rgb(255, 99, 132)',
+                    'backgroundColor' => 'rgb(90, 99, 132)',
+                    'borderColor' => 'rgb(25, 99, 132)',
                     'data' => $data,
                 ],
             ],
         ]);
-        $chart->setOptions([ /* ... */]);
-
-
-
-
-        return $this->render('chartjs/index.html.twig', [
+//        $chart->setOptions([
+//            'scales' => [
+//                'y' => [
+//                    'suggestedMin' => 0,
+//                    'suggestedMax' => 100,
+//                ],
+//            ],
+//        ]);
+        return $this->render('dashboard/index.html.twig', [
             'controller_name' => 'ChartjsController',
             'chart' => $chart,
         ]);
