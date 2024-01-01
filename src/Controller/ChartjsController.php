@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Invoices;
+use App\Repository\InvoicesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,38 +14,50 @@ class ChartjsController extends AbstractController
 {
     #[Route('/chartjs', name: 'app_chartjs')]
 //DailyResultRepository $dailyResultRepository,
-    public function index(ChartBuilderInterface $chartBuilder): Response
+    public function index(ChartBuilderInterface $chartBuilder, InvoicesRepository $invoices): Response
     {
-//        $dailyResults = $dailyResultRepository->findAll();
-        $labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October','November','December'];
-        $data = [0, 10, 5, 2, 20, 30, 45];
-//        foreach ($dailyResults as $dailyResult) {
-////            $data[] = $dailyResult->getDate()->format('Y-m-d');
-//            $data[] = $dailyResult->getValue();
-//        }
+        $revenues = $invoices->findAll();
+        $monthlyData = [];
+
+        foreach ($invoices as $invoice) {
+            $month = $invoice->getCreatedAt()->format('F Y'); // Extrait le mois et l'année (par exemple, "January 2023")
+            $amount = $invoice->getAmount();
+
+            if (!isset($monthlyData[$month])) {
+                $monthlyData[$month] = 0;
+            }
+
+            $monthlyData[$month] += $amount;
+        }
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
         $chart->setData([
-            'labels' => $labels,
+            'labels' => array_keys($monthlyData),
             'datasets' => [
                 [
-                    'label' => 'My First dataset',
-                    'backgroundColor' => 'rgb(90, 99, 132)',
-                    'borderColor' => 'rgb(25, 99, 132)',
-                    'data' => $data,
+                    'label' => 'Revenues',
+                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
+                    'borderColor' => 'rgba(75, 192, 192, 1)',
+                    'borderWidth' => 1,
+                    'data' => array_values($monthlyData),
                 ],
             ],
         ]);
-//        $chart->setOptions([
-//            'scales' => [
-//                'y' => [
-//                    'suggestedMin' => 0,
-//                    'suggestedMax' => 100,
-//                ],
-//            ],
-//        ]);
+        $chart->setOptions([
+            'type' => 'bar',
+            'responsive' => true,
+            'scales' => [
+                'y' => [
+                    'suggestedMin' => 0,
+                    'suggestedMax' => 100,
+                ],
+            ],
+        ]);
         return $this->render('dashboard/index.html.twig', [
             'controller_name' => 'ChartjsController',
             'chart' => $chart,
+//            'offres' => $chartOffers,
         ]);
     }
+
 }
+

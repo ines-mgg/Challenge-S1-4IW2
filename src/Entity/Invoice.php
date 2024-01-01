@@ -39,6 +39,9 @@ class Invoice
         $this->prestation = new ArrayCollection();
     }
 
+    #[ORM\Column]
+    private ?float $amount = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -124,6 +127,18 @@ class Invoice
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getAmount(): ?float
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(float $amount): static
+    {
+        $this->amount = $amount;
 
         return $this;
     }
