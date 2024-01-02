@@ -26,7 +26,6 @@
       </li>
     </ul>
   </section>
-
   {# BUTTONS #}
   <section class="flex gap-6 my-10 mr-12 items-center">
     <a
@@ -35,7 +34,8 @@
       >Se connecter</a
     >
     {% embed '_composants/buttons/_button.html.twig' with {'textButton': 'Ouvrir
-    un compte'}%} {% endembed %} {# BURGER MENU BUTTON #}
+    un compte'}%} {% endembed %} {# BUTTON DARK MODE #} {% include
+    '_composants/buttons/_buttonDarkMode.html.twig' %} {# BURGER MENU BUTTON #}
     <button id="hamburger-menu" class="xl:hidden">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +91,9 @@
       </section>
       {# BUTTONS #}
       <section class="flex flex-col gap-4 mx-4">
-        {% embed '_composants/buttons/_button.html.twig' with
+        {# BUTTON DARK MODE #} {% include
+        '_composants/buttons/_buttonDarkMode.html.twig' %} {% embed
+        '_composants/buttons/_button.html.twig' with
         {'buttonColor':'bg-light-dark', 'buttonTextColor': 'text-light-white',
         'textButton': 'Ouvrir un compte'}%} {% endembed %} {% embed
         '_composants/buttons/_buttonBorder.html.twig' with {'textButton': 'Se

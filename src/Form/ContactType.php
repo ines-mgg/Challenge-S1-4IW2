@@ -14,30 +14,30 @@ class ContactType extends AbstractType
     {
         $builder
             ->add('firstName', null, [
-                'label' => 'Nom complet',
+                'label' => 'Prénom',
                 'attr' => [
-                    'placeholder' => 'Entrez votre nom complet',
+                    'placeholder' => 'Prénom',
                     'type' => 'text'
                 ]
             ])
             ->add('lastName', null, [
                 'label' => 'Nom',
                 'attr' => [
-                    'placeholder' => 'Entrez votre nom',
+                    'placeholder' => 'Nom',
                     'type' => 'text'
                 ]
             ])
             ->add('email', null, [
                 'label' => 'Adresse email',
                 'attr' => [
-                    'placeholder' => 'Entrez votre adresse email',
+                    'placeholder' => 'Adresse e-mail',
                     'type' => 'email'
                 ]
             ])
             ->add('phoneNumber', null, [
                 'label' => 'Numéro de téléphone',
                 'attr' => [
-                    'placeholder' => 'Entrez votre numéro de téléphone',
+                    'placeholder' => '+33 1 23 45 67 89',
                     'type' => 'tel'
                 ]
             ])
@@ -56,7 +56,7 @@ class ContactType extends AbstractType
             ])
             ->add('envoyer', SubmitType::class, [
                 'attr' => [
-                    'class' => ' mt-3 flex justify-center items-center gap-1.5 rounded bg-electric-blue text-white font-bold h-14 px-4 py-5 w-full',
+                    'class' => 'mt-3 flex justify-center items-center gap-1.5 rounded bg-electric-blue text-white font-bold h-14 px-4 py-5 w-full',
                     'type' => 'submit'
                 ]
             ])
@@ -67,7 +67,7 @@ class ContactType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            'attr' => ['class' => 'flex flex-wrap gap-x-5 gap-y-3 justify-around']
         ]);
     }
 }
