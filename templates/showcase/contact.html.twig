@@ -23,18 +23,25 @@ body %} {% include '_composants/headers/_header.html.twig' %}
       "_composants/customer_service/_services.html.twig" %}
     </section>
     {# FORM #}
+
     <section
       class="flex flex-col rounded gap-x border border-solid border-light-dark shadow-custom-white bg-white py-1.875 px-2.125 w-102 m-9 xl:m-0"
     >
       {{ form_start(form) }}
-      {{ form_row(form.firstName) }}
-      {{ form_row(form.lastName) }}
-      {{ form_row(form.email) }}
-      {{ form_row(form.phoneNumber) }}
-      {{ form_row(form.company) }}
-      {{ form_row(form.subject) }}
+      <section class="flex gap-5">
+        {{ form_row(form.firstName) }}
+        {{ form_row(form.lastName) }}
+      </section>
+      <section class="flex gap-5">
+        {{ form_row(form.email) }}
+        {{ form_row(form.phoneNumber) }}
+      </section>
+      <section class="flex gap-5">
+        {{ form_row(form.company) }}
+        {{ form_row(form.subject) }}
+      </section>
       {{ form_row(form.message) }}
-      <p class="text-xs font-bold leading-normal xl:mb-20">
+      <p class="text-xs font-bold leading-normal">
         Nos équipes vous répondront dans un délais de 1 à 4 jours ouvrés. Toutes
         vos demandes sont traitées et une réponse vous sera toujours apportée.
         Veillez à ne pas dupliquer vos demandes.

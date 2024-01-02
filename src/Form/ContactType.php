@@ -17,21 +17,25 @@ class ContactType extends AbstractType
                 'label' => 'Prénom',
                 'attr' => [
                     'placeholder' => 'Prénom',
-                    'type' => 'text'
+                    'type' => 'text',
+                    'required' => true,
+                    'label_html' => true
                 ]
             ])
             ->add('lastName', null, [
                 'label' => 'Nom',
                 'attr' => [
                     'placeholder' => 'Nom',
-                    'type' => 'text'
+                    'type' => 'text',
+                    'required' => true
                 ]
             ])
             ->add('email', null, [
                 'label' => 'Adresse email',
                 'attr' => [
                     'placeholder' => 'Adresse e-mail',
-                    'type' => 'email'
+                    'type' => 'email',
+                    'required' => true
                 ]
             ])
             ->add('phoneNumber', null, [
@@ -43,15 +47,16 @@ class ContactType extends AbstractType
             ])
             ->add('company')
             ->add('subject', null, [
-                'label' => 'Sujet',
+                'label' => 'Nom de l’entreprise',
                 'attr' => [
-                    'placeholder' => 'Entrez le sujet de votre message',
+                    'placeholder' => 'Nom de l\'entreprise',
                     'type' => 'text'
                 ]
             ])
             ->add('message', TextareaType::class, [
                 'attr' => [
-                    'rows' => 10
+                    'rows' => 10,
+                    'required' => true
                 ]
             ])
             ->add('envoyer', SubmitType::class, [
@@ -59,15 +64,15 @@ class ContactType extends AbstractType
                     'class' => 'mt-3 flex justify-center items-center gap-1.5 rounded bg-electric-blue text-white font-bold h-14 px-4 py-5 w-full',
                     'type' => 'submit'
                 ]
-            ])
-
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'attr' => ['class' => 'flex flex-wrap gap-x-5 gap-y-3 justify-around']
+            'attr' => [
+                'class' => 'flex flex-col gap-3'
+            ]
         ]);
     }
 }
