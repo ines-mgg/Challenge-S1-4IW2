@@ -56,7 +56,7 @@ class ContactType extends AbstractType
             ])
             ->add('envoyer', SubmitType::class, [
                 'attr' => [
-                    'class' => ' mt-3 flex justify-center items-center gap-1.5 rounded bg-electric-blue text-white font-bold h-14 px-4 py-5',
+                    'class' => ' mt-3 flex justify-center items-center gap-1.5 rounded bg-electric-blue text-white font-bold h-14 px-4 py-5 w-full',
                     'type' => 'submit'
                 ]
             ])

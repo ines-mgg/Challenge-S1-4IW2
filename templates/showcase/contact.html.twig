@@ -1,13 +1,19 @@
 {% extends 'base.html.twig' %} {% block title %}Facturo{% endblock %} {% block
 body %} {% include '_composants/headers/_header.html.twig' %}
 <main>
-  <article class="mt-16 flex mx-20 justify-between mb-14">
-    {# Text #}
-    <section class="flex flex-col gap-12 w-109 h-106">
-      <h1 class="text-light-dark text-4xl font-bold leading-normal w-105 h-20">
+  <article
+    class="flex flex-col items-center xl:items-start xl:justify-between my-16 xl:flex-row xl:m-20 text-light-dark"
+  >
+    {# TEXT #}
+    <section
+      class="flex flex-col items-center gap-4 xl:gap-12 w-109 xl:items-start"
+    >
+      <h1 class="xl:text-4xl font-bold leading-normal xl:w-105 xl:h-20">
         Vous avez des questions ? Nous sommes à votre écoute
       </h1>
-      <p class="w-110 h-28 text-black text-2xl font-medium leading-normal mb-7">
+      <p
+        class="text-sm xl:text-2xl font-medium leading-normal mb-7 xl:w-110 xl:h-28"
+      >
         Nous répondons à toutes vos questions sur notre solutions. Laissez-nous
         vos coordonnées, nous répondons dès que possible du lundi au vendredi de
         10h à 19h.
@@ -16,134 +22,26 @@ body %} {% include '_composants/headers/_header.html.twig' %}
       "_composants/customer_service/_invoice.html.twig" %} {% include
       "_composants/customer_service/_services.html.twig" %}
     </section>
-    {# Form #}
-    <section>
-      <div class="w-102 py-1.875 px-2.125 flex flex-col rounded border border-solid border-light-dark shadow-custom-white bg-white text-light-dark ">
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        {{ form_end(form) }}
-      </div>
+    {# FORM #}
+    <section
+      class="flex flex-col rounded border border-solid border-light-dark shadow-custom-white bg-white py-1.875 px-2.125 w-102 m-9 xl:m-0"
+    >
+      {{ form_start(form) }}
+      {{ form_row(form.firstName) }}
+      {{ form_row(form.lastName) }}
+      {{ form_row(form.email) }}
+      {{ form_row(form.phoneNumber) }}
+      {{ form_row(form.company) }}
+      {{ form_row(form.subject) }}
+      {{ form_row(form.message) }}
+      <p class="text-xs font-bold leading-normal xl:mb-20">
+        Nos équipes vous répondront dans un délais de 1 à 4 jours ouvrés. Toutes
+        vos demandes sont traitées et une réponse vous sera toujours apportée.
+        Veillez à ne pas dupliquer vos demandes.
+      </p>
+      {{ form_row(form.envoyer) }}
+      {{ form_end(form) }}
     </section>
   </article>
 </main>
-{#
-<div class="">
-  <div class="pt-6">
-    <div
-      class="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16"
-    >
-      <div>
-        <div class="lg:col-span-2 lg:pr-8">
-          <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">
-            Vous avez des question ?
-            <br />
-            Nous sommes à votre écoute
-          </h1>
-          <p class="mt-4 text-left">
-            Nous répondons à toutes vos questions sur notre solutions. <br />
-            Laissez-nous vos coordonnées, nous vous dès que possible du lundi au
-            vendredi de 10h à 19h.
-          </p>
-        </div>
-        <div
-          class="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10"
-        >
-          <div
-            class="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8"
-          >
-            <div class="lg:pr-4">
-              <div
-                class="max-w-xl text-base leading-7 text-gray-700 lg:max-w-lg"
-              >
-                <ul role="list" class="mt-8 space-y-8 text-gray-600">
-                  <li class="flex gap-x-3">
-                    <svg
-                      width="40"
-                      height="45"
-                      viewBox="0 0 30 35"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M6.66642 34.5002L13.3331 21.7502L-0.000244141 20.0502L19.9998 0.500244H23.3331L16.6664 13.2502L29.9998 14.9502L9.99976 34.5002H6.66642ZM15.9164 24.0027L22.6248 17.4577L11.4164 16.0127L14.0414 11.0402L7.37476 17.5852L18.5414 18.9877L15.9164 24.0027Z"
-                        fill="black"
-                      />
-                    </svg>
-                    <span
-                      ><strong class="font-semibold text-gray-900"
-                        >Votre comptre pro en un éclair.</strong
-                      >
-                      <br />
-                      Une création de compte en 10 minutes chrono.</span
-                    >
-                  </li>
-                  <li class="flex gap-x-3">
-                    <svg
-                      width="40"
-                      height="41"
-                      viewBox="0 0 30 31"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M15.3898 28.3641L13.4998 30.2186L11.2498 28.0109L8.99976 30.2186L6.74976 28.0109L4.49976 30.2186L2.24976 28.0109L-0.000244141 30.2186V0.781921L2.24976 2.98967L4.49976 0.781921L6.74976 2.98967L8.99976 0.781921L11.2498 2.98967L13.4998 0.781921L15.7498 2.98967L17.9998 0.781921L20.2498 2.98967L22.4998 0.781921L24.7498 2.98967L26.9998 0.781921V17.4873C26.0548 17.1634 25.0498 16.9721 23.9998 16.9721V5.19743H2.99976V25.8031H14.9998C14.9998 26.6421 15.1498 27.5988 15.3898 28.3641ZM4.49976 19.9158V22.8594H15.5248C15.9148 21.7556 16.4998 20.7694 17.3098 19.9158H4.49976ZM4.49976 16.9721H22.4998V14.0284H4.49976V16.9721ZM4.49976 11.0848H22.4998V8.1411H4.49976V11.0848ZM29.9998 23.198L28.2598 21.1227L22.8748 26.4066L20.4898 24.0664L18.7498 25.8031L22.8748 30.2186"
-                        fill="black"
-                      />
-                    </svg>
-                    <span
-                      ><strong class="font-semibold text-gray-900"
-                        >Vos devis et factures sous votre contrôle</strong
-                      >
-                      <br />hmmmm je sais pas quoi mettre ici</span
-                    >
-                  </li>
-                  <li class="flex gap-x-3">
-                    <svg
-                      width="145"
-                      height="90"
-                      viewBox="0 0 30 25"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M12.6737 17.969C13.2737 18.594 14.0486 18.9002 14.9985 18.8877C15.9484 18.8752 16.6484 18.5169 17.0983 17.8127L25.4976 4.68775L12.8987 13.4377C12.2237 13.9065 11.8678 14.6226 11.8308 15.5862C11.7938 16.5497 12.0747 17.344 12.6737 17.969ZM14.9985 0.000246121C16.4734 0.000246121 17.8923 0.21535 19.2552 0.645559C20.618 1.07577 21.8989 1.72004 23.0978 2.57837L20.2481 4.45337C19.4231 4.01066 18.5672 3.67889 17.6803 3.45806C16.7934 3.23722 15.8994 3.12629 14.9985 3.12525C11.6738 3.12525 8.84252 4.34243 6.50471 6.77681C4.16691 9.21118 2.99851 12.1607 2.99951 15.6252C2.99951 16.719 3.14349 17.7997 3.43147 18.8674C3.71945 19.9351 4.12541 20.9377 4.64937 21.8752H25.3476C25.9226 20.8857 26.3416 19.857 26.6045 18.7893C26.8675 17.7216 26.9985 16.6148 26.9975 15.469C26.9975 14.5315 26.891 13.62 26.678 12.7346C26.4651 11.8492 26.1466 10.9898 25.7226 10.1565L27.5225 7.18775C28.2724 8.4117 28.8664 9.71379 29.3043 11.094C29.7423 12.4742 29.9733 13.9065 29.9973 15.3909C30.0223 16.8752 29.8598 18.2945 29.5098 19.6487C29.1598 21.0028 28.6474 22.2919 27.9724 23.5159C27.6975 23.9846 27.3225 24.3492 26.8475 24.6096C26.3726 24.87 25.8726 25.0002 25.3476 25.0002H4.64937C4.12441 25.0002 3.62445 24.87 3.14949 24.6096C2.67453 24.3492 2.29956 23.9846 2.02459 23.5159C1.37464 22.344 0.874683 21.1002 0.524712 19.7846C0.174741 18.469 -0.000244141 17.0825 -0.000244141 15.6252C-0.000244141 13.4638 0.393723 11.4388 1.18166 9.55025C1.96959 7.6617 3.0445 6.00858 4.40639 4.59087C5.76828 3.17108 7.36114 2.05077 9.18499 1.22993C11.0088 0.409101 12.9467 -0.000795546 14.9985 0.000246121Z"
-                        fill="black"
-                      />
-                    </svg>
-                    <span
-                      ><strong class="font-semibold text-gray-900"
-                        >Un service client disponible et à l’écoute</strong
-                      >
-                      <br />Notre service client est disponible 5 jours/7 pour
-                      répondre à toutes vos questions et vous accompagner dans
-                      vos démarches
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="mt-4 lg:row-span-3 lg:mt-0">
-          <!-- Contact Form -->
-          <div class="mt-6">
-            {#
-            <div class="flex items-center">
-              #} {#
-              <div class="flex items-center">
-                <div
-                  class="border border-black flex-col max-w-sm rounded overflow-hidden shadow-lg isolate bg-white px-12 py-6 lg:px-8"
-                >
-                  <div class="grid grid-cols-1 gap-x-8 gap-y-6"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-#} {% include '_composants/footers/_footer.html.twig' %} {% endblock %}
+{% include '_composants/footers/_footer.html.twig' %} {% endblock %}
