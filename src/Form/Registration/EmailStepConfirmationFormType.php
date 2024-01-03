@@ -17,7 +17,7 @@ class EmailStepConfirmationFormType extends AbstractType
     {
         $builder
             ->add('code', NumberType::class, [
-                'label' => 'Code de confirmation',
+                'label' => 'TODO : Désactiver le renvoi d\' un OTC à chaque refresh | Code de confirmation',
                 'attr' => [
                     'placeholder' => 'X X X X X X'
                 ]
