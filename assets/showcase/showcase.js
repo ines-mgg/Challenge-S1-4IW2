@@ -49,7 +49,8 @@ window.addEventListener('load', () => {
     }
 
     function switchTheme() {
-        if (isDarkmode) {
+        if (isDarkmode && localStorage.isDarkmode) {
+            document.documentElement.classList.add('dark')
             switchToggle.classList.remove("-translate-x-2");
             switchToggle.classList.add("translate-x-full");
             switchButton.classList.remove("bg-gray-200")
@@ -58,6 +59,7 @@ window.addEventListener('load', () => {
                 switchToggle.innerHTML = darkIcon;
             }, 250);
         } else {
+            document.documentElement.classList.remove('dark')
             switchToggle.classList.add("-translate-x-2");
             switchToggle.classList.remove("translate-x-full");
             switchButton.classList.add("bg-gray-200")

@@ -1,4 +1,4 @@
-<footer class="bg-light-white h-96 flex flex-col justify-between">
+<footer class="bg-light-white h-96 flex flex-col justify-between dark:bg-light-dark">
   <section class="mt-12 ml-12 flex flex-col">
     <nav class="inline-flex items-start justify-between">
       <a href="{{ path('showcase_index') }}">
@@ -16,7 +16,7 @@
         </svg>
       </a>
       <ul class="mr-12">
-        <li class="flex items-start gap-24 text-light-dark">
+        <li class="flex items-start gap-24 text-light-dark dark:text-light-white">
           <a
             href="{{ path('showcase_pricing') }}"
             class="h-6 text-2xl font-bold leading-normal"
@@ -31,7 +31,7 @@
       </ul>
     </nav>
     <aside class="mt-8 w-80 h-6 inline-flex flex-col items-start gap-5">
-      <h1 class="text-light-dark text-xl font-bold leading-normal">
+      <h1 class="text-light-dark text-xl font-bold leading-norma dark:text-light-white">
         Abonnez-vous à notre newsletter
       </h1>
       {% embed '_composants/inputs/_inputFooter.html.twig' with {'inputType':
@@ -124,6 +124,6 @@
         />
       </svg>
     </aside>
-    <p class="text-light-dark text-xs font-bold leading-normal">Copyright &#169; 2023-2024 Facturo. Tous droits réservés.</p>
+    <p class="text-light-dark text-xs font-bold leading-normal dark:text-light-white">Copyright &#169; 2023-2024 Facturo. Tous droits réservés.</p>
   </section>
 </footer>

@@ -22,4 +22,12 @@
         background-repeat: no-repeat;
         background-size: auto;
     }
+
+    .isRequired::after {
+        content: '*';
+        color: #E64444;
+        font-size: small;
+        font-weight: 700;
+        line-height: 89.811%; /* 0.78588rem */
+    }
 }

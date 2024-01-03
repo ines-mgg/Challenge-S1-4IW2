@@ -1,11 +1,12 @@
-{% set buttonColor = buttonColor ?? 'bg-white' %}
+{% set buttonColor = buttonColor ?? 'bg-light-white' %}
+{% set buttonColorDarkMode = buttonColorDarkMode ?? 'bg-light-dark' %}
 {% set buttonTextColor = buttonTextColor ?? 'text-light-dark' %}
 {% set buttonLink = buttonLink ?? false %}
 {% set textButton = textButton ?? false %}
 {% set arrowButton = arrowButton ?? false %}
 {% set arrowColor = arrowColor ?? '#F9F9F9' %}
 <button
-  class="flex justify-center items-center gap-1.5 rounded {{buttonColor}} {{buttonTextColor}} font-bold h-14 px-4 py-5"
+  class="flex justify-center items-center gap-1.5 rounded {{buttonColor}} {{buttonTextColor}} dark:{{buttonColorDarkMode}} font-bold h-14 px-4 py-5"
   {% if buttonLink is defined and buttonLink %}
     onclick="window.location.href='{{ path(buttonLink) }}'"
   {% endif %}

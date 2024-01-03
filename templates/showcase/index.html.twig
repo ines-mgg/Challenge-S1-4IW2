@@ -101,7 +101,7 @@ body %} {% include '_composants/headers/_header.html.twig' %}
     {% embed '_composants/buttons/_button.html.twig' with {'buttonColor':
     'bg-white','buttonTextColor': 'text-light-dark','textButton': 'Découvrir nos
     offres','arrowButton': true,'arrowColor': "#1C1C1A", 'buttonLink':
-    'showcase_pricing'}%} {% endembed %}
+    'showcase_pricing','buttonColorDarkMode': 'bg-light-white'}%} {% endembed %}
   </article>
   <article class="bg-lilac flex flex-col items-center py-10">
     <h1
@@ -133,7 +133,7 @@ body %} {% include '_composants/headers/_header.html.twig' %}
     </h1>
     <section class="flex gap-4 mt-4 xl:gap-10 xl:mt-16">
       {% embed '_composants/buttons/_button.html.twig' with {'textButton':
-      'Ouvrir un compte','arrowButton': false}%} {% endembed %} {% embed
+      'Ouvrir un compte','arrowButton': false,'buttonColorDarkMode': 'bg-light-white'}%} {% endembed %} {% embed
       '_composants/buttons/_button.html.twig' with {'buttonColor':
       'bg-electric-blue','buttonTextColor': 'text-light-white','textButton':
       'Consulter nos offres','arrowButton': true, 'buttonLink':
