@@ -17,7 +17,7 @@ class ConfirmStepFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('passwordConfirm', RepeatedType::class, [
+            ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe ne correspondent pas',
                 'required' => true,
@@ -45,8 +45,8 @@ class ConfirmStepFormType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-//        $resolver->setDefaults([
-//            'data_class' => User::class,
-//        ]);
+        $resolver->setDefaults([
+            'data_class' => User::class,
+        ]);
     }
 }

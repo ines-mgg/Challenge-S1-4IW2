@@ -127,7 +127,7 @@ class RegistrationController extends AbstractController
                 return $this->redirectToRoute("app_register_start");
             }
 
-            if ($registrationStatus && !in_array($routeName, ["company", "informations", "confirm"])) {
+            if ($registrationStatus && !in_array($routeName, ["company", "informations", "end"])) {
                 return $this->redirectToRoute('app_register_company');
             }
         } else {
@@ -319,17 +319,9 @@ class RegistrationController extends AbstractController
 
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-//            $user->setPassword(
-//                $userPasswordHasher->hashPassword(
-//                    $user,
-//                    $form->get('password')->getData()
-//                )
-//            );
 
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
 
             return $this->redirectToRoute($this->steps[$this->steps["informations"]["next"]]["route"]);
         }
@@ -349,12 +341,45 @@ class RegistrationController extends AbstractController
         if ($handleSecurityResponse instanceof RedirectResponse) {
             return $handleSecurityResponse;
         }
+
         // TODO : bloquer l'accès à cette page si le user n'est pas relié à une entreprise (company) valide ET
         //        que les informations ne sont pas valides/pas complètes
 
         // TODO : éditer $formErrors pour afficher les erreurs de validation
         $formErrors = [];
         $form = $this->createForm($this->steps["confirm"]["form"]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            // check if password and passwordConfirm are the same
+            if (!$form->isValid()) {
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[]["message"] = $error->getMessage();
+                }
+                // Save form errors in the session
+                // Post/Redirect/Get pattern to avoid form resubmission
+                $session->getFlashBag()->add('form_errors', $errors);
+                return $this->redirectToRoute($this->steps["confirm"]["route"]);
+            } else {
+                $user = $this->getUser();
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('password')->getData()
+                    )
+                );
+                $user->setIsVerified(true);
+                $entityManager->persist($user);
+                $entityManager->flush();
+                // do anything else you need here, like send an email
+
+                $session->remove(self::SESSION_AUTH_KEY);
+                return $this->redirectToRoute('app_login');
+            }
+        }
+
+
+        $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
         return $this->render('registration/register.html.twig', [
             'step' => $this->steps["confirm"],
             'stepTotal' => count($this->steps),
