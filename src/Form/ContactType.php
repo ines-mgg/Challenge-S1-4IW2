@@ -14,60 +14,65 @@ class ContactType extends AbstractType
     {
         $builder
             ->add('firstName', null, [
-                'label' => 'Nom complet',
+                'label' => 'Prénom',
                 'attr' => [
-                    'placeholder' => 'Entrez votre nom complet',
-                    'type' => 'text'
+                    'placeholder' => 'Prénom',
+                    'type' => 'text',
+                    'required' => true,
+                    'label_html' => true
                 ]
             ])
             ->add('lastName', null, [
                 'label' => 'Nom',
                 'attr' => [
-                    'placeholder' => 'Entrez votre nom',
-                    'type' => 'text'
+                    'placeholder' => 'Nom',
+                    'type' => 'text',
+                    'required' => true
                 ]
             ])
             ->add('email', null, [
                 'label' => 'Adresse email',
                 'attr' => [
-                    'placeholder' => 'Entrez votre adresse email',
-                    'type' => 'email'
+                    'placeholder' => 'Adresse e-mail',
+                    'type' => 'email',
+                    'required' => true
                 ]
             ])
             ->add('phoneNumber', null, [
                 'label' => 'Numéro de téléphone',
                 'attr' => [
-                    'placeholder' => 'Entrez votre numéro de téléphone',
+                    'placeholder' => '+33 1 23 45 67 89',
                     'type' => 'tel'
                 ]
             ])
             ->add('company')
             ->add('subject', null, [
-                'label' => 'Sujet',
+                'label' => 'Nom de l’entreprise',
                 'attr' => [
-                    'placeholder' => 'Entrez le sujet de votre message',
+                    'placeholder' => 'Nom de l\'entreprise',
                     'type' => 'text'
                 ]
             ])
             ->add('message', TextareaType::class, [
                 'attr' => [
-                    'rows' => 10
+                    'rows' => 10,
+                    'required' => true
                 ]
             ])
             ->add('envoyer', SubmitType::class, [
                 'attr' => [
-                    'class' => ' mt-3 flex justify-center items-center gap-1.5 rounded bg-electric-blue text-white font-bold h-14 px-4 py-5',
+                    'class' => 'mt-3 flex justify-center items-center gap-1.5 rounded bg-electric-blue dark:bg-light-dark text-white font-bold h-14 px-4 py-5 w-full',
                     'type' => 'submit'
                 ]
-            ])
-
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            'attr' => [
+                'class' => 'flex flex-col gap-3'
+            ]
         ]);
     }
 }
