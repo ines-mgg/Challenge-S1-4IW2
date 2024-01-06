@@ -47,8 +47,7 @@
         "symfony/yaml": "6.*",
         "symfonycasts/verify-email-bundle": "^1.14",
         "twig/extra-bundle": "3.*",
-        "twig/twig": "3.*",
-        "ext-http": "*"
+        "twig/twig": "3.*"
     },
     "config": {
         "allow-plugins": {
