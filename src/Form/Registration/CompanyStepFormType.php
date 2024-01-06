@@ -21,7 +21,8 @@ class CompanyStepFormType extends AbstractType
             ->add('company', TextType::class, [
                 'label' => '(TODO) Nom de votre entreprise',
                 'attr' => [
-                    'placeholder' => 'Votre entreprise'
+                    'placeholder' => 'Votre entreprise',
+                    'value' => 'TODO'
                 ]
             ])
             ->add('submit', SubmitType::class, [

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\OneTimeCode;
 use App\Entity\User;
 use App\Form\Registration\CompanyStepFormType;
+use App\Form\Registration\ConfirmStepFormType;
 use App\Form\Registration\EmailStepConfirmationFormType;
 use App\Form\Registration\EmailStepFormType;
 use App\Form\Registration\InformationsStepFormType;
@@ -73,8 +74,8 @@ class RegistrationController extends AbstractController
             'confirm' => [
                 'order' => 5,
                 'label' => 'Confirmation',
-                'form' => RegistrationFormType::class,
-                'route' => self::ROUTE_PREFIX.'confirm',
+                'form' => ConfirmStepFormType::class,
+                'route' => self::ROUTE_PREFIX.'end',
                 'previous' => 'informations',
                 'next' => null,
             ],
@@ -299,7 +300,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/informations', name: 'informations')]
-    public function informations(Request $request, SessionInterface $session, Security $security, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function informations(Request $request, SessionInterface $session, Security $security, EntityManagerInterface $entityManager): Response
     {
         // TODO : Bloquer l'accès à cette page si le user n'est pas relié à une entreprise (company) valide
         // TODO : éditer $formErrors
@@ -327,7 +328,7 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute($this->steps[$this->steps["informations"]["next"]]["route"]);
         }
 
         return $this->render('registration/register.html.twig', [
@@ -339,14 +340,20 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/end', name: 'end')]
-    public function end(): Response
+    public function end(Request $request, SessionInterface $session, Security $security, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
+        $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
+        if ($handleSecurityResponse instanceof RedirectResponse) {
+            return $handleSecurityResponse;
+        }
         // TODO : bloquer l'accès à cette page si le user n'est pas relié à une entreprise (company) valide ET
         //        que les informations ne sont pas valides/pas complètes
         $formErrors = [];
+        $form = $this->createForm($this->steps["confirm"]["form"]);
         return $this->render('registration/register.html.twig', [
             'step' => $this->steps["confirm"],
             'stepTotal' => count($this->steps),
+            'registrationForm' => $form->createView(),
             'formErrors' => $formErrors
         ]);
     }
