@@ -143,26 +143,28 @@ class RegistrationController extends AbstractController
     #[Route(['', '/start'], name: 'start')]
     public function start(Request $request, EntityManagerInterface $entityManager, Security $security, SessionInterface $session): Response
     {
+        /*
+        TODO: TO REMOVE
         $loggedUser = $security->getUser();
         if ($loggedUser) {
             if ($loggedUser->isVerified()) {
-                // TODO : redirect to facturo backoffice
                 return $this->redirectToRoute('app_login');
             }
 
-            // TODO :
             if ($session->get(self::SESSION_AUTH_KEY)) {
                 return $this->redirectToRoute('app_register_company');
             }
         }
-        $user = new User();
-        $form = $this->createForm($this->steps["email"]["form"], $user);
-        $form->handleRequest($request);
-
+        */
         $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
         if ($handleSecurityResponse instanceof RedirectResponse) {
             return $handleSecurityResponse;
         }
+
+        $user = new User();
+        $form = $this->createForm($this->steps["email"]["form"], $user);
+        $form->handleRequest($request);
+
 
         if ($form->isSubmitted()) {
 
@@ -287,7 +289,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            // TODO : éditer $formErrors et faire la création de l'entité company
+            // TODO : éditer $formErrors (à faire quand API SIREN sera prête)
             return $this->redirectToRoute('app_register_informations');
         }
 
@@ -303,11 +305,12 @@ class RegistrationController extends AbstractController
     public function informations(Request $request, SessionInterface $session, Security $security, EntityManagerInterface $entityManager): Response
     {
         // TODO : Bloquer l'accès à cette page si le user n'est pas relié à une entreprise (company) valide
-        // TODO : éditer $formErrors
         $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
         if ($handleSecurityResponse instanceof RedirectResponse) {
             return $handleSecurityResponse;
         }
+
+        // TODO : éditer $formErrors pour afficher les erreurs de validation
         $formErrors = [];
         $user = $this->getUser();
 
@@ -348,6 +351,8 @@ class RegistrationController extends AbstractController
         }
         // TODO : bloquer l'accès à cette page si le user n'est pas relié à une entreprise (company) valide ET
         //        que les informations ne sont pas valides/pas complètes
+
+        // TODO : éditer $formErrors pour afficher les erreurs de validation
         $formErrors = [];
         $form = $this->createForm($this->steps["confirm"]["form"]);
         return $this->render('registration/register.html.twig', [
