@@ -54,13 +54,7 @@ final class Version20240105190052 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_4FBF094F53C674EE ON company (offer_id)');
         $this->addSql('ALTER INDEX idx_b2a93c5b9d86650f RENAME TO IDX_B2A93C5BA76ED395');
         $this->addSql('DROP INDEX uniq_8d93d649e7927c74');
-        $this->addSql('ALTER TABLE "user" ADD company_id INT NOT NULL');
-        $this->addSql('ALTER TABLE "user" ALTER lastname SET NOT NULL');
-        $this->addSql('ALTER TABLE "user" ALTER firstname SET NOT NULL');
-        $this->addSql('ALTER TABLE "user" ALTER created_at DROP DEFAULT');
-        $this->addSql('ALTER TABLE "user" ALTER created_at SET NOT NULL');
-        $this->addSql('ALTER TABLE "user" ALTER updated_at DROP DEFAULT');
-        $this->addSql('ALTER TABLE "user" ALTER updated_at SET NOT NULL');
+        $this->addSql('ALTER TABLE "user" ADD company_id INT');
         $this->addSql('ALTER TABLE "user" ADD CONSTRAINT FK_8D93D649979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('CREATE INDEX IDX_8D93D649979B1AD6 ON "user" (company_id)');
     }
