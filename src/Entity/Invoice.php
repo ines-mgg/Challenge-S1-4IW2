@@ -31,6 +31,9 @@ class Invoice
     #[ORM\ManyToMany(targetEntity: Prestation::class, inversedBy: 'invoices')]
     private Collection $prestation;
 
+    #[ORM\Column]
+    private ?float $price = null;
+
     public function __construct()
     {
         $this->prestation = new ArrayCollection();
@@ -109,6 +112,18 @@ class Invoice
     public function removePrestation(Prestation $prestation): static
     {
         $this->prestation->removeElement($prestation);
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): static
+    {
+        $this->price = $price;
 
         return $this;
     }
