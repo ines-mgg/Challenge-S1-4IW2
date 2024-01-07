@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Utilisateur{% endblock %}
+
+{% block body %}
+    <h1>Détails de l'Utilisateur</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>ID</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('user_edit', {'id': user.id}) }}">Éditer</a>
+    <a href="{{ path('user_index') }}">Retour à la liste</a>
+{% endblock %}

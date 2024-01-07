@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Utilisateurs{% endblock %}
+
+{% block body %}
+    <h1>Liste des Utilisateurs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <a href="{{ path('user_show', {'id': user.id}) }}">Voir</a>
+                        <a href="{{ path('user_edit', {'id': user.id}) }}">Éditer</a>
+                                    <a href="{{ path('user_delete', {'id': user.id}) }}" 
+               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                Supprimer
+            </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('user_new') }}">Créer un Nouvel Utilisateur</a>
+{% endblock %}

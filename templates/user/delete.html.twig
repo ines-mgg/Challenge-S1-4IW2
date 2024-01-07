@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Supprimer l'Utilisateur{% endblock %}
+
+{% block body %}
+    <h1>Supprimer l'Utilisateur</h1>
+    <p>Êtes-vous sûr de vouloir supprimer l'utilisateur "{{ user.email }}" ?</p>
+
+    {{ form_start(delete_form) }}
+        <button class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?');">Supprimer</button>
+    {{ form_end(delete_form) }}
+
+    <a href="{{ path('user_index') }}">Retour à la liste des utilisateurs</a>
+{% endblock %}
