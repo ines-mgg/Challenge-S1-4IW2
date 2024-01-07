@@ -20,7 +20,8 @@ class EmailStepFormType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Adresse e-mail',
                 'attr' => [
-                    'placeholder' => 'Votre e-mail'
+                    'placeholder' => 'Votre e-mail',
+                    'autocomplete' => 'off'
                 ],
                 'constraints' => [
                     new NotBlank(),
