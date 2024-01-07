@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\OneTimeCode;
 use App\Entity\User;
 use App\Form\Registration\CompanyStepFormType;
+use App\Form\Registration\ConfirmStepFormType;
 use App\Form\Registration\EmailStepConfirmationFormType;
 use App\Form\Registration\EmailStepFormType;
 use App\Form\Registration\InformationsStepFormType;
@@ -23,12 +24,15 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/register', name: self::ROUTE_PREFIX)]
 class RegistrationController extends AbstractController
 {
     private const ROUTE_PREFIX = 'app_register_';
+    private const SESSION_AUTH_KEY = 'registration_auth';
+    // Registration auth timeout
+    private const SESSION_AUTH_TIMEOUT = '+3600 seconds';
     private EmailVerifier $emailVerifier;
     private array $steps;
     public function __construct(EmailVerifier $emailVerifier)
@@ -70,8 +74,8 @@ class RegistrationController extends AbstractController
             'confirm' => [
                 'order' => 5,
                 'label' => 'Confirmation',
-                'form' => RegistrationFormType::class,
-                'route' => self::ROUTE_PREFIX.'confirm',
+                'form' => ConfirmStepFormType::class,
+                'route' => self::ROUTE_PREFIX.'end',
                 'previous' => 'informations',
                 'next' => null,
             ],
@@ -79,45 +83,57 @@ class RegistrationController extends AbstractController
     }
 
     // TODO : Voir note
+
     /**
      * Permet de vérifier si l'utilisateur est bien authentifié pour accéder à la page
+     * @param Request $request
      * @param SessionInterface $session
-     * @return RedirectResponse|null
+     * @param Security $security
+     * @return RedirectResponse|null Une réponse null équivaut à un accès autorisé
      */
-    function handleSecurity(SessionInterface $session, Security $security): ?RedirectResponse
+    function handleSecurity(Request $request, SessionInterface $session, Security $security): ?RedirectResponse
     {
+        $completeRouteName = $request->attributes->get('_route');
+        $routeName = substr($completeRouteName, strlen(self::ROUTE_PREFIX));
+
         $loggedUser = $security->getUser();
         if ($loggedUser) {
             if ($loggedUser->isVerified()) {
-                return $this->redirectToRoute('default_index');
+                // TODO: redirect to facturo backoffice
+                return $this->redirectToRoute('app_login');
             }
 
-            $registrationStatus = $session->get("registration_auth");
+            $registrationStatus = $session->get(self::SESSION_AUTH_KEY);
+            if (is_null($registrationStatus)) {
+                if (in_array($routeName, ["start", "identity-confirm"])) {
+                    return null;
+                }
+
+                $security->logout(false);
+                $session->getFlashBag()->add('form_errors',  [
+                    ["message" => "Vous n'êtes pas autorisé à accéder à cette page"],
+                    ["message" => "Nous avons sauvegardé votre état d'avancement pour que vous puissiez reprendre plus tard"]
+                ]);
+                return $this->redirectToRoute("app_register_start");
+            }
+
             if ($registrationStatus["expires_at"] < new DateTimeImmutable()) {
+                $security->logout(false);
                 $session->getFlashBag()->add('form_errors',  [
                     ["message" => "Votre session d'inscription a expiré"],
                     ["message" => "Nous avons sauvegardé votre état d'avancement pour que vous puissiez reprendre plus tard"]
                 ]);
-                $session->remove("registration_auth");
+                $session->remove(self::SESSION_AUTH_KEY);
                 return $this->redirectToRoute("app_register_start");
             }
 
-            if ($session->get('registration_auth')) {
+            if ($registrationStatus && !in_array($routeName, ["company", "informations", "end"])) {
                 return $this->redirectToRoute('app_register_company');
             }
-        }
-
-        $registrationStatus = $session->get("registration_auth");
-        if (!$registrationStatus) {
-            return $this->redirectToRoute("app_register_start");
-        }
-
-        if ($registrationStatus["expires_at"] < new DateTimeImmutable()) {
-            $session->getFlashBag()->add('form_errors',  [
-                ["message" => "Votre session d'inscription a expiré"],
-                ["message" => "Nous avons sauvegardé votre état d'avancement pour que vous puissiez reprendre plus tard"]
-            ]);
-            $session->remove("registration_auth");
+        } else {
+            if ($routeName === "start") {
+                return null;
+            }
             return $this->redirectToRoute("app_register_start");
         }
         return null;
@@ -127,19 +143,28 @@ class RegistrationController extends AbstractController
     #[Route(['', '/start'], name: 'start')]
     public function start(Request $request, EntityManagerInterface $entityManager, Security $security, SessionInterface $session): Response
     {
+        /*
+        TODO: TO REMOVE
         $loggedUser = $security->getUser();
         if ($loggedUser) {
             if ($loggedUser->isVerified()) {
-                return $this->redirectToRoute('default_index');
+                return $this->redirectToRoute('app_login');
             }
 
-            if ($session->get('registration_auth')) {
+            if ($session->get(self::SESSION_AUTH_KEY)) {
                 return $this->redirectToRoute('app_register_company');
             }
         }
+        */
+        $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
+        if ($handleSecurityResponse instanceof RedirectResponse) {
+            return $handleSecurityResponse;
+        }
+
         $user = new User();
         $form = $this->createForm($this->steps["email"]["form"], $user);
         $form->handleRequest($request);
+
 
         if ($form->isSubmitted()) {
 
@@ -192,15 +217,21 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/identity-confirm', name: 'identity-confirm')]
-    public function identityConfirm(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, SessionInterface $session): Response
+    public function identityConfirm(Request $request, Security $security, EntityManagerInterface $entityManager, MailerInterface $mailer, SessionInterface $session): Response
     {
         $user = $this->getUser();
 
         $form = $this->createForm($this->steps["email_confirmation"]["form"]);
         $form->handleRequest($request);
+
+        $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
+        if ($handleSecurityResponse instanceof RedirectResponse) {
+            return $handleSecurityResponse;
+        }
+        
         if ($form->isSubmitted()) {
             //find latest oneTimeCode for this user
-            $oneTimeCode = $entityManager->getRepository(OneTimeCode::class)->findOneBy(['user' => $user], ['created_at' => 'DESC']);
+            $oneTimeCode = $entityManager->getRepository(OneTimeCode::class)->findOneBy(['user' => $user], ['id' => 'DESC']);
             if (!is_null($oneTimeCode) && $oneTimeCode->getCode() == $form->get('code')->getData()) {
                 $isExpired = $oneTimeCode->getExpiresAt() < new DateTimeImmutable();
                 if (!$isExpired) {
@@ -208,9 +239,8 @@ class RegistrationController extends AbstractController
                     $entityManager->persist($oneTimeCode);
                     $entityManager->flush();
 
-                    $session->set("registration_auth", [
-                        "status" => true,
-                        "expires_at" => new DateTimeImmutable('+1 hour')
+                    $session->set(self::SESSION_AUTH_KEY, [
+                        "expires_at" => new DateTimeImmutable(self::SESSION_AUTH_TIMEOUT)
                     ]);
 
                     return $this->redirectToRoute('app_register_company');
@@ -246,9 +276,9 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/company', name: 'company')]
-    public function company(Request $request, SessionInterface $session): Response
+    public function company(Request $request, SessionInterface $session, Security $security): Response
     {
-        $handleSecurityResponse = $this->handleSecurity($session);
+        $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
         if ($handleSecurityResponse instanceof RedirectResponse) {
             return $handleSecurityResponse;
         }
@@ -259,7 +289,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            // TODO : éditer $formErrors et faire la création de l'entité company
+            // TODO : éditer $formErrors (à faire quand API SIREN sera prête)
             return $this->redirectToRoute('app_register_informations');
         }
 
@@ -272,37 +302,28 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/informations', name: 'informations')]
-    public function informations(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function informations(Request $request, SessionInterface $session, Security $security, EntityManagerInterface $entityManager): Response
     {
-        // TODO : éditer $formErrors
-        $formErrors = [];
+        // TODO : Bloquer l'accès à cette page si le user n'est pas relié à une entreprise (company) valide
+        $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
+        if ($handleSecurityResponse instanceof RedirectResponse) {
+            return $handleSecurityResponse;
+        }
 
-        $user = new User();
+        // TODO : éditer $formErrors pour afficher les erreurs de validation
+        $formErrors = [];
+        $user = $this->getUser();
+
         $form = $this->createForm($this->steps["informations"]["form"], $user);
         $form->handleRequest($request);
+
+
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
-            );
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('a@o.ocm', 'Facturo Account Service'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-            // do anything else you need here, like send an email
-
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute($this->steps[$this->steps["informations"]["next"]]["route"]);
         }
 
         return $this->render('registration/register.html.twig', [
@@ -314,12 +335,55 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/end', name: 'end')]
-    public function end(): Response
+    public function end(Request $request, SessionInterface $session, Security $security, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
+        $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
+        if ($handleSecurityResponse instanceof RedirectResponse) {
+            return $handleSecurityResponse;
+        }
+
+        // TODO : bloquer l'accès à cette page si le user n'est pas relié à une entreprise (company) valide ET
+        //        que les informations ne sont pas valides/pas complètes
+
+        // TODO : éditer $formErrors pour afficher les erreurs de validation
         $formErrors = [];
+        $form = $this->createForm($this->steps["confirm"]["form"]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            // check if password and passwordConfirm are the same
+            if (!$form->isValid()) {
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[]["message"] = $error->getMessage();
+                }
+                // Save form errors in the session
+                // Post/Redirect/Get pattern to avoid form resubmission
+                $session->getFlashBag()->add('form_errors', $errors);
+                return $this->redirectToRoute($this->steps["confirm"]["route"]);
+            } else {
+                $user = $this->getUser();
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('password')->getData()
+                    )
+                );
+                $user->setIsVerified(true);
+                $entityManager->persist($user);
+                $entityManager->flush();
+                // do anything else you need here, like send an email
+
+                $session->remove(self::SESSION_AUTH_KEY);
+                return $this->redirectToRoute('app_login');
+            }
+        }
+
+
+        $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
         return $this->render('registration/register.html.twig', [
             'step' => $this->steps["confirm"],
             'stepTotal' => count($this->steps),
+            'registrationForm' => $form->createView(),
             'formErrors' => $formErrors
         ]);
     }

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\OneTimeCodeRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Random\RandomException;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[ORM\Entity(repositoryClass: OneTimeCodeRepository::class)]
@@ -13,9 +14,9 @@ class OneTimeCode
     public function __construct()
     {
         $this->created_at = new DateTimeImmutable();
-        $this->expires_at = (new DateTimeImmutable())->modify('+10 minutes');
+        $this->expires_at = new DateTimeImmutable('+ 10minutes');
         $this->used = false;
-        $this->code = random_int(100000, 999999);
+        $this->code = rand(100000, 999999);
     }
 
     #[ORM\Id]
