@@ -17,18 +17,10 @@ class ShowcaseController extends AbstractController
         ]);
     }
 
-    #[Route('/', name: 'pricing')]
+    #[Route('/tarifs', name: 'pricing')]
     public function pricing(): Response
     {
-        return $this->render('showcase/index.html.twig', [
-            'controller_name' => 'ShowcaseController',
-        ]);
-    }
-
-    #[Route('/', name: 'contact')]
-    public function contact(): Response
-    {
-        return $this->render('showcase/index.html.twig', [
+        return $this->render('showcase/tarifs.html.twig', [
             'controller_name' => 'ShowcaseController',
         ]);
     }

@@ -16,11 +16,13 @@ class CompanyStepFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // TODO : Lier le formulaire à la vérif avec l'API de l'INSEE (SIREN)
         $builder
             ->add('company', TextType::class, [
                 'label' => '(TODO) Nom de votre entreprise',
                 'attr' => [
-                    'placeholder' => 'Votre entreprise'
+                    'placeholder' => 'Votre entreprise',
+                    'value' => 'TODO'
                 ]
             ])
             ->add('submit', SubmitType::class, [

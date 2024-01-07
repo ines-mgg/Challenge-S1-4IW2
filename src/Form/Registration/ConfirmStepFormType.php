@@ -12,25 +12,30 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class InformationsStepFormType extends AbstractType
+class ConfirmStepFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstname', TextType::class, [
-                'label' => 'Prénom',
-                'attr' => [
-                    'placeholder' => 'Votre prénom'
-                ]
-            ])
-            ->add('lastname', TextType::class, [
-                'label' => 'Nom',
-                'attr' => [
-                    'placeholder' => 'Votre nom'
-                ]
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'Les mots de passe ne correspondent pas',
+                'required' => true,
+                'first_options'  => [
+                    'label' => 'Mot de passe',
+                    'attr' => [
+                        'placeholder' => 'Votre mot de passe',
+                    ]
+                ],
+                'second_options' => [
+                    'label' => 'Confirmez votre mot de passe',
+                    'attr' => [
+                        'placeholder' => 'Votre mot de passe',
+                    ]
+                ],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Suivant',
+                'label' => 'Finaliser mon compte',
                 'attr' => [
                     'class' => 'btn btn-primary'
                 ]

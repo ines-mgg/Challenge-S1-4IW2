@@ -8,9 +8,14 @@
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
 
-        {% if app.user %}
+        {# TODO: À SUPPRIMER, UNIQUEMENT POUR VOIR DIFFERENCE ENTRE ISVERIFIED FALSE OU TRUE #}
+        {% if app.user and app.user.isVerified  %}
             <div class="mb-3">
                 You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% elseif app.user and not app.user.isVerified %}
+            <div class="mb-3">
+                You are logged in as {{ app.user.userIdentifier }}, but your account is not verified. Please check your email.
             </div>
         {% endif %}
 
