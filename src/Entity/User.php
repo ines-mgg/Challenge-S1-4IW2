@@ -22,6 +22,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->created_at = new \DateTimeImmutable();
         $this->updated_at = new \DateTimeImmutable();
         $this->oneTimeCodes = new ArrayCollection();
+        $this->quotations = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
     }
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -42,7 +44,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(type: 'boolean')]
-    private $isVerified = false;
+    private bool $isVerified = false;
 
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
@@ -59,6 +61,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: OneTimeCode::class, orphanRemoval: true)]
     private Collection $oneTimeCodes;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Company $company = null;
+
+    #[ORM\OneToMany(mappedBy: 'user_', targetEntity: Quotation::class)]
+    private Collection $quotations;
+
+    #[ORM\OneToMany(mappedBy: 'user_', targetEntity: Invoice::class)]
+    private Collection $invoices;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,7 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmail(string $email): static
     {
-        $this->email = $email;
+        $this->email = strtolower($email);
 
         return $this;
     }
@@ -160,7 +172,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setFirstname(string $firstname): static
     {
-        $this->firstname = $firstname;
+        // TODO: à vérifier si tous les cas sont pris en comptes
+        $this->firstname = ucwords(mb_convert_case($firstname, MB_CASE_TITLE, 'UTF-8'), "\t\r\n\f\v-'");
 
         return $this;
     }
@@ -213,6 +226,78 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($oneTimeCode->getUserId() === $this) {
                 $oneTimeCode->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Quotation>
+     */
+    public function getQuotations(): Collection
+    {
+        return $this->quotations;
+    }
+
+    public function addQuotation(Quotation $quotation): static
+    {
+        if (!$this->quotations->contains($quotation)) {
+            $this->quotations->add($quotation);
+            $quotation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuotation(Quotation $quotation): static
+    {
+        if ($this->quotations->removeElement($quotation)) {
+            // set the owning side to null (unless already changed)
+            if ($quotation->getUser() === $this) {
+                $quotation->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            // set the owning side to null (unless already changed)
+            if ($invoice->getUser() === $this) {
+                $invoice->setUser(null);
             }
         }
 

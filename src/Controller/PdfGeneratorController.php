@@ -26,7 +26,7 @@ class PdfGeneratorController extends AbstractController
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
         $dompdf = new Dompdf($pdfOptions);
-        $html = $this->renderView('pdf_generator/index.html.twig', [
+            $html = $this->renderView('pdf_generator/index.html.twig', [
             'title' => "Welcome to our PDF Test",
             'controller_name' => 'PdfGeneratorController NOn',
         ]);
@@ -52,9 +52,7 @@ class PdfGeneratorController extends AbstractController
             var_dump($e->getMessage());
         }
         return $this->render('pdf_generator/index.html.twig', [
-            'controller_name' => 'PdfGeneratorController NOn',
             'title' => "Welcome to our PDF Test",
-
         ]);
 //     return new Response('Email sent successfully');
     }
