@@ -304,15 +304,19 @@ class RegistrationController extends AbstractController
     #[Route('/informations', name: 'informations')]
     public function informations(Request $request, SessionInterface $session, Security $security, EntityManagerInterface $entityManager): Response
     {
-        // TODO : Bloquer l'accès à cette page si le user n'est pas relié à une entreprise (company) valide
         $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
         if ($handleSecurityResponse instanceof RedirectResponse) {
             return $handleSecurityResponse;
         }
-
-        // TODO : éditer $formErrors pour afficher les erreurs de validation
-        $formErrors = [];
         $user = $this->getUser();
+
+        // TODO : RETIRER false (pour l'instant, on peut passer à l'étape suivante sans avoir de company)
+        //  -> MANQUE API SIREN
+        if (!$user->getCompany() && false) {
+            return $this->redirectToRoute($this->steps["company"]["route"]);
+        }
+
+        $formErrors = [];
 
         $form = $this->createForm($this->steps["informations"]["form"], $user);
         $form->handleRequest($request);
@@ -342,8 +346,17 @@ class RegistrationController extends AbstractController
             return $handleSecurityResponse;
         }
 
-        // TODO : bloquer l'accès à cette page si le user n'est pas relié à une entreprise (company) valide ET
-        //        que les informations ne sont pas valides/pas complètes
+        $user = $this->getUser();
+
+        // TODO : RETIRER false (pour l'instant, on peut passer à l'étape suivante sans avoir de company)
+        //  -> MANQUE API SIREN
+        if (!$user->getCompany() && false) {
+            return $this->redirectToRoute($this->steps["company"]["route"]);
+        }
+
+        if ($user->getFirstname() === null || $user->getLastname() === null) {
+            return $this->redirectToRoute($this->steps["informations"]["route"]);
+        }
 
         // TODO : éditer $formErrors pour afficher les erreurs de validation
         $formErrors = [];
