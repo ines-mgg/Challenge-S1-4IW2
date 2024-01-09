@@ -158,9 +158,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->lastname;
     }
 
-    public function setLastname(string $lastname): static
+    public function setLastname(?string $lastname): static
     {
-        $this->lastname = $lastname;
+        $this->lastname = mb_strtoupper(mb_convert_case($lastname, MB_CASE_TITLE, 'UTF-8'));
 
         return $this;
     }
@@ -170,7 +170,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->firstname;
     }
 
-    public function setFirstname(string $firstname): static
+    public function setFirstname(?string $firstname): static
     {
         // TODO: à vérifier si tous les cas sont pris en comptes
         $this->firstname = ucwords(mb_convert_case($firstname, MB_CASE_TITLE, 'UTF-8'), "\t\r\n\f\v-'");
