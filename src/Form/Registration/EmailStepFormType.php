@@ -29,7 +29,7 @@ class EmailStepFormType extends AbstractType
                 ]
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Suivant',
+                'label' => 'Suivant À MODIFIER',
                 'attr' => [
                     'class' => 'btn btn-primary'
                 ]

@@ -5,14 +5,14 @@
         <title>{% block title %}Facturo{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2264%22>todo</text></svg>">
         {% block stylesheets %}
-            {{ encore_entry_link_tags('showcase') }}
+            {{ encore_entry_link_tags('registration') }}
         {% endblock %}
         {% block javascripts %}
-            {{ encore_entry_script_tags('showcase') }}
+            {{ encore_entry_script_tags('registration') }}
         {% endblock %}
     </head>
     <body>
-        <header>
+        <header class="flex justify-between p-13">
             <svg width="132"
                  height="42"
                  viewBox="0 0 132 42"
@@ -23,16 +23,11 @@
             </svg>
             <a href="{{ path('app_login') }}">Créer un compte</a>
         </header>
-
-        {% block body %}
-
-        {% endblock %}
-
+        {% block body %}{% endblock %}
         {#{% for type, flashMessages in app.flashes %}
             {% for message in flashMessages %}
                 {{ type }} - {{ message }} <br>
             {% endfor %}
         {% endfor %}#}
-
     </body>
 </html>
