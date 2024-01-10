@@ -4,29 +4,36 @@
 
 {% block body %}
     <div class="flex justify-center">
-        <div class="flex grow flex-col max-w-2xl">
-            {#    {% for error in formErrors %}#}
-            {#        <div class="alert alert-danger" role="alert">#}
-            {#            {{ error.message }}#}
-            {#        </div>#}
-            {#    {% endfor %}#}
-            {#    {% for flash_error in app.flashes('verify_email_error') %}#}
-            {#        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>#}
-            {#    {% endfor %}#}
+        <div class="flex grow flex-col max-w-2xl rounded-md m-8 border-2 border-light-dark" style="box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);--tw-shadow: 12px 12px 0 -1px #1B24E0, 12px 12px 0 0 #1C1C1A;">
+            <div class="p-20 self-center">
+                {% for error in formErrors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error.message }}
+                    </div>
+                {% endfor %}
+                {#    {% for flash_error in app.flashes('verify_email_error') %}#}
+                {#        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>#}
+                {#    {% endfor %}#}
 
-            <h1 class="font-bold text-3xl">Étape {{ step.order }}/{{ stepTotal }} - {{ step.label }} </h1>
-            {{ form_errors(registrationForm) }}
+                <h1 class="font-bold text-3xl">Étape {{ step.order }}/{{ stepTotal }} - {{ step.label }} </h1>
+                {{ form_errors(registrationForm) }}
 
-            {{ form_start(registrationForm) }}
-                {{ form_row(registrationForm.email) }}
-                {{ form_row(registrationForm.submit) }}
-                {% embed '_composants/buttons/_button.html.twig' with {
-                    'textButton': registrationForm.submit.vars.label,
-                    'buttonTextColor': 'text-light-white',
-                    'buttonColor': 'bg-light-dark',
-                } %} {% endembed %}
+                {{ form_start(registrationForm) }}
+
                 {{ form_rest(registrationForm) }}
-            {{ form_end(registrationForm) }}
+                {#                {{ form_row(registrationForm.email) }}#}
+                {#                {{ form_row(registrationForm.submit) }}#}
+                {#
+                TODO: Utiliser un composant pour le bouton
+                #}
+                <button class="flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-14 px-4 py-5">
+                    Suivant
+                </button>
+
+
+                {{ form_end(registrationForm) }}
+            </div>
+
         </div>
     </div>
 {% endblock %}

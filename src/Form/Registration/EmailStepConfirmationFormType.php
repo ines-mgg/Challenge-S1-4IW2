@@ -22,12 +22,12 @@ class EmailStepConfirmationFormType extends AbstractType
                     'placeholder' => 'X X X X X X'
                 ]
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Suivant',
-                'attr' => [
-                    'class' => 'btn btn-primary'
-                ]
-            ])
+//            ->add('submit', SubmitType::class, [
+//                'label' => 'Suivant',
+//                'attr' => [
+//                    'class' => 'btn btn-primary'
+//                ]
+//            ])
         ;
     }
 
