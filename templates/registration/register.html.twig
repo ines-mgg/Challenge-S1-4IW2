@@ -5,7 +5,7 @@
 {% block body %}
     <div class="flex justify-center">
         <div class="flex grow flex-col max-w-2xl rounded-md m-8 border-2 border-light-dark" style="box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);--tw-shadow: 12px 12px 0 -1px #1B24E0, 12px 12px 0 0 #1C1C1A;">
-            <div class="p-20 self-center">
+            <div class="p-20 self-center self">
                 {% for error in formErrors %}
                     <div class="alert alert-danger" role="alert">
                         {{ error.message }}
