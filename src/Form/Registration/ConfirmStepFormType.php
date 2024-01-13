@@ -25,12 +25,14 @@ class ConfirmStepFormType extends AbstractType
                     'label' => 'Mot de passe',
                     'attr' => [
                         'placeholder' => 'Votre mot de passe',
+                        'autocomplete' => 'off'
                     ]
                 ],
                 'second_options' => [
                     'label' => 'Confirmez votre mot de passe',
                     'attr' => [
                         'placeholder' => 'Votre mot de passe',
+                        'autocomplete' => 'off'
                     ]
                 ],
             ])
