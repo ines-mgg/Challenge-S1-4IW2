@@ -1,0 +1,20 @@
+{% extends 'baseDash.html.twig' %} {% block title %}Offer index{% endblock %} {%
+block body %} {#{% include '_composants/headers/_sidebar.html.twig' %}#}
+<main class="p-8">
+  <article class="flex justify-end">
+    {% embed '_composants/buttons/_button.html.twig' with {'buttonColor':
+    'bg-electric-blue', 'buttonTextColor': 'text-light-white', 'textButton':
+    'Créer une nouvelle', 'buttonLink': 'app_offer_new'} %} {% endembed %}
+  </article>
+  <article
+    class="flex flex-col items-center gap-10 xl:flex-row xl:justify-center"
+  >
+    {% for offer in offers %} {% embed '_composants/cards/_cardData.html.twig'
+    with {'titleCard': 'Offre n°' ~ offer.id ~ ' - ' ~ offer.name, 'linkEdit':
+    'app_offer_edit','linkSee': 'app_offer_show', 'linkDelete':
+    'app_offer_delete' ,'id': offer.id }%} {% endembed %} {% else %} No data
+    found {% endfor %}
+  </article>
+</main>
+
+{% endblock %}

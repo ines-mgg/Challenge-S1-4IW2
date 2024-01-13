@@ -62,6 +62,17 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-symfony}
     volumes:
       - db_data:/var/lib/postgresql/data:rw
+  
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-facturo@facturo.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-FacturoPassword}
+    ports:
+      - 5050:80
+    depends_on:
+      - database
 
   mailer:
     image: schickling/mailcatcher

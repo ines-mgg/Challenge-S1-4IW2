@@ -1,0 +1,50 @@
+{% extends 'baseDash.html.twig' %} {% block title %}Offer{% endblock %} {% block
+body %} {#{% include '_composants/headers/_sidebar.html.twig' %}#}
+
+<main class="p-8">
+  <a
+    class="text-base font-semibold leading-normal underline"
+    href="{{ path('app_offer_index') }}"
+    >Retour à la liste</a
+  >
+  <section class="flex gap-4">
+    <a
+      class="hover:text-yellow-400"
+      href="{{ path('app_offer_edit', { id: offer.id }) }}"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15q.4 0 .775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"
+        />
+      </svg>
+    </a>
+    {{ include("offer/_delete_form.html.twig") }}
+  </section>
+  <table>
+    <tbody>
+      <tr>
+        <th>Id</th>
+        <td>{{ offer.id }}</td>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <td>{{ offer.name }}</td>
+      </tr>
+      <tr>
+        <th>Allowed_accountant</th>
+        <td>{{ offer.allowedAccountant }}</td>
+      </tr>
+      <tr>
+        <th>Price</th>
+        <td>{{ offer.price }}</td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+{% endblock %}
