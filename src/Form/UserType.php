@@ -23,8 +23,10 @@ class UserType extends AbstractType
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options'  => ['label' => 'Mot de Passe'],
-                'second_options' => ['label' => 'Répétez le Mot de Passe'],
+                'required' => false,  // Rendre le champ optionnel
+                'first_options'  => ['label' => 'Nouveau mot de passe (laisser vide pour garder l\'actuel)'],
+                'second_options' => ['label' => 'Répétez le nouveau mot de passe'],
+                'mapped' => false, // Ne pas mapper automatiquement ce champ à l'entité
             ])
             ->add('lastname', TextType::class, [
                 'label' => 'Nom',

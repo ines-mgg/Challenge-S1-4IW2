@@ -6,8 +6,6 @@
     <h1>Éditer l'Utilisateur</h1>
 
     {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn">Mettre à jour</button>
     {{ form_end(form) }}
 
     <a href="{{ path('user_show', {'id': user.id}) }}">Annuler</a>
