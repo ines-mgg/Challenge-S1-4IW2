@@ -17,16 +17,21 @@ class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $user = $options['data'] ?? null;
+        $isEdit = $user && $user->getId();
+    
+        $passwordLabel = $isEdit ? 'Nouveau mot de passe (laisser vide pour garder l\'actuel)' : 'Mot de passe';
+
         $builder
             ->add('email', EmailType::class, [
                 'label' => 'Adresse Email',
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'required' => false,  // Rendre le champ optionnel
-                'first_options'  => ['label' => 'Nouveau mot de passe (laisser vide pour garder l\'actuel)'],
-                'second_options' => ['label' => 'Répétez le nouveau mot de passe'],
-                'mapped' => false, // Ne pas mapper automatiquement ce champ à l'entité
+                'required' => false,
+                'first_options'  => ['label' => $passwordLabel],
+                'second_options' => ['label' => 'Répétez le mot de passe'],
+                'mapped' => false,
             ])
             ->add('lastname', TextType::class, [
                 'label' => 'Nom',
