@@ -1,11 +1,11 @@
-{% extends 'registration/base.html.twig' %}
+{% extends '../base.html.twig' %}
 
 {% block title %}Création de votre compte Facturo - Étape {{ step.order }}/{{ stepTotal }}{% endblock %}
 
 {% block body %}
     <div class="flex justify-center">
-        <div class="flex grow flex-col max-w-2xl rounded-md m-8 border-2 border-light-dark" style="box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);--tw-shadow: 12px 12px 0 -1px #1B24E0, 12px 12px 0 0 #1C1C1A;">
-            <div class="p-20 self-center self">
+        <div class="flex grow flex-col max-w-2xl rounded-md m-8 border-2 border-light-dark registration-shadow">
+            <div class="p-8 self-center self w-full">
                 {% for error in formErrors %}
                     <div class="alert alert-danger" role="alert">
                         {{ error.message }}
@@ -21,12 +21,10 @@
                 {{ form_start(registrationForm) }}
 
                 {{ form_rest(registrationForm) }}
-                {#                {{ form_row(registrationForm.email) }}#}
-                {#                {{ form_row(registrationForm.submit) }}#}
                 {#
                 TODO: Utiliser un composant pour le bouton
                 #}
-                <button class="flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-14 px-4 py-5">
+                <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
                     Suivant
                 </button>
 

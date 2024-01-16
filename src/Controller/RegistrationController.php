@@ -41,7 +41,7 @@ class RegistrationController extends AbstractController
         $this->steps = [
             'email' => [
                 'order' => 1,
-                'label' => 'Email',
+                'label' => 'E-mail',
                 'form' => EmailStepFormType::class,
                 'route' => self::ROUTE_PREFIX.'start',
                 'previous' => null,
@@ -208,7 +208,7 @@ class RegistrationController extends AbstractController
         // Retrieve form errors from the session
         // Un nouveau tableau est créé (expliquant le [0] ?? []) car le flashbag est un tableau de tableaux
         $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
-        return $this->render('registration/register.html.twig', [
+        return $this->render('registration/steps/email.html.twig', [
             'step' => $this->steps["email"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),

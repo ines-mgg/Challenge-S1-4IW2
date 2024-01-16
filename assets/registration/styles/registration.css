@@ -13,3 +13,7 @@
 body {
     background-color: #F9F9F9;
 }
+
+.registration-shadow {
+    box-shadow: theme('colors.electric-blue') 12px 12px 0 0, theme('colors.light-dark') 12px 12px 0 2px;
+}

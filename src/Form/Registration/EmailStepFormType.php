@@ -17,15 +17,31 @@ class EmailStepFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class, [
-                'label' => 'Adresse e-mail',
-                'attr' => [
-                    'placeholder' => 'Votre e-mail',
-                    'autocomplete' => 'off'
+            ->add('email', RepeatedType::class, [
+                'type' => EmailType::class,
+                'invalid_message' => 'Les adresses email doivent correspondre',
+                'required' => true,
+                'first_options' => [
+                    'label' => 'E-mail',
+                    'attr' => [
+                        'placeholder' => 'Votre e-mail',
+                        'autocomplete' => 'off'
+                    ]
+                ],
+                'second_options' => [
+                    'label' => "Confirmation de l'e-mail",
+                    'attr' => [
+                        'placeholder' => 'Votre e-mail',
+                        'autocomplete' => 'off'
+                    ]
                 ],
                 'constraints' => [
-                    new NotBlank(),
-                    new Email()
+                    new NotBlank([
+                        'message' => 'Veuillez saisir une adresse e-mail'
+                    ]),
+                    new Email([
+                        'message' => 'Veuillez saisir une adresse e-mail valide'
+                    ])
                 ]
             ])
 //            ->add('submit', SubmitType::class, [

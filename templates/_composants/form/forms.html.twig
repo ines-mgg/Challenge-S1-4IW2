@@ -1,7 +1,7 @@
 {% use 'tailwind_2_layout.html.twig' %}
 
         {%- block form_row -%}
-            {%- set row_attr = row_attr|merge({ class: row_attr.class|default(row_class|default('flex flex-col items-start gap-1 w-full')) }) -%}
+            {%- set row_attr = row_attr|merge({ class: row_attr.class|default(row_class|default('flex flex-col items-start gap-1 grow')) }) -%}
             {{- parent() -}}
         {%- endblock form_row -%}
 
@@ -18,7 +18,7 @@
         {%- endblock textarea_widget -%}
 
         {%- block widget_attributes -%}
-                {%- set widget_class = widget_class|default('pl-2 h-8 border border-gray-400 rounded focus:outline-none placeholder:font-semibold placeholder:text-xs placeholder:leading-normal') -%}
+                {%- set widget_class = widget_class|default('pl-2 h-8 border border-gray-400 rounded focus:outline-none placeholder:font-semibold placeholder:text-xs placeholder:leading-normal w-full') -%}
                 {%- set widget_disabled_class = widget_disabled_class|default('my disabled widget classes') -%}
                 {%- set widget_errors_class = widget_errors_class|default('my widget with error classes') -%}
                 {{- parent() -}}
