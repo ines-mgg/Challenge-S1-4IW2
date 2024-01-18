@@ -19,7 +19,6 @@ class ContactType extends AbstractType
                     'placeholder' => 'Prénom',
                     'type' => 'text',
                     'required' => true,
-                    'label_html' => true
                 ]
             ])
             ->add('lastName', null, [
