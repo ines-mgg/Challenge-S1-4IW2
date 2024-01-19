@@ -61,6 +61,21 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "symfony/asset-mapper": {
+        "version": "6.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.4",
+            "ref": "7824128ef0da56f09a376539d00a17e23e9b5054"
+        },
+        "files": [
+            "assets/app.js",
+            "assets/styles/app.css",
+            "config/packages/asset_mapper.yaml",
+            "importmap.php"
+        ]
+    },
     "symfony/console": {
         "version": "6.1",
         "recipe": {
