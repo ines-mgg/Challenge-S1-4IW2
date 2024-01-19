@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Controller;
+use App\Repository\InvoiceRepository;
+use App\Repository\InvoicesRepository;
+use App\Repository\PrestationRepository;
 use App\Service\UxPackageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,11 +13,15 @@ use Symfony\UX\Chartjs\Model\Chart;
 class ChartjsController extends AbstractController
 {
     #[Route('/chartjs', name: 'app_chartjs')]
-    public function __invoke(UxPackageRepository $packageRepository, ChartBuilderInterface $chartBuilder): Response
+    public function __invoke(UxPackageRepository $packageRepository, ChartBuilderInterface $chartBuilder, InvoiceRepository $invoiceRepository ): Response
     {
         $package = $packageRepository->find('chartjs');
 
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
+        $bestOptions = $invoiceRepository->find(1);
+        $prestation = $bestOptions->getPrestation();
+        dump($prestation);
+
         $chart->setData([
             'labels' => ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
             'datasets' => [
