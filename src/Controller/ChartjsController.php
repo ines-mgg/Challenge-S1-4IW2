@@ -18,7 +18,7 @@ class ChartjsController extends AbstractController
         $package = $packageRepository->find('chartjs');
 
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
-        $bestOptions = $invoiceRepository->find(1);
+        $bestOptions = $invoiceRepository->find();
         $prestation = $bestOptions->getPrestation();
         dump($prestation);
 
