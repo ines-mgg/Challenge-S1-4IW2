@@ -1,0 +1,39 @@
+{% extends 'registration/base.html.twig' %}
+
+{% block title %}Connexion | Facturo{% endblock %}
+{% block containerTitle %}
+    Connexion
+{% endblock %}
+
+{% block topRightLink %}
+    <a href="{{ path('app_register_start') }}">Créer un compte</a>
+{% endblock %}
+
+{% block body %}
+    {{ dump(errors) }}
+    {{ form_errors(loginForm) }}
+
+    {{ form_start(loginForm, {
+        'attr': {
+            'novalidate': 'novalidate',
+            'class': 'mt-8 flex flex-col gap-8'
+        }
+    }) }}
+
+    {{ form_row(loginForm.email, {
+        'value': lastEmail
+    }) }}
+
+
+
+    {{ form_rest(loginForm) }}
+    <a href="#" class="text-slate-600 -mt-6 border-b-slate-600 border-b pb-0.5 w-fit text-xs">Mot de passe oublié ?</a>
+    {#
+    TODO: Utiliser un composant pour le bouton
+    #}
+    <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
+        Suivant
+    </button>
+
+    {{ form_end(loginForm) }}
+{% endblock %}

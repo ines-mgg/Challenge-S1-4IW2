@@ -12,7 +12,11 @@
         }
     }) }}
 
-    {{ form_widget(registrationForm.email, {
+    <p class="font-bold">
+        Un code confidentiel de confirmation vous a été envoyé par e-mail à l’adresse précédemment renseignée.
+    </p>
+
+    {{ form_widget(registrationForm.code, {
         'attr': {
             'class': 'flex gap-x-8 gap-y-2 flex-wrap'
         }

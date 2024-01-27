@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Form\LoginType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -10,17 +12,27 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
+        // if logged in, redirect to homepage
+        $user = $this->getUser();
+        if ($user && $user->isVerified()) {
+            return $this->redirectToRoute('showcase_index');
+        }
 
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
+        $form = $this->createForm(LoginType::class);
+        $form->handleRequest($request);
 
-        return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
+        $lastEmail = $authenticationUtils->getLastUsername();
+        $errors = $authenticationUtils->getLastAuthenticationError();
+
+
+        //find the csrf token id
+
+        return $this->render('registration/login.html.twig', [
+            'loginForm' => $form->createView(),
+            'lastEmail' => $lastEmail,
+            'errors' => $errors,
         ]);
     }
 

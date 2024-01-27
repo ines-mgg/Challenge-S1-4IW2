@@ -100,7 +100,7 @@ class RegistrationController extends AbstractController
         if ($loggedUser) {
             if ($loggedUser->isVerified()) {
                 // TODO: redirect to facturo backoffice
-                return $this->redirectToRoute('app_login');
+                return $this->redirectToRoute('showcase_index');
             }
 
             $registrationStatus = $session->get(self::SESSION_AUTH_KEY);
@@ -267,7 +267,7 @@ class RegistrationController extends AbstractController
             $mailer->send($email);
         }
         $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
-        return $this->render('registration/register.html.twig', [
+        return $this->render('registration/steps/email_confirmation.html.twig', [
             'step' => $this->steps["email_confirmation"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),
@@ -350,12 +350,16 @@ class RegistrationController extends AbstractController
 
         // TODO : RETIRER false (pour l'instant, on peut passer à l'étape suivante sans avoir de company)
         //  -> MANQUE API SIREN
-        if (!$user->getCompany() && false) {
-            return $this->redirectToRoute($this->steps["company"]["route"]);
+        if (false) {
+            if (!$user->getCompany()) {
+                return $this->redirectToRoute($this->steps["company"]["route"]);
+            }
         }
 
-        if ($user->getFirstname() === null || $user->getLastname() === null) {
-            return $this->redirectToRoute($this->steps["informations"]["route"]);
+        if (false) {
+            if ($user->getFirstname() === null || $user->getLastname() === null) {
+                return $this->redirectToRoute($this->steps["informations"]["route"]);
+            }
         }
 
         // TODO : éditer $formErrors pour afficher les erreurs de validation
@@ -393,7 +397,7 @@ class RegistrationController extends AbstractController
 
 
         $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
-        return $this->render('registration/register.html.twig', [
+        return $this->render('registration/steps/end.html.twig', [
             'step' => $this->steps["confirm"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),

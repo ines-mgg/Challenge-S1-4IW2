@@ -19,7 +19,7 @@ class EmailStepConfirmationFormType extends AbstractType
             ->add('code', NumberType::class, [
                 'label' => 'TODO : Désactiver le renvoi d\' un OTC à chaque refresh | Code de confirmation',
                 'attr' => [
-                    'placeholder' => 'X X X X X X'
+                    'placeholder' => 'X X X X X X',
                 ]
             ])
 //            ->add('submit', SubmitType::class, [

@@ -25,7 +25,7 @@ class EmailStepFormType extends AbstractType
                     'label' => 'E-mail',
                     'attr' => [
                         'placeholder' => 'Votre e-mail',
-                        'autocomplete' => 'off'
+                        'autocomplete' => 'off',
                     ]
                 ],
                 'second_options' => [
