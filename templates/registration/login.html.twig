@@ -10,8 +10,11 @@
 {% endblock %}
 
 {% block body %}
-    {{ dump(errors) }}
-    {{ form_errors(loginForm) }}
+    {% if error %}
+        <div class="border-2 border-red-600 mb-4 p-1 rounded-sm border-t-4" role="alert">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
 
     {{ form_start(loginForm, {
         'attr': {

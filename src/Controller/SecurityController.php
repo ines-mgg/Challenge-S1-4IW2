@@ -24,7 +24,7 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         $lastEmail = $authenticationUtils->getLastUsername();
-        $errors = $authenticationUtils->getLastAuthenticationError();
+        $error = $authenticationUtils->getLastAuthenticationError();
 
 
         //find the csrf token id
@@ -32,7 +32,7 @@ class SecurityController extends AbstractController
         return $this->render('registration/login.html.twig', [
             'loginForm' => $form->createView(),
             'lastEmail' => $lastEmail,
-            'errors' => $errors,
+            'error' => $error
         ]);
     }
 

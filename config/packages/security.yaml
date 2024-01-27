@@ -21,7 +21,8 @@ security:
                 check_path: app_login
                 enable_csrf: true
                 # les trois prochains paramètres sont OBLIGATOIRES
-                # ne pas les modifier dans le formulaire LoginType
+                # ne pas les modifier dans le formulaire LoginType (sinon ça ne marche pas)
+                # Le csrf_token_id est 'authenticate' => il est set dans LoginType (ne marche pas sinon)
                 username_parameter: login[email]
                 password_parameter: login[password]
                 csrf_parameter: login[_token]
