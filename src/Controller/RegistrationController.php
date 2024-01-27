@@ -293,7 +293,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register_informations');
         }
 
-        return $this->render('registration/register.html.twig', [
+        return $this->render('registration/steps/company.html.twig', [
             'step' => $this->steps["company"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),
@@ -330,7 +330,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute($this->steps[$this->steps["informations"]["next"]]["route"]);
         }
 
-        return $this->render('registration/register.html.twig', [
+        return $this->render('registration/steps/informations.html.twig', [
             'step' => $this->steps["informations"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),

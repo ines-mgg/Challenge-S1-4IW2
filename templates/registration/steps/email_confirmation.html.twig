@@ -18,14 +18,12 @@
 
     {{ form_widget(registrationForm.code, {
         'attr': {
-            'class': 'flex gap-x-8 gap-y-2 flex-wrap'
+            'class': 'flex gap-x-8 gap-y-2 flex-wrap pl-2 h-16 border border-gray-400 text-center rounded focus:outline-none placeholder:font-semibold placeholder:text-2xl text-2xl placeholder:leading-normal w-full tracking-[.5em]'
         }
     }) }}
 
     {{ form_rest(registrationForm) }}
-    <p class="font-bold">Si vous aviez déjà commencé une inscription,
-        notre système utilisera les données précédemment utilisées
-    </p>
+    <p class="font-bold">Vous pourrez souscrire à votre abonnement Facturo dès le premier accès à votre espace personnel.</p>
     {#
     TODO: Utiliser un composant pour le bouton
     #}

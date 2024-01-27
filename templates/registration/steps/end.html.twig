@@ -3,35 +3,22 @@
 {% block title %}Création de votre compte Facturo - Étape {{ step.order }}/{{ stepTotal }}{% endblock %}
 
 {% block body %}
-    <div class="flex justify-center">
-        <div class="flex grow flex-col max-w-2xl rounded-md m-8 border-2 border-light-dark registration-shadow">
-            <div class="p-8 self-center self w-full">
-                {% for error in formErrors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error.message }}
-                    </div>
-                {% endfor %}
-                {#    {% for flash_error in app.flashes('verify_email_error') %}#}
-                {#        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>#}
-                {#    {% endfor %}#}
+    {{ form_errors(registrationForm) }}
 
-                <h1 class="font-bold text-3xl">Étape {{ step.order }}/{{ stepTotal }} - {{ step.label }} </h1>
-                {{ form_errors(registrationForm) }}
+    {{ form_start(registrationForm, {
+        'attr': {
+            'novalidate': 'novalidate',
+            'class': 'mt-8 flex flex-col gap-8'
+        }
+    }) }}
 
-                {{ form_start(registrationForm) }}
+    {{ form_rest(registrationForm) }}
+    {#
+    TODO: Utiliser un composant pour le bouton
+    #}
+    <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
+        Suivant
+    </button>
 
-                {{ form_rest(registrationForm) }}
-                {#
-                TODO: Utiliser un composant pour le bouton
-                #}
-                <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
-                    Suivant
-                </button>
-
-
-                {{ form_end(registrationForm) }}
-            </div>
-
-        </div>
-    </div>
+    {{ form_end(registrationForm) }}
 {% endblock %}

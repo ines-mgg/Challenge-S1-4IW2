@@ -20,7 +20,10 @@ class EmailStepConfirmationFormType extends AbstractType
                 'label' => 'TODO : Désactiver le renvoi d\' un OTC à chaque refresh | Code de confirmation',
                 'attr' => [
                     'placeholder' => 'X X X X X X',
-                ]
+                    'type' => 'number',
+                    'autocomplete' => 'off',
+                    'maxlength' => 6,
+                ],
             ])
 //            ->add('submit', SubmitType::class, [
 //                'label' => 'Suivant',

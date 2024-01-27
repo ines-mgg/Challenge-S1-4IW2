@@ -29,6 +29,7 @@
         <div class="flex justify-center">
             <div class="flex grow flex-col max-w-2xl rounded-md m-8 border-2 border-light-dark registration-shadow">
                 <div class="p-8 self-center self w-full">
+                    {% block beforeTitleBlock %}{% endblock %}
                     {% if formErrors is defined and formErrors|length > 0 %}
                     <div class="border-2 border-red-600 mb-4 p-1 rounded-sm border-t-4" role="alert">
                         <ul>

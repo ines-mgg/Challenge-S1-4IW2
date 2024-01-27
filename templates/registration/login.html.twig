@@ -9,13 +9,15 @@
     <a href="{{ path('app_register_start') }}">Créer un compte</a>
 {% endblock %}
 
-{% block body %}
+{% block beforeTitleBlock %}
     {% if error %}
         <div class="border-2 border-red-600 mb-4 p-1 rounded-sm border-t-4" role="alert">
             {{ error.messageKey|trans(error.messageData, 'security') }}
         </div>
     {% endif %}
+{% endblock %}
 
+{% block body %}
     {{ form_start(loginForm, {
         'attr': {
             'novalidate': 'novalidate',
