@@ -53,12 +53,12 @@ class InformationsStepFormType extends AbstractType
                     ])
                 ]
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Suivant',
-                'attr' => [
-                    'class' => 'btn btn-primary'
-                ]
-            ])
+//            ->add('submit', SubmitType::class, [
+//                'label' => 'Suivant',
+//                'attr' => [
+//                    'class' => 'btn btn-primary'
+//                ]
+//            ])
         ;
     }
 

@@ -20,6 +20,12 @@ security:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+                # les trois prochains paramètres sont OBLIGATOIRES
+                # ne pas les modifier dans le formulaire LoginType (sinon ça ne marche pas)
+                # Le csrf_token_id est 'authenticate' => il est set dans LoginType (ne marche pas sinon)
+                username_parameter: login[email]
+                password_parameter: login[password]
+                csrf_parameter: login[_token]
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -33,10 +39,17 @@ security:
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        # disallow /login & /register to role TEST
 
+        # -> IS_NOT_VERIFIED est un voter qui vérifie si l'utilisateur est vérifié ou nons
+        #- { path: ^/(login|register), roles: [PUBLIC_ACCESS, IS_NOT_VERIFIED] }
 when@test:
     security:
         password_hashers:

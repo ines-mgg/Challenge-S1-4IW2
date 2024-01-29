@@ -25,12 +25,12 @@ class CompanyStepFormType extends AbstractType
                     'value' => 'TODO'
                 ]
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Suivant',
-                'attr' => [
-                    'class' => 'btn btn-primary'
-                ]
-            ])
+//            ->add('submit', SubmitType::class, [
+//                'label' => 'Suivant',
+//                'attr' => [
+//                    'class' => 'btn btn-primary'
+//                ]
+//            ])
         ;
     }
 
