@@ -36,12 +36,12 @@ class ConfirmStepFormType extends AbstractType
                     ]
                 ],
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Finaliser mon compte',
-                'attr' => [
-                    'class' => 'btn btn-primary'
-                ]
-            ])
+//            ->add('submit', SubmitType::class, [
+//                'label' => 'Finaliser mon compte',
+//                'attr' => [
+//                    'class' => 'btn btn-primary'
+//                ]
+//            ])
         ;
     }
 

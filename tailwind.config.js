@@ -54,8 +54,9 @@ module.exports = {
             '[auto,auto,1fr]': 'auto auto 1fr',
         },
         padding: {
-          '1.875': '1.875rem',
-          '2.125': '2.125rem',
+            '1.875': '1.875rem',
+            '2.125': '2.125rem',
+            '13': '3.25rem',
         },
         zIndex: {
           '100': '100'

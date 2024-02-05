@@ -23,6 +23,7 @@ Encore
      */
     .addEntry('app', './assets/app/app.js')
     .addEntry('showcase', './assets/showcase/showcase.js')
+    .addEntry('registration', './assets/registration/registration.js')
     .copyFiles({
         from: './assets/images',
         to: 'images/[path][name].[ext]',
