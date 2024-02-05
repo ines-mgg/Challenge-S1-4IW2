@@ -5,10 +5,15 @@
             {{- parent() -}}
         {%- endblock form_row -%}
 
-
         {%- block form_label -%}
-            {%- set label_class = label_class|default('flex gap-1 text-light-dark text-sm font-bold isRequired') -%}
-            {{- parent() -}}
+            {% if label is not same as(false) -%}
+                {% if required -%}
+                    {% set label_attr = label_attr|merge({'class': (label_attr.class|default('flex gap-1 text-light-dark text-sm font-bold') ~ ' isRequired')|trim}) %}
+                {%- endif -%}
+                <{{ element|default('label') }}{% if label_attr %}{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}{% endif %}>
+                    {{- block('form_label_content') -}}
+                </{{ element|default('label') }}>
+             {%- endif -%}
         {%- endblock form_label -%}
 
 
