@@ -21,7 +21,7 @@ final class Version20240124051854 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE invoice ADD price DOUBLE PRECISION NOT NULL');
-        $this->addSql('ALTER TABLE "user" ALTER company_id SET NOT NULL');
+        $this->addSql('ALTER TABLE "user" ALTER company_id SET NULL');
         $this->addSql('ALTER TABLE "user" ALTER lastname SET NOT NULL');
         $this->addSql('ALTER TABLE "user" ALTER firstname SET NOT NULL');
         $this->addSql('ALTER TABLE "user" ALTER created_at DROP DEFAULT');
