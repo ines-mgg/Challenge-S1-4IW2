@@ -45,4 +45,13 @@ class PrestationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findBestOptions()
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.name', 'p.price')
+            ->orderBy('p.price', 'ASC')
+            ->setMaxResults(3)
+            ->getQuery()
+            ->getResult();
+    }
 }
