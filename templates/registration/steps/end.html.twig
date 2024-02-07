@@ -1,0 +1,24 @@
+{% extends 'registration/base.html.twig' %}
+
+{% block title %}Création de votre compte Facturo - Étape {{ step.order }}/{{ stepTotal }}{% endblock %}
+
+{% block body %}
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm, {
+        'attr': {
+            'novalidate': 'novalidate',
+            'class': 'mt-8 flex flex-col gap-8'
+        }
+    }) }}
+
+    {{ form_rest(registrationForm) }}
+    {#
+    TODO: Utiliser un composant pour le bouton
+    #}
+    <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
+        Suivant
+    </button>
+
+    {{ form_end(registrationForm) }}
+{% endblock %}
