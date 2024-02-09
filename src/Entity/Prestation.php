@@ -25,15 +25,17 @@ class Prestation
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
 
-    #[ORM\ManyToMany(targetEntity: Quotation::class, mappedBy: 'prestation')]
-    private Collection $quotations;
-
     #[ORM\ManyToMany(targetEntity: Invoice::class, mappedBy: 'prestation')]
     private Collection $invoices;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $tva = null;
+
     public function __construct()
     {
-        $this->quotations = new ArrayCollection();
         $this->invoices = new ArrayCollection();
     }
 
@@ -79,33 +81,6 @@ class Prestation
     }
 
     /**
-     * @return Collection<int, Quotation>
-     */
-    public function getQuotations(): Collection
-    {
-        return $this->quotations;
-    }
-
-    public function addQuotation(Quotation $quotation): static
-    {
-        if (!$this->quotations->contains($quotation)) {
-            $this->quotations->add($quotation);
-            $quotation->addPrestation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuotation(Quotation $quotation): static
-    {
-        if ($this->quotations->removeElement($quotation)) {
-            $quotation->removePrestation($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Invoice>
      */
     public function getInvoices(): Collection
@@ -128,6 +103,30 @@ class Prestation
         if ($this->invoices->removeElement($invoice)) {
             $invoice->removePrestation($this);
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getTva(): ?float
+    {
+        return $this->tva;
+    }
+
+    public function setTva(?float $tva): static
+    {
+        $this->tva = $tva;
 
         return $this;
     }

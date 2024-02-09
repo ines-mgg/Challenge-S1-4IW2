@@ -23,11 +23,7 @@ class InvoiceFixtures extends Fixture implements DependentFixtureInterface
                 $invoice->setCreatedAt(new \DateTimeImmutable())
                     ->setUser($user)
                     ->setPrice($faker->randomFloat(2, 0, 1000))
-                    ->setStatus($faker->boolean())
-                    ->setFacture([ $faker->word,
-                        $faker->sentence,
-                        $faker->randomNumber(),
-                    ]);
+                    ->setStatus($faker->boolean());
                 foreach ($prestations as $prestation) {
                     $invoice->addPrestation($prestation);
                 }
