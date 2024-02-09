@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ConfirmStepFormType extends AbstractType
 {
@@ -22,11 +24,21 @@ class ConfirmStepFormType extends AbstractType
                 'invalid_message' => 'Les mots de passe ne correspondent pas',
                 'required' => true,
                 'first_options'  => [
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Veuillez entrer un mot de passe',
+                        ]),
+                        new Length([
+                            'min' => 8,
+                            'minMessage' => 'Votre mot de passe doit faire au moins {{ limit }} caractères',
+                            'max' => 4096,
+                        ])
+                    ],
                     'label' => 'Mot de passe',
                     'attr' => [
                         'placeholder' => 'Votre mot de passe',
                         'autocomplete' => 'off'
-                    ]
+                    ],
                 ],
                 'second_options' => [
                     'label' => 'Confirmez votre mot de passe',
