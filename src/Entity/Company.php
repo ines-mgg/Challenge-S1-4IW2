@@ -22,9 +22,6 @@ class Company
     #[ORM\Column(length: 255)]
     private ?string $logo = null;
 
-    #[ORM\Column]
-    private ?int $TVA = null;
-
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $license_validity = null;
 
@@ -41,10 +38,23 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
     private Collection $users;
 
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Customer::class)]
+    private Collection $customers;
+
+    #[ORM\Column(length: 50)]
+    private ?string $siret = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $tva = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $head_office = null;
+
     public function __construct()
     {
         $this->prestations = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->customers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,14 +86,14 @@ class Company
         return $this;
     }
 
-    public function getTVA(): ?int
+    public function getTVA(): ?string
     {
-        return $this->TVA;
+        return $this->tva;
     }
 
-    public function setTVA(int $TVA): static
+    public function setTVA(string $tva): static
     {
-        $this->TVA = $TVA;
+        $this->tva = $tva;
 
         return $this;
     }
@@ -180,6 +190,60 @@ class Company
                 $user->setCompany(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Customer>
+     */
+    public function getCustomers(): Collection
+    {
+        return $this->customers;
+    }
+
+    public function addCustomer(Customer $customer): static
+    {
+        if (!$this->customers->contains($customer)) {
+            $this->customers->add($customer);
+            $customer->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomer(Customer $customer): static
+    {
+        if ($this->customers->removeElement($customer)) {
+            // set the owning side to null (unless already changed)
+            if ($customer->getCompany() === $this) {
+                $customer->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSiret(): ?string
+    {
+        return $this->siret;
+    }
+
+    public function setSiret(string $siret): static
+    {
+        $this->siret = $siret;
+
+        return $this;
+    }
+
+    public function getHeadOffice(): ?string
+    {
+        return $this->head_office;
+    }
+
+    public function setHeadOffice(string $head_office): static
+    {
+        $this->head_office = $head_office;
 
         return $this;
     }

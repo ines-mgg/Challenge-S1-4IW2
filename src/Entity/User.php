@@ -22,7 +22,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->created_at = new \DateTimeImmutable();
         $this->updated_at = new \DateTimeImmutable();
         $this->oneTimeCodes = new ArrayCollection();
-        $this->quotations = new ArrayCollection();
         $this->invoices = new ArrayCollection();
     }
     #[ORM\Id]
@@ -64,9 +63,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
-
-    #[ORM\OneToMany(mappedBy: 'user_', targetEntity: Quotation::class)]
-    private Collection $quotations;
 
     #[ORM\OneToMany(mappedBy: 'user_', targetEntity: Invoice::class)]
     private Collection $invoices;
@@ -240,66 +236,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompany(?Company $company): static
     {
         $this->company = $company;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Quotation>
-     */
-    public function getQuotations(): Collection
-    {
-        return $this->quotations;
-    }
-
-    public function addQuotation(Quotation $quotation): static
-    {
-        if (!$this->quotations->contains($quotation)) {
-            $this->quotations->add($quotation);
-            $quotation->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuotation(Quotation $quotation): static
-    {
-        if ($this->quotations->removeElement($quotation)) {
-            // set the owning side to null (unless already changed)
-            if ($quotation->getUser() === $this) {
-                $quotation->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Invoice>
-     */
-    public function getInvoices(): Collection
-    {
-        return $this->invoices;
-    }
-
-    public function addInvoice(Invoice $invoice): static
-    {
-        if (!$this->invoices->contains($invoice)) {
-            $this->invoices->add($invoice);
-            $invoice->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInvoice(Invoice $invoice): static
-    {
-        if ($this->invoices->removeElement($invoice)) {
-            // set the owning side to null (unless already changed)
-            if ($invoice->getUser() === $this) {
-                $invoice->setUser(null);
-            }
-        }
 
         return $this;
     }
