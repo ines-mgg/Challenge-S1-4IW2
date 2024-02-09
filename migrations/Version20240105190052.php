@@ -26,7 +26,7 @@ final class Version20240105190052 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE prestation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE quotation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE contact (id INT NOT NULL, first_name VARCHAR(255) NOT NULL, last_name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, phone INT NOT NULL, society_size INT NOT NULL, society_name VARCHAR(255) NOT NULL, message TEXT NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE invoice (id INT NOT NULL, user__id INT DEFAULT NULL, status BYTEA NOT NULL, facture JSON NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE invoice (id INT NOT NULL, user__id INT DEFAULT NULL, status BYTEA NOT NULL, facture JSON NOT NULL, price INT NOT NULL , created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_906517448D57A4BB ON invoice (user__id)');
         $this->addSql('COMMENT ON COLUMN invoice.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE invoice_prestation (invoice_id INT NOT NULL, prestation_id INT NOT NULL, PRIMARY KEY(invoice_id, prestation_id))');

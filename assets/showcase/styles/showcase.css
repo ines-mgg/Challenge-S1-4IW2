@@ -12,13 +12,13 @@
 
 @layer components {
     .customBanner {
-        background-image: url(../../../public/build/images/banner_motif.jpg);
+        background-image: url(../../images/banner_motif.jpg);
         background-repeat: no-repeat;
         background-size: cover;
     }
 
     .customBackground {
-        background-image: url(../../../public/build/images/backgroundmotif.jpg);
+        background-image: url(../../images/backgroundmotif.jpg);
         background-repeat: no-repeat;
         background-size: auto;
     }

@@ -58,7 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: OneTimeCode::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: OneTimeCode::class, orphanRemoval: true)]
     private Collection $oneTimeCodes;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
