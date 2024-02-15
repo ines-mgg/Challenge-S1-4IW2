@@ -5,6 +5,8 @@
 {% block body %}
     {{ form_errors(registrationForm) }}
 
+    <p class="mt-4 font-bold">Cette étape est optionnelle. Vous pourrez éditer vos informations à tout moment dans votre espace.</p>
+
     {{ form_start(registrationForm, {
         'attr': {
             'novalidate': 'novalidate',
@@ -19,6 +21,13 @@
     <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
         Suivant
     </button>
-
+    <div class="w-full flex justify-center">
+        <a href="{{ path(nextStepRoute)}}">
+            Passer cette étape
+        </a>
+    </div>
     {{ form_end(registrationForm) }}
+    {# add skip button to avoid form submit #}
+
+
 {% endblock %}

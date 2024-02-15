@@ -11,11 +11,13 @@ use App\Form\Registration\EmailStepFormType;
 use App\Form\Registration\InformationsStepFormType;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
+use App\Security\SiretVerifier;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -283,21 +285,47 @@ class RegistrationController extends AbstractController
             return $handleSecurityResponse;
         }
 
+
+
         $formErrors = [];
 
         $form = $this->createForm($this->steps["company"]["form"]);
         $form->handleRequest($request);
+        //	85296013700010
 
         if ($form->isSubmitted()) {
-            // TODO : éditer $formErrors (à faire quand API SIREN sera prête)
-            return $this->redirectToRoute('app_register_informations');
+
+            if ($form->isValid()) {
+                $siretVerifier = new SiretVerifier(
+                    HttpClient::create(),
+                    $_ENV['INSEE_API_TOKEN']
+                );
+
+                $siretData = $siretVerifier->fetchSiretData($form->get('company')->getData());
+                dd($siretData);
+                // CREER COMPANY
+
+                return $this->redirectToRoute($this->steps[$this->steps["company"]["next"]]["route"]);
+            } else {
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[]["message"] = $error->getMessage();
+                }
+                // Save form errors in the session
+                // Post/Redirect/Get pattern to avoid form resubmission
+                $session->getFlashBag()->add('form_errors', $errors);
+                // Redirect back to the form
+                return $this->redirectToRoute($this->steps["company"]["route"]);
+            }
         }
 
+        $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
         return $this->render('registration/steps/company.html.twig', [
             'step' => $this->steps["company"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),
-            'formErrors' => $formErrors
+            'formErrors' => $formErrors,
+            'nextStepRoute' => $this->steps[$this->steps["company"]["next"]]["route"],
         ]);
     }
 
@@ -316,20 +344,31 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute($this->steps["company"]["route"]);
         }
 
-        $formErrors = [];
-
         $form = $this->createForm($this->steps["informations"]["form"], $user);
         $form->handleRequest($request);
 
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            if ($form->isValid()) {
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            return $this->redirectToRoute($this->steps[$this->steps["informations"]["next"]]["route"]);
+                return $this->redirectToRoute($this->steps[$this->steps["informations"]["next"]]["route"]);
+            } else {
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[]["message"] = $error->getMessage();
+                }
+                // Save form errors in the session
+                // Post/Redirect/Get pattern to avoid form resubmission
+                $session->getFlashBag()->add('form_errors', $errors);
+                // Redirect back to the form
+                return $this->redirectToRoute($this->steps["informations"]["route"]);
+            }
         }
 
+        $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
         return $this->render('registration/steps/informations.html.twig', [
             'step' => $this->steps["informations"],
             'stepTotal' => count($this->steps),
