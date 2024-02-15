@@ -18,7 +18,7 @@ class CompanyStepFormType extends AbstractType
             ->add('company', TextType::class, [
                 'label' => 'SIRET de votre entreprise',
                 'attr' => [
-                    'placeholder' => 'Votre entreprise',
+                    'placeholder' => 'SIRET de votre entreprise',
                     'autocomplete' => 'off',
                 ],
                 'constraints' => [

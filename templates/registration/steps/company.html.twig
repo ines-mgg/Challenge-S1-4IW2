@@ -15,11 +15,24 @@
     }) }}
 
     {{ form_rest(registrationForm) }}
-    {#
-    TODO: Utiliser un composant pour le bouton
-    #}
+
+    {% if company is defined %}
+        <div class="flex">
+            <div class="flex">
+                <div class="flex">
+                    <span>{{ company.name }}</span>
+                    <span>-</span>
+                    <span>{{ company.siret }}</span>
+                </div>
+                <span>{{ company.address }}</span>
+            </div>
+            ->
+        </div>
+
+    {% endif %}
+
     <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
-        Suivant
+        Rechercher
     </button>
     <div class="w-full flex justify-center">
         <a href="{{ path(nextStepRoute)}}">

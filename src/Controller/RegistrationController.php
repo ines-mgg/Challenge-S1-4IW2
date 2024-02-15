@@ -102,7 +102,7 @@ class RegistrationController extends AbstractController
         if ($loggedUser) {
             if ($loggedUser->isVerified()) {
                 // TODO: redirect to facturo backoffice
-                return $this->redirectToRoute('showcase_index');
+                return $this->redirectToRoute('app_dashboard');
             }
 
             $registrationStatus = $session->get(self::SESSION_AUTH_KEY);
@@ -145,19 +145,6 @@ class RegistrationController extends AbstractController
     #[Route(['', '/start'], name: 'start')]
     public function start(Request $request, EntityManagerInterface $entityManager, Security $security, SessionInterface $session): Response
     {
-        /*
-        TODO: TO REMOVE
-        $loggedUser = $security->getUser();
-        if ($loggedUser) {
-            if ($loggedUser->isVerified()) {
-                return $this->redirectToRoute('app_login');
-            }
-
-            if ($session->get(self::SESSION_AUTH_KEY)) {
-                return $this->redirectToRoute('app_register_company');
-            }
-        }
-        */
         $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
         if ($handleSecurityResponse instanceof RedirectResponse) {
             return $handleSecurityResponse;
@@ -285,10 +272,6 @@ class RegistrationController extends AbstractController
             return $handleSecurityResponse;
         }
 
-
-
-        $formErrors = [];
-
         $form = $this->createForm($this->steps["company"]["form"]);
         $form->handleRequest($request);
         //	85296013700010
@@ -301,8 +284,25 @@ class RegistrationController extends AbstractController
                     $_ENV['INSEE_API_TOKEN']
                 );
 
+                $errors = [];
+
                 $siretData = $siretVerifier->fetchSiretData($form->get('company')->getData());
-                dd($siretData);
+                if (is_null($siretData)) {
+                    $errors[]["message"] = "Aucune entreprise active n'a été trouvée avec ce SIRET";
+                } else {
+                    $siretInfo = $siretVerifier->extractSiretInfo($siretData);
+                    if (is_null($siretInfo)) {
+                        $errors[]["message"] = "Aucune entreprise active n'a été trouvée avec ce SIRET";
+                    }
+                }
+
+                if (count($errors) > 0) {
+                    // Save form errors in the session
+                    // Post/Redirect/Get pattern to avoid form resubmission
+                    $session->getFlashBag()->add('form_errors', $errors);
+                    // Redirect back to the form
+                    return $this->redirectToRoute($this->steps["company"]["route"]);
+                }
                 // CREER COMPANY
 
                 return $this->redirectToRoute($this->steps[$this->steps["company"]["next"]]["route"]);
@@ -326,6 +326,11 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form->createView(),
             'formErrors' => $formErrors,
             'nextStepRoute' => $this->steps[$this->steps["company"]["next"]]["route"],
+            'company' => [
+                'siret' => '85296013700010',
+                'name' => 'Facturo',
+                'address' => '1 rue de la paix',
+            ]
         ]);
     }
 

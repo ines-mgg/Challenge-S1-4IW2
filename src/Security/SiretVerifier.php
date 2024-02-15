@@ -55,6 +55,10 @@ public function extractSiretInfo(array $siretData): ?array
     $denomination = $uniteLegale['denominationUniteLegale'] ?? 'N/A';
     $isActive = $uniteLegale['etatAdministratifUniteLegale'] === 'A';
 
+    if (!$isActive) {
+        return null;
+    }
+
     $adresseParts = [
         $adresseEtablissement['numeroVoieEtablissement'] ?? '',
         $adresseEtablissement['indiceRepetitionEtablissement'] ?? '',
@@ -75,7 +79,6 @@ public function extractSiretInfo(array $siretData): ?array
 
     return [
         'denomination' => $denomination,
-        'isActive' => $isActive,
         'adresse' => $adresse ?: 'Adresse non disponible',
     ];
 }
