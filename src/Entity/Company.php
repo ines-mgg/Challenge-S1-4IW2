@@ -19,13 +19,13 @@ class Company
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $logo = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $license_validity = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $id_license = null;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Prestation::class)]

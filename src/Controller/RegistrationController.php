@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Company;
 use App\Entity\OneTimeCode;
 use App\Entity\User;
 use App\Form\Registration\CompanyStepFormType;
@@ -9,13 +10,13 @@ use App\Form\Registration\ConfirmStepFormType;
 use App\Form\Registration\EmailStepConfirmationFormType;
 use App\Form\Registration\EmailStepFormType;
 use App\Form\Registration\InformationsStepFormType;
-use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
+use App\Security\SiretVerifier;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -82,8 +83,6 @@ class RegistrationController extends AbstractController
         ];
     }
 
-    // TODO : Voir note
-
     /**
      * Permet de vérifier si l'utilisateur est bien authentifié pour accéder à la page
      * @param Request $request
@@ -99,8 +98,7 @@ class RegistrationController extends AbstractController
         $loggedUser = $security->getUser();
         if ($loggedUser) {
             if ($loggedUser->isVerified()) {
-                // TODO: redirect to facturo backoffice
-                return $this->redirectToRoute('showcase_index');
+                return $this->redirectToRoute('app_dashboard');
             }
 
             $registrationStatus = $session->get(self::SESSION_AUTH_KEY);
@@ -139,23 +137,9 @@ class RegistrationController extends AbstractController
         return null;
     }
 
-
     #[Route(['', '/start'], name: 'start')]
     public function start(Request $request, EntityManagerInterface $entityManager, Security $security, SessionInterface $session): Response
     {
-        /*
-        TODO: TO REMOVE
-        $loggedUser = $security->getUser();
-        if ($loggedUser) {
-            if ($loggedUser->isVerified()) {
-                return $this->redirectToRoute('app_login');
-            }
-
-            if ($session->get(self::SESSION_AUTH_KEY)) {
-                return $this->redirectToRoute('app_register_company');
-            }
-        }
-        */
         $handleSecurityResponse = $this->handleSecurity($request, $session, $security);
         if ($handleSecurityResponse instanceof RedirectResponse) {
             return $handleSecurityResponse;
@@ -283,22 +267,121 @@ class RegistrationController extends AbstractController
             return $handleSecurityResponse;
         }
 
-        $formErrors = [];
-
         $form = $this->createForm($this->steps["company"]["form"]);
         $form->handleRequest($request);
+        //	85296013700010 -> siret pauline pour test auto entreprise
 
         if ($form->isSubmitted()) {
-            // TODO : éditer $formErrors (à faire quand API SIREN sera prête)
-            return $this->redirectToRoute('app_register_informations');
+
+            if ($form->isValid()) {
+
+                $siretVerifier = new SiretVerifier(
+                    HttpClient::create(),
+                    $_ENV['INSEE_API_TOKEN']
+                );
+
+                $errors = [];
+
+                $siret = $form->get('company')->getData();
+                $siretData = $siretVerifier->fetchSiretData($siret);
+                if (is_null($siretData)) {
+                    $errors[]["message"] = "Aucune entreprise active n'a été trouvée avec ce SIRET";
+                } else {
+                    $siretInfo = $siretVerifier->extractSiretInfo($siretData);
+                    if (is_null($siretInfo)) {
+                        $errors[]["message"] = "Aucune entreprise active n'a été trouvée avec ce SIRET";
+                    }
+                }
+
+                if (count($errors) > 0) {
+                    // Save form errors in the session
+                    // Post/Redirect/Get pattern to avoid form resubmission
+                    $session->getFlashBag()->add('form_errors', $errors);
+                    // Redirect back to the form
+                    return $this->redirectToRoute($this->steps["company"]["route"]);
+                }
+
+                // set siret in session for temporary use
+                $session->set('selected_siret', $siret);
+                return $this->render('registration/steps/company.html.twig', [
+                    'step' => $this->steps["company"],
+                    'stepTotal' => count($this->steps),
+                    'registrationForm' => $form->createView(),
+                    'nextStepRoute' => $this->steps[$this->steps["company"]["next"]]["route"],
+                    'company' => [
+                        'siret' => $siret,
+                        'name' => $siretInfo['denomination'],
+                        'address' => $siretInfo['adresse'],
+                    ]
+                ]);
+            } else {
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[]["message"] = $error->getMessage();
+                }
+                // Save form errors in the session
+                // Post/Redirect/Get pattern to avoid form resubmission
+                $session->getFlashBag()->add('form_errors', $errors);
+                // Redirect back to the form
+                return $this->redirectToRoute($this->steps["company"]["route"]);
+            }
         }
 
+        $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
         return $this->render('registration/steps/company.html.twig', [
             'step' => $this->steps["company"],
             'stepTotal' => count($this->steps),
             'registrationForm' => $form->createView(),
-            'formErrors' => $formErrors
+            'formErrors' => $formErrors,
+            'nextStepRoute' => $this->steps[$this->steps["company"]["next"]]["route"],
         ]);
+    }
+
+    #[Route('/company/{siret}/confirm', name: 'company_confirm')]
+    public function companyConfirm(Request $request, SessionInterface $session, EntityManagerInterface $entityManager): Response
+    {
+        $siret = $session->get('selected_siret');
+        if (is_null($siret)) {
+            // Si pas de siret en session, alors route inacessible
+            return $this->redirectToRoute($this->steps["company"]["route"]);
+        }
+
+        if ($siret !== $request->get('siret')) {
+            // tentative de modification du siret entre l'affichage et la confirmation donc redirection
+            $session->getFlashBag()->add('form_errors',  [
+                ["message" => "Impossible de valider votre entreprise, veuillez recommencer"]
+            ]);
+            return $this->redirectToRoute($this->steps["company"]["route"]);
+        }
+
+        $user = $this->getUser();
+
+        $siretVerifier = new SiretVerifier(
+            HttpClient::create(),
+            $_ENV['INSEE_API_TOKEN']
+        );
+
+        $siretData = $siretVerifier->fetchSiretData($siret);
+        $siretInfo = $siretVerifier->extractSiretInfo($siretData);
+
+        $userCompany = $user->getCompany();
+        if ($userCompany) {
+            $entityManager->remove($userCompany);
+            $user->setCompany(null);
+        }
+
+        $company = new Company();
+        $company->setSiret($siret);
+        $company->setName($siretInfo['denomination']);
+        $company->setHeadOffice($siretInfo['adresse']);
+
+        $entityManager->persist($company);
+
+        $user->setCompany($company);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute($this->steps[$this->steps["company"]["next"]]["route"]);
     }
 
     #[Route('/informations', name: 'informations')]
@@ -310,26 +393,31 @@ class RegistrationController extends AbstractController
         }
         $user = $this->getUser();
 
-        // TODO : RETIRER false (pour l'instant, on peut passer à l'étape suivante sans avoir de company)
-        //  -> MANQUE API SIREN
-        if (!$user->getCompany() && false) {
-            return $this->redirectToRoute($this->steps["company"]["route"]);
-        }
-
-        $formErrors = [];
-
         $form = $this->createForm($this->steps["informations"]["form"], $user);
         $form->handleRequest($request);
 
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            if ($form->isValid()) {
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            return $this->redirectToRoute($this->steps[$this->steps["informations"]["next"]]["route"]);
+                return $this->redirectToRoute($this->steps[$this->steps["informations"]["next"]]["route"]);
+            } else {
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[]["message"] = $error->getMessage();
+                }
+                // Save form errors in the session
+                // Post/Redirect/Get pattern to avoid form resubmission
+                $session->getFlashBag()->add('form_errors', $errors);
+                // Redirect back to the form
+                return $this->redirectToRoute($this->steps["informations"]["route"]);
+            }
         }
 
+        $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
         return $this->render('registration/steps/informations.html.twig', [
             'step' => $this->steps["informations"],
             'stepTotal' => count($this->steps),
@@ -348,22 +436,10 @@ class RegistrationController extends AbstractController
 
         $user = $this->getUser();
 
-        // TODO : RETIRER false (pour l'instant, on peut passer à l'étape suivante sans avoir de company)
-        //  -> MANQUE API SIREN
-        if (false) {
-            if (!$user->getCompany()) {
-                return $this->redirectToRoute($this->steps["company"]["route"]);
-            }
+        if ($user->getFirstname() === null || $user->getLastname() === null) {
+            return $this->redirectToRoute($this->steps["informations"]["route"]);
         }
 
-        if (false) {
-            if ($user->getFirstname() === null || $user->getLastname() === null) {
-                return $this->redirectToRoute($this->steps["informations"]["route"]);
-            }
-        }
-
-        // TODO : éditer $formErrors pour afficher les erreurs de validation
-        $formErrors = [];
         $form = $this->createForm($this->steps["confirm"]["form"]);
         $form->handleRequest($request);
 
@@ -404,67 +480,4 @@ class RegistrationController extends AbstractController
             'formErrors' => $formErrors
         ]);
     }
-
-
-    /*
-     * SAVE old register() for email confirmation
-     *  $user = new User();
-     *  $form = $this->createForm(RegistrationFormType::class, $user);
-     *  $form->handleRequest($request);
-     *
-     *  if ($form->isSubmitted() && $form->isValid()) {
-     *      // encode the plain password
-     *      $user->setPassword(
-     *          $userPasswordHasher->hashPassword(
-     *              $user,
-     *              $form->get('password')->getData()
-     *          )
-     *      );
-     *
-     *      $entityManager->persist($user);
-     *      $entityManager->flush();
-     *
-     *      // generate a signed url and email it to the user
-     *      $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-     *          (new TemplatedEmail())
-     *              ->from(new Address('replace-me@facturo.fr', 'Facturo Account Service'))
-     *              ->to($user->getEmail())
-     *              ->subject('Please Confirm your Email')
-     *              ->htmlTemplate('registration/confirmation_email.html.twig')
-     *      );
-     *  // do anything else you need here, like send an email
-     *
-     *      return $this->redirectToRoute('app_login');
-     *  }
-     */
-
-//    #[Route('/verify/email', name: 'verify_email')]
-//    public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
-//    {
-//        $id = $request->query->get('id');
-//
-//        if (null === $id) {
-//            return $this->redirectToRoute('app_register');
-//        }
-//
-//        $user = $userRepository->find($id);
-//
-//        if (null === $user) {
-//            return $this->redirectToRoute('app_register');
-//        }
-//
-//        // validate email confirmation link, sets User::isVerified=true and persists
-//        try {
-//            $this->emailVerifier->handleEmailConfirmation($request, $user);
-//        } catch (VerifyEmailExceptionInterface $exception) {
-//            $this->addFlash('verify_email_error', $exception->getReason());
-//
-//            return $this->redirectToRoute('app_register');
-//        }
-//
-//        // @TODO Change the redirect on success and handle or remove the flash message in your templates
-//        $this->addFlash('success', 'Your email address has been verified.');
-//
-//        return $this->redirectToRoute('app_register');
-//    }
 }
