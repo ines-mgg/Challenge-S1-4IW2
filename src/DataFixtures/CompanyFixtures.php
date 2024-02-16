@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Company;
-use App\Entity\Offer;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -20,7 +19,6 @@ class CompanyFixtures extends Fixture implements DependentFixtureInterface
         // $product = new Product();
         // $manager->persist($product);
         $faker = Factory::create('fr_FR');
-        $offers = $manager->getRepository(Offer::class)->findAll();
         foreach ($offers as $offer) {
             for ($i = 0; $i < $faker->numberBetween(1, 10); ++$i) {
                 $company = new Company();
@@ -28,8 +26,7 @@ class CompanyFixtures extends Fixture implements DependentFixtureInterface
                         ->setLogo($faker->imageUrl())
                         ->setTVA($faker->randomNumber(2))
                         ->setLicenseValidity($faker->dateTimeBetween('-1 years', '+1 years'))
-                        ->setIdLicense($faker->randomNumber(2))
-                        ->setOffer($offer);
+                        ->setIdLicense($faker->randomNumber(2));
                 $manager->persist($company);
                 $referenceName = self::COMPANY_REFERENCE . $i;
 
