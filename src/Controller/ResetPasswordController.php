@@ -163,6 +163,7 @@ class ResetPasswordController extends AbstractController
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy([
             'email' => $emailFormData,
+            'isVerified' => true
         ]);
 
         // Do not reveal whether a user account was found or not.
