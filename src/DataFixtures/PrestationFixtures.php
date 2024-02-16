@@ -18,10 +18,13 @@ class PrestationFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('fr_FR');
         $companies = $manager->getRepository(Company::class)->findAll();
         foreach ($companies as $company) {
-            for ($i = 0; $i < $faker->numberBetween(1, 10); ++$i) {
+            for ($i = 0; $i < 10; ++$i) {
                 $prestation = new Prestation();
                 $prestation->setName($faker->word())
                     ->setPrice($faker->randomFloat(2, 0, 1000))
+                    ->setTva($faker->randomElement(['0', '2.1', '5.5', '10', '20']))
+                    ->setDescription($faker->sentence())
+                    ->setUnite($faker->randomElement(['h', 'cm', 'm', 'pce']))
                     ->setCompany($company);
                 $referenceName = self::PRESTATION_REFERENCE . $i;
 

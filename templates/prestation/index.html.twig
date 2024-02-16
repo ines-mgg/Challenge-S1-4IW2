@@ -12,6 +12,7 @@
                 <th>Name</th>
                 <th>Price</th>
                 <th>Description</th>
+                <th>Unite</th>
                 <th>Tva</th>
                 <th>actions</th>
             </tr>
@@ -23,10 +24,15 @@
                 <td>{{ prestation.name }}</td>
                 <td>{{ prestation.price }}</td>
                 <td>{{ prestation.description }}</td>
+                <td>{{ prestation.unite }}</td>
                 <td>{{ prestation.tva }}</td>
                 <td>
                     <a href="{{ path('app_prestation_show', {'id': prestation.id}) }}">show</a>
                     <a href="{{ path('app_prestation_edit', {'id': prestation.id}) }}">edit</a>
+                    <form method="post" action="{{ path('app_prestation_delete', {'id': prestation.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ prestation.id) }}">
+                        <button class="btn">Delete</button>
+                    </form>
                 </td>
             </tr>
         {% else %}
@@ -36,6 +42,5 @@
         {% endfor %}
         </tbody>
     </table>
-
     <a href="{{ path('app_prestation_new') }}">Create new</a>
 {% endblock %}

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "df55463c07bdacea21d4dbd6fab553d9",
+    "content-hash": "250b456555cf7602be101b69c0410b26",
     "packages": [
         {
             "name": "composer/semver",
@@ -4727,6 +4727,79 @@
                 }
             ],
             "time": "2023-12-01T17:02:02+00:00"
+        },
+        {
+            "name": "symfony/infobip-mailer",
+            "version": "v6.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/infobip-mailer.git",
+                "reference": "8ff91b8f859ab8de032f750f5f71fefd042d26b9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/infobip-mailer/zipball/8ff91b8f859ab8de032f750f5f71fefd042d26b9",
+                "reference": "8ff91b8f859ab8de032f750f5f71fefd042d26b9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/mailer": "^6.2.7|^7.0",
+                "symfony/mime": "^6.2|^7.0"
+            },
+            "conflict": {
+                "symfony/mime": "<6.2"
+            },
+            "require-dev": {
+                "symfony/http-client": "^6.1|^7.0"
+            },
+            "type": "symfony-mailer-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Mailer\\Bridge\\Infobip\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jean-Baptiste Delhommeau",
+                    "email": "jeanbadel@gmail.com"
+                },
+                {
+                    "name": "Benoit Galati",
+                    "email": "benoit.galati@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Infobip Mailer Bridge",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/infobip-mailer/tree/v6.4.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-01-23T14:51:35+00:00"
         },
         {
             "name": "symfony/intl",
