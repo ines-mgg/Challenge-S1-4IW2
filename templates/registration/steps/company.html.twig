@@ -5,20 +5,46 @@
 {% block body %}
     {{ form_errors(registrationForm) }}
 
+    <p class="mt-4 font-bold">Cette étape est optionnelle. Vous pourrez éditer vos informations à tout moment dans votre espace.</p>
+
     {{ form_start(registrationForm, {
         'attr': {
             'novalidate': 'novalidate',
-            'class': 'mt-8 flex flex-col gap-8'
+            'class': 'mt-8 flex flex-col gap-4'
         }
     }) }}
 
     {{ form_rest(registrationForm) }}
-    {#
-    TODO: Utiliser un composant pour le bouton
-    #}
-    <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
-        Suivant
-    </button>
 
+    {% if company is defined %}
+        <a href="{{ path('app_register_company_confirm', {
+            'siret': company.siret
+        }) }}" class="flex justify-between border-gray-400 rounded border p-4 items-center hover:bg-[#f0f0f0] cursor-pointer">
+            <div class="flex flex-col gap-4">
+                <div class="flex gap-2">
+                    <span class="font-semibold text-base">{{ company.name }}</span>
+                    <span>-</span>
+                    <span class="text-[#636360] text-base">{{ company.siret }}</span>
+                </div>
+                <span class="font-semibold text-[#636360] text-base">{{ company.address }}</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+                <path d="M0.715698 0.73291L8.99997 9.01718M0.715698 15.8871L8.99997 7.60284" stroke="#AAAAA9" stroke-width="2"/>
+            </svg>
+        </a>
+
+    {% endif %}
+
+    <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
+        Rechercher
+    </button>
+    <div class="w-full flex justify-center">
+        <a href="{{ path(nextStepRoute)}}">
+            Passer cette étape
+        </a>
+    </div>
     {{ form_end(registrationForm) }}
+    {# add skip button to avoid form submit #}
+
+
 {% endblock %}
