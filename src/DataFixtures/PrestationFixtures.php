@@ -25,15 +25,12 @@ class PrestationFixtures extends Fixture implements DependentFixtureInterface
                     ->setTva($faker->randomElement(['0', '2.1', '5.5', '10', '20']))
                     ->setDescription($faker->sentence())
                     ->setUnite($faker->randomElement(['h', 'cm', 'm', 'pce']))
+                    ->setArchive($faker->boolean())
                     ->setCompany($company);
                 $referenceName = self::PRESTATION_REFERENCE . $i;
-
-                // Check if the reference already exists
                 if ($this->hasReference($referenceName)) {
-                    // Override the existing reference
                     $this->setReference($referenceName, $prestation);
                 } else {
-                    // Add the new reference
                     $this->addReference($referenceName, $prestation);
                 }
                 $manager->persist($prestation);

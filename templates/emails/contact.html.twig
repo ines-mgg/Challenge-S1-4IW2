@@ -1,0 +1,14 @@
+{# templates/emails/signup.html.twig #}
+<h1>Facturo - Contact!</h1>
+
+<p>
+    Mr, Mrs.  {{ email.toName }} souhaiterait vous contacter.
+    Voici son message : {{ email.body }}
+    Il est joignable à l'adresse suivante : {{ email.from[0].address }} ou par téléphone au {{ email.from[0].phone }}
+    You signed up as {{ username }} the following email:
+</p>
+<p><code>{{ email.to[0].address }}</code></p>
+
+<p>
+
+</p>

@@ -37,6 +37,9 @@ class Prestation
     #[ORM\Column(length: 100)]
     private ?string $unite = null;
 
+    #[ORM\Column]
+    private ?bool $archive = null;
+
     public function __construct()
     {
         $this->invoicePrestations = new ArrayCollection();
@@ -145,6 +148,18 @@ class Prestation
     public function setUnite(string $unite): static
     {
         $this->unite = $unite;
+
+        return $this;
+    }
+
+    public function isArchive(): ?bool
+    {
+        return $this->archive;
+    }
+
+    public function setArchive(bool $archive): static
+    {
+        $this->archive = $archive;
 
         return $this;
     }
