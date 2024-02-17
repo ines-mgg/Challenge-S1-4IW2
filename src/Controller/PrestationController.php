@@ -59,42 +59,30 @@ class PrestationController extends AbstractController
     #[Route('/{id}/edit', name: 'app_prestation_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Prestation $prestation, EntityManagerInterface $entityManager): Response
     {
-        $originalPrestation = clone $prestation;
-        $form = $this->createForm(PrestationType::class, $prestation);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if (!$prestation->getInvoicePrestations()->isEmpty()) {
-                $newPrestation = new Prestation();
-                $newPrestation->setArchive(false);
-                $newPrestation->setPrice($prestation->getPrice());
-                $newPrestation->setUnite($prestation->getUnite());
-                $newPrestation->setName($prestation->getName());
-                $newPrestation->setTva($prestation->getTva());
-                $newPrestation->setDescription($prestation->getDescription());
-                $newPrestation->setCompany($prestation->getCompany());
-                $entityManager->detach($prestation);
-                $entityManager->persist($newPrestation);
-                dump($newPrestation);
-                $prestation = $entityManager->getRepository(Prestation::class)->find($prestation->getId());
-                $prestation->setArchive(true);
-                $entityManager->persist($prestation);
-                dump($prestation);
-                die();
-                    $this->addFlash('warning', 'Impossible de modifier une prestation utilisée dans une facture, une nouvelle prestation a été créée avec les mêmes informations et l ancienne  a été archivée.');
-            }else {
-                $entityManager->persist($prestation);
-                $this->addFlash('success', 'Prestation modifiée avec succès');
-            }
-            $entityManager->flush();
-
-
+        if (count($prestation->getInvoicePrestations()) > 0) {
+            $newPrestation = clone $prestation;
+            $entityManager->detach($newPrestation);
+            $prestationToPersist = $newPrestation;
+            $prestationToPersist->setArchive(false);
+            $prestation->setArchive(true);
+            $entityManager->persist($prestation);
+            $this->addFlash('warning', 'Attention, cette prestation est déjà liée à une facture, vous ne pouvez pas la modifier');
+        } else {
+            $prestationToPersist = $prestation;
         }
 
+        $form = $this->createForm(PrestationType::class, $prestationToPersist);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($prestationToPersist);
+            $entityManager->flush();
+            $this->addFlash('success', 'Prestation modifiée avec succès');
+
+        }
         return $this->render('prestation/edit.html.twig', [
-            'prestation' => $prestation,
+            'prestation' => $prestationToPersist,
             'form' => $form,
         ]);
-
     }
 
     #[Route('/{id}', name: 'app_prestation_delete', methods: ['POST'])]
