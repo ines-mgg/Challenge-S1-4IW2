@@ -37,23 +37,17 @@ class ConfirmStepFormType extends AbstractType
                     'label' => 'Mot de passe',
                     'attr' => [
                         'placeholder' => 'Votre mot de passe',
-                        'autocomplete' => 'off'
+                        'autocomplete' => 'new-password',
                     ],
                 ],
                 'second_options' => [
                     'label' => 'Confirmez votre mot de passe',
                     'attr' => [
                         'placeholder' => 'Votre mot de passe',
-                        'autocomplete' => 'off'
+                        'autocomplete' => 'new-password',
                     ]
                 ],
             ])
-//            ->add('submit', SubmitType::class, [
-//                'label' => 'Finaliser mon compte',
-//                'attr' => [
-//                    'class' => 'btn btn-primary'
-//                ]
-//            ])
         ;
     }
 

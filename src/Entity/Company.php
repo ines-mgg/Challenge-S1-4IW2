@@ -19,18 +19,14 @@ class Company
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $logo = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $license_validity = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $id_license = null;
-
-    #[ORM\ManyToOne(inversedBy: 'companies')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Offer $offer = null;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Prestation::class)]
     private Collection $prestations;
@@ -118,18 +114,6 @@ class Company
     public function setIdLicense(int $id_license): static
     {
         $this->id_license = $id_license;
-
-        return $this;
-    }
-
-    public function getOffer(): ?Offer
-    {
-        return $this->offer;
-    }
-
-    public function setOffer(?Offer $offer): static
-    {
-        $this->offer = $offer;
 
         return $this;
     }

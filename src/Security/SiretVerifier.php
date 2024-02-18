@@ -6,41 +6,16 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SiretVerifier
 {
-    private $httpClient;
-    private $apiToken;
+    private HttpClientInterface $httpClient;
+    private string $apiToken;
+
+    private const AUTO_ENTREPRENEUR_CODE = '1000';
 
     public function __construct(HttpClientInterface $httpClient, string $apiToken)
     {
         $this->httpClient = $httpClient;
         $this->apiToken = $apiToken;
     }
-
-    // public function verifySiret(string $siret): bool
-    // {
-    //     $url = "https://api.insee.fr/entreprises/sirene/V3/siret/{$siret}";
-
-    //     try {
-    //         $response = $this->httpClient->request('GET', $url, [
-    //             'headers' => [
-    //                 'Authorization' => 'Bearer ' . $this->apiToken,
-    //             ],
-    //         ]);
-
-    //         if (200 !== $response->getStatusCode()) {
-    //             return false;
-    //         }
-
-    //         $data = $response->toArray();
-            
-    //         if (isset($data['etablissement']['uniteLegale']['etatAdministratifUniteLegale']) && 'A' === $data['etablissement']['uniteLegale']['etatAdministratifUniteLegale']) {
-    //             return true;
-    //         }
-
-    //         return false;
-    //     } catch (\Exception $exception) {
-    //         return false;
-    //     }
-    // }
 
     public function fetchSiretData(string $siret): ?array
 {
@@ -80,6 +55,10 @@ public function extractSiretInfo(array $siretData): ?array
     $denomination = $uniteLegale['denominationUniteLegale'] ?? 'N/A';
     $isActive = $uniteLegale['etatAdministratifUniteLegale'] === 'A';
 
+    if (!$isActive) {
+        return null;
+    }
+
     $adresseParts = [
         $adresseEtablissement['numeroVoieEtablissement'] ?? '',
         $adresseEtablissement['indiceRepetitionEtablissement'] ?? '',
@@ -93,9 +72,13 @@ public function extractSiretInfo(array $siretData): ?array
         return !empty($part);
     }));
 
+    // si auto-entrepreneur prendre nom prenom
+    if ($uniteLegale['categorieJuridiqueUniteLegale'] === self::AUTO_ENTREPRENEUR_CODE) {
+        $denomination = $uniteLegale['prenomUsuelUniteLegale'] . ' ' . $uniteLegale['nomUniteLegale'];
+    }
+
     return [
         'denomination' => $denomination,
-        'isActive' => $isActive,
         'adresse' => $adresse ?: 'Adresse non disponible',
     ];
 }
