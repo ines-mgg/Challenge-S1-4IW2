@@ -3,21 +3,18 @@
 namespace App\DataFixtures;
 
 use App\Entity\Company;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use phpDocumentor\Reflection\Types\Self_;
 
-class CompanyFixtures extends Fixture implements DependentFixtureInterface
+class CompanyFixtures extends Fixture
 {
     const COMPANY_REFERENCE = 'company';
 
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
-        foreach ($offers as $offer) {
+
             for ($i = 0; $i < $faker->numberBetween(1, 10); ++$i) {
                 $company = new Company();
                 $company->setName($faker->company())
@@ -27,7 +24,6 @@ class CompanyFixtures extends Fixture implements DependentFixtureInterface
                         ->setIdLicense($faker->randomNumber(2))
                         ->setHeadOffice($faker->name())
                         ->setSiret($faker->siret())
-                        ->setOffer($offer);
                         ->setIdLicense($faker->randomNumber(2));
                 $manager->persist($company);
                 $referenceName = self::COMPANY_REFERENCE . $i;
@@ -43,15 +39,9 @@ class CompanyFixtures extends Fixture implements DependentFixtureInterface
                 $manager->persist($company);
             }
 
-        }
+        
         $manager->flush();
 
 
-    }
-    public function getDependencies(): array
-    {
-        return [
-            OfferFixtures::class,
-        ];
     }
 }
