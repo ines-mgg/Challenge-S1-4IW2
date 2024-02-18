@@ -2,15 +2,12 @@
 
 namespace App\Form\Registration;
 
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class CompanyStepFormType extends AbstractType
 {
@@ -19,18 +16,21 @@ class CompanyStepFormType extends AbstractType
         // TODO : Lier le formulaire à la vérif avec l'API de l'INSEE (SIREN)
         $builder
             ->add('company', TextType::class, [
-                'label' => '(TODO) Nom de votre entreprise',
+                'label' => 'SIRET de votre entreprise',
                 'attr' => [
-                    'placeholder' => 'Votre entreprise',
-                    'value' => 'TODO'
-                ]
+                    'placeholder' => 'SIRET de votre entreprise',
+                    'autocomplete' => 'off',
+                ],
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^[0-9]{14}$/',
+                        'message' => 'Le SIRET doit être composé de 14 chiffres',
+                    ]),
+                    new NotBlank([
+                        'message' => 'Veuillez renseigner le SIRET de votre entreprise',
+                    ]),
+                ],
             ])
-//            ->add('submit', SubmitType::class, [
-//                'label' => 'Suivant',
-//                'attr' => [
-//                    'class' => 'btn btn-primary'
-//                ]
-//            ])
         ;
     }
 
