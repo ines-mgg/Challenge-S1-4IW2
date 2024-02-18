@@ -25,18 +25,16 @@ class Prestation
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $description = null;
+    #[ORM\ManyToMany(targetEntity: Quotation::class, mappedBy: 'prestation')]
+    private Collection $quotations;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $tva = null;
-
-    #[ORM\OneToMany(mappedBy: 'prestation', targetEntity: InvoicePrestation::class)]
-    private Collection $invoicePrestations;
+    #[ORM\ManyToMany(targetEntity: Invoice::class, mappedBy: 'prestation')]
+    private Collection $invoices;
 
     public function __construct()
     {
-        $this->invoicePrestations = new ArrayCollection();
+        $this->quotations = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,55 +78,55 @@ class Prestation
         return $this;
     }
 
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getTva(): ?float
-    {
-        return $this->tva;
-    }
-
-    public function setTva(?float $tva): static
-    {
-        $this->tva = $tva;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, InvoicePrestation>
+     * @return Collection<int, Quotation>
      */
-    public function getInvoicePrestations(): Collection
+    public function getQuotations(): Collection
     {
-        return $this->invoicePrestations;
+        return $this->quotations;
     }
 
-    public function addInvoicePrestation(InvoicePrestation $invoicePrestation): static
+    public function addQuotation(Quotation $quotation): static
     {
-        if (!$this->invoicePrestations->contains($invoicePrestation)) {
-            $this->invoicePrestations->add($invoicePrestation);
-            $invoicePrestation->setPrestation($this);
+        if (!$this->quotations->contains($quotation)) {
+            $this->quotations->add($quotation);
+            $quotation->addPrestation($this);
         }
 
         return $this;
     }
 
-    public function removeInvoicePrestation(InvoicePrestation $invoicePrestation): static
+    public function removeQuotation(Quotation $quotation): static
     {
-        if ($this->invoicePrestations->removeElement($invoicePrestation)) {
-            // set the owning side to null (unless already changed)
-            if ($invoicePrestation->getPrestation() === $this) {
-                $invoicePrestation->setPrestation(null);
-            }
+        if ($this->quotations->removeElement($quotation)) {
+            $quotation->removePrestation($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->addPrestation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            $invoice->removePrestation($this);
         }
 
         return $this;

@@ -19,14 +19,21 @@ class Company
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $logo = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[ORM\Column]
+    private ?int $TVA = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $license_validity = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?int $id_license = null;
+
+    #[ORM\ManyToOne(inversedBy: 'companies')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Offer $offer = null;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Prestation::class)]
     private Collection $prestations;
@@ -34,23 +41,10 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
     private Collection $users;
 
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Customer::class)]
-    private Collection $customers;
-
-    #[ORM\Column(length: 50)]
-    private ?string $siret = null;
-
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $tva = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $head_office = null;
-
     public function __construct()
     {
         $this->prestations = new ArrayCollection();
         $this->users = new ArrayCollection();
-        $this->customers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,14 +76,14 @@ class Company
         return $this;
     }
 
-    public function getTVA(): ?string
+    public function getTVA(): ?int
     {
-        return $this->tva;
+        return $this->TVA;
     }
 
-    public function setTVA(string $tva): static
+    public function setTVA(int $TVA): static
     {
-        $this->tva = $tva;
+        $this->TVA = $TVA;
 
         return $this;
     }
@@ -114,6 +108,18 @@ class Company
     public function setIdLicense(int $id_license): static
     {
         $this->id_license = $id_license;
+
+        return $this;
+    }
+
+    public function getOffer(): ?Offer
+    {
+        return $this->offer;
+    }
+
+    public function setOffer(?Offer $offer): static
+    {
+        $this->offer = $offer;
 
         return $this;
     }
@@ -174,60 +180,6 @@ class Company
                 $user->setCompany(null);
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Customer>
-     */
-    public function getCustomers(): Collection
-    {
-        return $this->customers;
-    }
-
-    public function addCustomer(Customer $customer): static
-    {
-        if (!$this->customers->contains($customer)) {
-            $this->customers->add($customer);
-            $customer->setCompany($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCustomer(Customer $customer): static
-    {
-        if ($this->customers->removeElement($customer)) {
-            // set the owning side to null (unless already changed)
-            if ($customer->getCompany() === $this) {
-                $customer->setCompany(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getSiret(): ?string
-    {
-        return $this->siret;
-    }
-
-    public function setSiret(string $siret): static
-    {
-        $this->siret = $siret;
-
-        return $this;
-    }
-
-    public function getHeadOffice(): ?string
-    {
-        return $this->head_office;
-    }
-
-    public function setHeadOffice(string $head_office): static
-    {
-        $this->head_office = $head_office;
 
         return $this;
     }
