@@ -45,12 +45,4 @@ class InvoiceRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function findBestOptions(): array
-    {
-        return $this->createQueryBuilder('i')
-            ->select(i.prestation)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
 }

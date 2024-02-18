@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\InvoiceRepository;
+use App\Repository\QuotationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: InvoiceRepository::class)]
-class Invoice
+#[ORM\Entity(repositoryClass: QuotationRepository::class)]
+class Quotation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,19 +20,20 @@ class Invoice
     private $status = null;
 
     #[ORM\Column]
-    private array $facture = [];
+    private array $devis = [];
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\ManyToOne(inversedBy: 'invoices')]
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updated_at = null;
+
+    #[ORM\ManyToOne(inversedBy: 'quotations')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user_ = null;
 
-    #[ORM\ManyToMany(targetEntity: Prestation::class, inversedBy: 'invoices')]
+    #[ORM\ManyToMany(targetEntity: Prestation::class, inversedBy: 'quotations')]
     private Collection $prestation;
-
-    #[ORM\Column]
-    private ?float $price = null;
 
     public function __construct()
     {
@@ -56,14 +57,14 @@ class Invoice
         return $this;
     }
 
-    public function getFacture(): array
+    public function getDevis(): array
     {
-        return $this->facture;
+        return $this->devis;
     }
 
-    public function setFacture(array $facture): static
+    public function setDevis(array $devis): static
     {
-        $this->facture = $facture;
+        $this->devis = $devis;
 
         return $this;
     }
@@ -76,6 +77,18 @@ class Invoice
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updated_at): static
+    {
+        $this->updated_at = $updated_at;
 
         return $this;
     }
@@ -112,18 +125,6 @@ class Invoice
     public function removePrestation(Prestation $prestation): static
     {
         $this->prestation->removeElement($prestation);
-
-        return $this;
-    }
-
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): static
-    {
-        $this->price = $price;
 
         return $this;
     }
