@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,16 +39,29 @@ class ContactType extends AbstractType
                     'required' => true
                 ]
             ])
-            ->add('phoneNumber', null, [
+            ->add('phone', null, [
                 'label' => 'Numéro de téléphone',
                 'attr' => [
                     'placeholder' => '+33 1 23 45 67 89',
                     'type' => 'tel'
                 ]
             ])
-            ->add('company')
+            ->add('society_name', null, [
+                'label' => 'Nom de l\'entreprise',
+                'attr' => [
+                    'placeholder' => 'Nom de l\'entreprise',
+                    'type' => 'text'
+                ]
+            ])
+            ->add('society_size', null, [
+                'label' => 'Taille de l\'entreprise',
+                'attr' => [
+                    'placeholder' => 'Nombre de salariés',
+                    'type' => 'number'
+                ]
+            ])
             ->add('subject', null, [
-                'label' => 'Nom de l’entreprise',
+                'label' => 'Sujet',
                 'attr' => [
                     'placeholder' => 'Nom de l\'entreprise',
                     'type' => 'text'
