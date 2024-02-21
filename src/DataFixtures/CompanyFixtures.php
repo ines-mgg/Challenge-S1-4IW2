@@ -17,7 +17,6 @@ class CompanyFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
-        foreach ($offers as $offer) {
             for ($i = 0; $i < $faker->numberBetween(1, 10); ++$i) {
                 $company = new Company();
                 $company->setName($faker->company())
@@ -27,7 +26,6 @@ class CompanyFixtures extends Fixture implements DependentFixtureInterface
                         ->setIdLicense($faker->randomNumber(2))
                         ->setHeadOffice($faker->name())
                         ->setSiret($faker->siret())
-                        ->setOffer($offer);
                         ->setIdLicense($faker->randomNumber(2));
                 $manager->persist($company);
                 $referenceName = self::COMPANY_REFERENCE . $i;
@@ -42,8 +40,6 @@ class CompanyFixtures extends Fixture implements DependentFixtureInterface
                 }
                 $manager->persist($company);
             }
-
-        }
         $manager->flush();
 
 
