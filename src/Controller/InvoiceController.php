@@ -30,6 +30,21 @@ class InvoiceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $invoice->setStatus($invoice->getType() === 'Devis' ? 'À valider' : 'À payer');
+            $invoice->setCreatedAt(new \DateTimeImmutable());
+
+            $total = 0;
+            foreach ($invoice->getInvoicePrestations() as $invoicePrestation) {
+                $total += (
+                    $invoicePrestation->getPrestation()->getPrice() +
+                    ($invoicePrestation->getPrestation()->getPrice() *
+                        ($invoicePrestation->getPrestation()->getTva() / 100))
+                ) * $invoicePrestation->getQuantity();
+                $invoicePrestation->setInvoice($invoice);
+            }
+            $invoice->setTotal($total);
+
             $entityManager->persist($invoice);
             $entityManager->flush();
 
@@ -71,7 +86,7 @@ class InvoiceController extends AbstractController
     #[Route('/{id}', name: 'app_invoice_delete', methods: ['POST'])]
     public function delete(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$invoice->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $invoice->getId(), $request->request->get('_token'))) {
             $entityManager->remove($invoice);
             $entityManager->flush();
         }

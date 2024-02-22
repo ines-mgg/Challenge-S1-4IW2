@@ -7,13 +7,13 @@
 
 
         {%- block form_label -%}
-            {%- set label_class = label_class|default('flex gap-1 text-light-dark text-sm font-bold isRequired') -%}
+            {%- set label_class = label_class|default('flex gap-1 text-light-dark text-sm font-bold') -%}
             {{- parent() -}}
         {%- endblock form_label -%}
 
 
         {%- block textarea_widget -%}
-            {%- set widget_class = widget_class|default('border border-gray-400 rounded w-full focus:outline-none isRequired') -%}
+            {%- set widget_class = widget_class|default('border border-gray-400 rounded w-full focus:outline-none') -%}
             {{- parent() -}}
         {%- endblock textarea_widget -%}
 

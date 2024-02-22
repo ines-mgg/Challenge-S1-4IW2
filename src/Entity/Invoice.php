@@ -20,9 +20,6 @@ class Invoice
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\Column]
-    private ?float $price = null;
-
-    #[ORM\Column]
     private ?float $total = null;
 
     #[ORM\Column(length: 50)]
@@ -38,7 +35,7 @@ class Invoice
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $closing_date = null;
 
-    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoicePrestation::class)]
+    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoicePrestation::class, cascade: ["persist"])]
     private Collection $invoicePrestations;
 
     public function __construct()
@@ -59,18 +56,6 @@ class Invoice
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
-
-        return $this;
-    }
-
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): static
-    {
-        $this->price = $price;
 
         return $this;
     }
