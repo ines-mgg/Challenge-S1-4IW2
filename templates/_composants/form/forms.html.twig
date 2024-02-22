@@ -20,13 +20,6 @@
             {{- parent() -}}
         {%- endblock textarea_widget -%}
 
-        {%- block widget_attributes -%}
-                {%- set widget_class = widget_class|default('pl-2 h-8 border border-gray-400 rounded focus:outline-none placeholder:font-semibold placeholder:text-xs placeholder:leading-normal w-full') -%}
-                {%- set widget_disabled_class = widget_disabled_class|default('my disabled widget classes') -%}
-                {%- set widget_errors_class = widget_errors_class|default('my widget with error classes') -%}
-                {{- parent() -}}
-        {%- endblock widget_attributes -%}
-
 
         {%- block form_help -%}
             {%- set help_class = help_class|default('my label classes') -%}
