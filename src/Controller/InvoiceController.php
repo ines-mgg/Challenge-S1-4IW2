@@ -19,6 +19,7 @@ class InvoiceController extends AbstractController
     {
         return $this->render('invoice/index.html.twig', [
             'invoices' => $invoiceRepository->findAll(),
+            'todayDate' => date('Y-m-d'),
         ]);
     }
 
@@ -87,7 +88,9 @@ class InvoiceController extends AbstractController
     public function delete(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $invoice->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($invoice);
+            $invoice->setStatus('Annulé(e)');
+            // $entityManager->remove($invoice);
+            $entityManager->persist($invoice);
             $entityManager->flush();
         }
 
