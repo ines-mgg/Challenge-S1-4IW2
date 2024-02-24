@@ -6,6 +6,8 @@ use App\Entity\Company;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -15,7 +17,12 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('email')
+        ->add('email',EmailType::class, [
+            'required' => true,
+            'attr' => [
+                'placeholder' => 'exemple@exemple.com'
+            ]
+        ])
         ->add('roles', ChoiceType::class, [
             'choices' => [
                 'Owner' => 'ROLE_USER',
@@ -23,10 +30,30 @@ class UserType extends AbstractType
             ],
             'multiple' => true
         ])
-            ->add('password')
-            ->add('isVerified')
-            ->add('lastname')
-            ->add('firstname')
+           // ->add('password',PasswordType::class, [
+           //     'required' => true,
+             //   'attr' => [
+               //     'placeholder' => 'Mot de passe'
+                //]
+           // ])
+            ->add('isVerified', ChoiceType::class, [
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false,
+                ],
+            ])
+            ->add('lastname',null, [
+                'required' => true,
+                'attr' => [
+                    'placeholder' => 'Dupont'
+                ]
+            ])
+            ->add('firstname',null, [
+                'required' => true,
+                'attr' => [
+                    'placeholder' => 'Jean'
+                ]
+            ])
             // ->add('created_at')
             // ->add('updated_at')
 //             ->add('company', EntityType::class, [
