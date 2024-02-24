@@ -105,7 +105,6 @@ class ContactController extends AbstractController
     public function edit(MailerInterface $mailer,Request $request, Contact $contact, EntityManagerInterface $entityManager ): Response
     {
         $form = $this->createForm(MailReply::class);
-        var_dump($contact);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $context = [
