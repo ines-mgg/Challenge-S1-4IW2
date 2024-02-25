@@ -10,10 +10,46 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Dompdf\Dompdf;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 #[Route('/invoice')]
 class InvoiceController extends AbstractController
 {
+    private $email;
+    private $dompdf;
+
+    public function __construct(MailerInterface $mailer)
+    {
+        $this->email = $mailer;
+        $this->dompdf = new Dompdf();
+    }
+
+    private function sendEmail(Invoice $invoice)
+    {
+        // pdf + email
+        $this->dompdf->loadHtml($this->renderView('invoice/pdf.html.twig', [
+            'invoice' => $invoice->getInvoice()
+        ]));
+        $this->dompdf->setPaper('A4', 'portrait');
+        $this->dompdf->render();
+        $email = (new Email())
+            ->from('no_reply@facturo.com')
+            ->to($invoice->getCustomer()->getEmail())
+            ->subject($invoice->getType() === 'Devis' ? 'Voici votre devis' : 'Voici votre facture')
+            ->text('test test test')
+            ->attach($this->dompdf->output(), 'invoice.pdf', 'application/pdf');
+        try {
+            $this->email->send($email);
+            return true;
+        } catch (TransportExceptionInterface $e) {
+            dump($e->getMessage());
+            return false;
+        }
+    }
+
     #[Route('/', name: 'app_invoice_index', methods: ['GET'])]
     public function index(InvoiceRepository $invoiceRepository): Response
     {
@@ -71,7 +107,7 @@ class InvoiceController extends AbstractController
                     "email" => $invoice->getCustomer()->getEmail(),
                     "number" => $invoice->getCustomer()->getNumber(),
                     "siret" => $invoice->getCustomer()->getSiret(),
-                ], 
+                ],
                 "prestations" => $prestations,
                 "total" => [
                     "ht" => $totalHT,
@@ -80,10 +116,14 @@ class InvoiceController extends AbstractController
             ];
             $invoice->setTotal($totalTTC);
             $invoice->setInvoice($dataInvoice);
-            $entityManager->persist($invoice);
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
+            if ($this->sendEmail($invoice)) {
+                $entityManager->persist($invoice);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
+            } else {
+                $this->addFlash('danger', 'Une erreur est survenue lors de la création');
+            }
         }
 
         return $this->render('invoice/new.html.twig', [
@@ -168,10 +208,13 @@ class InvoiceController extends AbstractController
             ];
             $newInvoice->setTotal($totalTTC);
             $newInvoice->setInvoice($dataInvoice);
-            $entityManager->persist($newInvoice);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
+            if ($this->sendEmail($newInvoice)) {
+                $entityManager->persist($newInvoice);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
+            } else {
+                $this->addFlash('danger', 'Une erreur est survenue lors de la création');
+            }
         }
 
         return $this->render('invoice/edit.html.twig', [

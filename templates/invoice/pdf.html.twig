@@ -1,0 +1,77 @@
+{# Invoice #}
+<div class="border-2 border-light-dark p-4 flex flex-col">
+  {# Company #}
+  <section class="font-medium text-light-dark">
+    {% if invoice.company.logo %}
+    <img
+      src="{{ invoice.company.logo }}"
+      alt="company logo"
+      width="150px"
+      height="150px"
+    />
+    {% endif %}
+    <p>
+      {{ invoice.company.name ? invoice.company.name : "" }}
+    </p>
+    <p>
+      {{ invoice.company.siret ? invoice.company.siret : "" }}
+    </p>
+    <p>
+      {{ invoice.company.headOffice ? invoice.company.headOffice : "" }}
+    </p>
+  </section>
+  {# Client #}
+  <section class="font-medium text-light-dark self-end">
+    <p>
+      {{ invoice.customer.fullname ? invoice.customer.fullname : "" }}
+    </p>
+    <p>
+      {{ invoice.customer.email ? invoice.customer.email : "" }}
+    </p>
+    <p>
+      {{ invoice.customer.number ? invoice.customer.number : "" }}
+    </p>
+    <p>
+      {{ invoice.customer.siret ? invoice.customer.siret : "" }}
+    </p>
+  </section>
+  <p class="font-medium text-light-dark">
+    Le
+    {{ invoice.date ? invoice.date|date('d/m/Y') : "" }}
+  </p>
+  {# Prestation #}
+  <table class="mt-4 self-center min-w-full">
+    <thead>
+      <tr>
+        <th scope="col" class="text-left">Prestation</th>
+        <th scope="col" class="text-center">Prix unitaire</th>
+        <th scope="col" class="text-center">Quantité</th>
+        <th scope="col" class="text-center">Total HT</th>
+        <th scope="col" class="text-center">TVA</th>
+        <th scope="col" class="text-right">Total TTC</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for prestation in invoice.prestations %}
+      <tr>
+        <td class="text-left">{{ prestation.name }}</td>
+        <td class="text-center">{{ prestation.priceUnit }}</td>
+        <td class="text-center">{{ prestation.quantity }}</td>
+        <td class="text-center">{{ prestation.totalHT }}</td>
+        <td class="text-center">{{ prestation.tva }}%</td>
+        <td class="text-right">{{ prestation.totalTTC }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot class="flex flex-col mt-4">
+      <tr>
+        <th scope="col">Total HT</th>
+        <td>{{ invoice.total.ht }}</td>
+      </tr>
+      <tr>
+        <th scope="col">Total TTC</th>
+        <td>{{ invoice.total.ttc }}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
