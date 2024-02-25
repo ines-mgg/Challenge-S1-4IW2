@@ -22,7 +22,7 @@ class CompanyFixtures extends Fixture
                 ->setLicenseValidity($faker->dateTimeBetween('-1 years', '+1 years'))
                 ->setIdLicense($faker->randomNumber(2))
                 ->setHeadOffice($faker->name())
-                ->setSiret($faker->siret())
+                ->setSiret(str_replace(' ', '', $faker->siret()))
                 ->setIdLicense($faker->randomNumber(2));
             $manager->persist($company);
             $referenceName = self::COMPANY_REFERENCE . $i;

@@ -130,10 +130,10 @@
                                     {#  <ul id="dropdown-crud" class="space-y-2 py-2 {{ if not (eq .Params.group "crud") }}hidden {% endif %}">#}
                                     <ul id="dropdown-crud" class="space-y-2 py-2">
                                         <li>
-                                            <a href="{{ path('facturo_app_crud-example-product') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "products" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Products</a>
+                                            <a href="{{ path('app_user_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "users" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Utilisateurs</a>
                                         </li>
                                         <li>
-                                            <a href="{{ path('facturo_app_crud-example-user') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "users" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Users</a>
+                                            <a href="{{ path('app_company_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "users" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Compagnies</a>
                                         </li>
                                     </ul>
                                 </li>
