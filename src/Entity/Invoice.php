@@ -38,6 +38,9 @@ class Invoice
     #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoicePrestation::class, cascade: ["persist"])]
     private Collection $invoicePrestations;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $invoice = null;
+
     public function __construct()
     {
         $this->invoicePrestations = new ArrayCollection();
@@ -146,6 +149,18 @@ class Invoice
                 $invoicePrestation->setInvoice(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getInvoice(): ?array
+    {
+        return $this->invoice;
+    }
+
+    public function setInvoice(?array $invoice): static
+    {
+        $this->invoice = $invoice;
 
         return $this;
     }

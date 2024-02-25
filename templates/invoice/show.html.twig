@@ -1,5 +1,5 @@
-{% extends 'baseDash.html.twig' %} {% block title %}Invoice{% endblock %} {%
-block body %}
+{% extends 'dashboard/base.html.twig' %} {% block title %}Invoice{% endblock %}
+{% block body %}
 <div class="p-4 flex flex-col gap-3">
   {# Button group #}
   <div class="flex items-center gap-3 mt-4 sm:mt-6">
@@ -20,7 +20,7 @@ block body %}
 
   {# Infos Invoice #} {% set todayDate = "now"|date('Y-m-d') %}
   <div class="self-center flex items-center gap-2">
-    <h1 class="font-bold">Facture n° {{ invoice.id }}</h1>
+    <h1 class="font-bold">{{ invoice.type }} n° {{ invoice.id }}</h1>
     {# Status #} {% if invoice.status == 'Validé' or invoice.status == 'Payée'
     %}
     <span
@@ -49,35 +49,56 @@ block body %}
   <div class="border-2 border-light-dark p-4 flex flex-col">
     {# Company #}
     <section class="font-medium text-light-dark">
-      {% if invoice.customer.getCompany().logo %}
+      {% if invoice.invoice.company.logo %}
       <img
-        src="{{ invoice.customer.getCompany().logo }}"
+        src="{{ invoice.invoice.company.logo }}"
         alt="company logo"
         width="150px"
         height="150px"
       />
       {% endif %}
-      <p>{{ invoice.customer.getCompany().name }}</p>
-      <p>{{ invoice.customer.getCompany().siret }}</p>
-      <p>{{ invoice.customer.getCompany().headOffice }}</p>
+      <p>
+        {{ invoice.invoice.company.name ? invoice.invoice.company.name : "" }}
+      </p>
+      <p>
+        {{ invoice.invoice.company.siret ? invoice.invoice.company.siret : "" }}
+      </p>
+      <p>
+        {{
+          invoice.invoice.company.headOffice
+            ? invoice.invoice.company.headOffice
+            : ""
+        }}
+      </p>
     </section>
     {# Client #}
     <section class="font-medium text-light-dark self-end">
       <p>
         {{
-          invoice.customer.getFullname() ? invoice.customer.getFullname() : ""
+          invoice.invoice.customer.fullname
+            ? invoice.invoice.customer.fullname
+            : ""
         }}
       </p>
-      <p>{{ invoice.customer.getEmail() }}</p>
       <p>
-        {{ invoice.customer.getNumber() ? invoice.customer.getNumber() : "" }}
+        {{
+          invoice.invoice.customer.email ? invoice.invoice.customer.email : ""
+        }}
       </p>
       <p>
-        {{ invoice.customer.getSiret() ? invoice.customer.getSiret() : "" }}
+        {{
+          invoice.invoice.customer.number ? invoice.invoice.customer.number : ""
+        }}
+      </p>
+      <p>
+        {{
+          invoice.invoice.customer.siret ? invoice.invoice.customer.siret : ""
+        }}
       </p>
     </section>
     <p class="font-medium text-light-dark">
-      {{ invoice.createdAt ? invoice.createdAt|date('d/m/Y') : "" }}
+      Le
+      {{ invoice.invoice.date.date ? invoice.invoice.date.date|date('d/m/Y') : "" }}
     </p>
     {# Prestation #}
     <table class="mt-4 self-center min-w-full">
@@ -92,37 +113,25 @@ block body %}
         </tr>
       </thead>
       <tbody>
-        {% set totalHT = 0 %} {% for prestation in invoice.invoicePrestations %}
-        {% set subtotal = prestation.getPrestation().price * prestation.quantity
-        %} {% set totalHT = totalHT + subtotal %}
+        {% for prestation in invoice.invoice.prestations %}
         <tr>
-          <td class="text-left">{{ prestation.getPrestation().name }}</td>
-          <td class="text-center">{{ prestation.getPrestation().price }}</td>
+          <td class="text-left">{{ prestation.name }}</td>
+          <td class="text-center">{{ prestation.priceUnit }}</td>
           <td class="text-center">{{ prestation.quantity }}</td>
-          <td class="text-center">
-            {{ prestation.getPrestation().price * prestation.quantity }}
-          </td>
-          <td class="text-center">{{ prestation.getPrestation().TVA }}%</td>
-          <td class="text-right">
-            {{
-              (prestation.getPrestation().price +
-                (prestation.getPrestation().price *
-                  prestation.getPrestation().TVA) /
-                  100) *
-                prestation.quantity
-            }}
-          </td>
+          <td class="text-center">{{ prestation.totalHT }}</td>
+          <td class="text-center">{{ prestation.tva }}%</td>
+          <td class="text-right">{{ prestation.totalTTC }}</td>
         </tr>
         {% endfor %}
       </tbody>
       <tfoot class="flex flex-col mt-4">
         <tr>
           <th scope="col">Total HT</th>
-          <td class="self-end">{{ totalHT }}</td>
+          <td>{{ invoice.invoice.total.ht }}</td>
         </tr>
         <tr>
           <th scope="col">Total TTC</th>
-          <td>{{ invoice.total }}</td>
+          <td>{{ invoice.invoice.total.ttc }}</td>
         </tr>
       </tfoot>
     </table>

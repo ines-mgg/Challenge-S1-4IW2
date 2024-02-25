@@ -34,17 +34,52 @@ class InvoiceController extends AbstractController
             $invoice->setStatus($invoice->getType() === 'Devis' ? 'À valider' : 'À payer');
             $invoice->setCreatedAt(new \DateTimeImmutable());
 
-            $total = 0;
+            $prestations = [];
+            $totalHT = 0;
+            $totalTTC = 0;
             foreach ($invoice->getInvoicePrestations() as $invoicePrestation) {
-                $total += (
+                $totalHT += $invoicePrestation->getPrestation()->getPrice() * $invoicePrestation->getQuantity();
+                $totalTTC += (
                     $invoicePrestation->getPrestation()->getPrice() +
                     ($invoicePrestation->getPrestation()->getPrice() *
                         ($invoicePrestation->getPrestation()->getTva() / 100))
                 ) * $invoicePrestation->getQuantity();
                 $invoicePrestation->setInvoice($invoice);
+                $prestations[] = [
+                    'name' => $invoicePrestation->getPrestation()->getName(),
+                    'priceUnit' => $invoicePrestation->getPrestation()->getPrice(),
+                    'quantity' => $invoicePrestation->getQuantity(),
+                    'totalHT' => $invoicePrestation->getPrestation()->getPrice() * $invoicePrestation->getQuantity(),
+                    'tva' => $invoicePrestation->getPrestation()->getTva(),
+                    'totalTTC' => (
+                        $invoicePrestation->getPrestation()->getPrice() +
+                        ($invoicePrestation->getPrestation()->getPrice() *
+                            ($invoicePrestation->getPrestation()->getTva() / 100))
+                    ) * $invoicePrestation->getQuantity()
+                ];
             }
-            $invoice->setTotal($total);
-
+            $dataInvoice = [
+                "date" => $invoice->getCreatedAt(),
+                "company" => [
+                    'logo' => $invoice->getCustomer()->getCompany()->getLogo(),
+                    'name' => $invoice->getCustomer()->getCompany()->getName(),
+                    'siret' => $invoice->getCustomer()->getCompany()->getSiret(),
+                    'headOffice' => $invoice->getCustomer()->getCompany()->getHeadOffice()
+                ],
+                "customer" => [
+                    "fullname" => $invoice->getCustomer()->getFullname(),
+                    "email" => $invoice->getCustomer()->getEmail(),
+                    "number" => $invoice->getCustomer()->getNumber(),
+                    "siret" => $invoice->getCustomer()->getSiret(),
+                ], 
+                "prestations" => $prestations,
+                "total" => [
+                    "ht" => $totalHT,
+                    "ttc" => $totalTTC
+                ]
+            ];
+            $invoice->setTotal($totalTTC);
+            $invoice->setInvoice($dataInvoice);
             $entityManager->persist($invoice);
             $entityManager->flush();
 
@@ -87,16 +122,52 @@ class InvoiceController extends AbstractController
             $newInvoice->setStatus($newInvoice->getType() === 'Devis' ? 'À valider' : 'À payer');
             $newInvoice->setCreatedAt(new \DateTimeImmutable());
             $newInvoice->setClosingDate($newInvoice->getClosingDate());
-            $total = 0;
+            $prestations = [];
+            $totalHT = 0;
+            $totalTTC = 0;
             foreach ($newInvoice->getInvoicePrestations() as $invoicePrestation) {
-                $total += (
+                $totalHT += $invoicePrestation->getPrestation()->getPrice() * $invoicePrestation->getQuantity();
+                $totalTTC += (
                     $invoicePrestation->getPrestation()->getPrice() +
                     ($invoicePrestation->getPrestation()->getPrice() *
                         ($invoicePrestation->getPrestation()->getTva() / 100))
                 ) * $invoicePrestation->getQuantity();
-                $invoicePrestation->setInvoice($newInvoice);
+                $invoicePrestation->setInvoice($invoice);
+                $prestations[] = [
+                    'name' => $invoicePrestation->getPrestation()->getName(),
+                    'priceUnit' => $invoicePrestation->getPrestation()->getPrice(),
+                    'quantity' => $invoicePrestation->getQuantity(),
+                    'totalHT' => $invoicePrestation->getPrestation()->getPrice() * $invoicePrestation->getQuantity(),
+                    'tva' => $invoicePrestation->getPrestation()->getTva(),
+                    'totalTTC' => (
+                        $invoicePrestation->getPrestation()->getPrice() +
+                        ($invoicePrestation->getPrestation()->getPrice() *
+                            ($invoicePrestation->getPrestation()->getTva() / 100))
+                    ) * $invoicePrestation->getQuantity()
+                ];
             }
-            $newInvoice->setTotal($total);
+            $dataInvoice = [
+                "date" => $invoice->getCreatedAt(),
+                "company" => [
+                    'logo' => $invoice->getCustomer()->getCompany()->getLogo(),
+                    'name' => $invoice->getCustomer()->getCompany()->getName(),
+                    'siret' => $invoice->getCustomer()->getCompany()->getSiret(),
+                    'headOffice' => $invoice->getCustomer()->getCompany()->getHeadOffice()
+                ],
+                "customer" => [
+                    "fullname" => $invoice->getCustomer()->getFullname(),
+                    "email" => $invoice->getCustomer()->getEmail(),
+                    "number" => $invoice->getCustomer()->getNumber(),
+                    "siret" => $invoice->getCustomer()->getSiret(),
+                ],
+                "prestations" => $prestations,
+                "total" => [
+                    "ht" => $totalHT,
+                    "ttc" => $totalTTC
+                ]
+            ];
+            $newInvoice->setTotal($totalTTC);
+            $newInvoice->setInvoice($dataInvoice);
             $entityManager->persist($newInvoice);
             $entityManager->flush();
 

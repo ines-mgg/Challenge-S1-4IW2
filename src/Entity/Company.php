@@ -38,7 +38,7 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Customer::class)]
     private Collection $customers;
 
-    #[ORM\Column(length: 14)]
+    #[ORM\Column(length: 50)]
     private ?string $siret = null;
 
     #[ORM\Column(length: 50, nullable: true)]

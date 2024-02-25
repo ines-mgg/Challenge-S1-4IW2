@@ -1,29 +1,23 @@
-{% extends 'baseDash.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
 {% block title %}Invoice index{% endblock %}
 
 {% block body %}
-<div class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
-    <div class="w-full mb-1">
-        <div class="mb-4">
-            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white py-3 px-2">Invoice index</h1>
-            <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
-                <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
-                    <a href="{{ path('app_invoice_new') }}">Create new</a>
-                </button>
-            </div>
-            {% embed '_composants/tables/_table.html.twig' %}
-            {% block thead %}
-                <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Id</th>
-                <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Client</th>
-                <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Type</th>
-                <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Total TTC</th>
-                <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Date limite</th>
-                <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Status</th>
-            {% endblock %}
-            {% block tbody %}
-            {% set todayDate = "now"|date('Y-m-d') %}
-            {% for invoice in invoices %}
+
+{% embed '_composants/tables/_table.html.twig' %}
+    {% block tTitle %}Invoice  {% endblock %}
+    {% block pathNew %}{{ path('app_invoice_new') }}{% endblock %}
+    {% block thead %}
+        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Id</th>
+        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Client</th>
+        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Type</th>
+        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Total TTC</th>
+        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Date limite</th>
+        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Status</th>
+    {% endblock %}
+    {% block tbody %}
+        {% set todayDate = "now"|date('Y-m-d') %}
+        {% for invoice in invoices %}
                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200" >{{ invoice.id }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200" >{{ invoice.customer.getFullname() }}</td>
@@ -52,10 +46,7 @@
                 <tr>
                     <td colspan="8">no records found</td>
                 </tr>
-            {% endfor %}   
-            {% endblock tbody %}
-    {% endembed  %}
-        </div>
-    </div>
-</div>
+        {% endfor %}   
+    {% endblock tbody %}
+{% endembed  %}
 {% endblock %}
