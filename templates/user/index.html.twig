@@ -1,11 +1,11 @@
-{% extends 'baseDash.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
 {% block title %}User {% endblock %}
 
 {% block body %}
 
     {%  embed '_composants/tables/_table.html.twig' %}
-        {% block tTitle %}User {% endblock %}
+        {% block tTitle %}Tous les utilisateurs {% endblock %}
         {% block pathNew %}{{ path('app_user_new') }}{% endblock %}
         {% block thead %}
                 <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Id</th>
