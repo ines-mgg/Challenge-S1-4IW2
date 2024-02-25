@@ -17,7 +17,7 @@
                 <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Id</th>
                 <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Client</th>
                 <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Type</th>
-                <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Total</th>
+                <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Total TTC</th>
                 <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Date limite</th>
                 <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Status</th>
             {% endblock %}
@@ -42,13 +42,10 @@
                     {% endif %}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                        <a class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ path('app_prestation_show', {'id': invoice.id}) }}">Show</a>
+                        <a class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ path('app_invoice_show', {'id': invoice.id}) }}">Show</a>
                         {% if invoice.status == 'À valider' or invoice.status == 'À payer' %}
-                            <a class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ path('app_prestation_edit', {'id': invoice.id}) }}">Edit</a>
-                            <form method="post" action="{{ path('app_invoice_delete', {'id': invoice.id}) }}" onsubmit="return confirm('Are you sure you want to cancel this item?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ invoice.id) }}">
-                                <button class="btn inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-red-600 hover:text-red-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">Cancel</button>
-                            </form>
+                            {# <a class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ path('app_invoice_edit', {'id': invoice.id}) }}">Edit</a> #}
+                                {{ include('invoice/_delete_form.html.twig') }}
                         {% endif %}
                     </td>
             {% else %}

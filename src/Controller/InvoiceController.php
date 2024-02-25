@@ -18,8 +18,7 @@ class InvoiceController extends AbstractController
     public function index(InvoiceRepository $invoiceRepository): Response
     {
         return $this->render('invoice/index.html.twig', [
-            'invoices' => $invoiceRepository->findAll(),
-            'todayDate' => date('Y-m-d'),
+            'invoices' => $invoiceRepository->findAll()
         ]);
     }
 
@@ -30,7 +29,7 @@ class InvoiceController extends AbstractController
         $form = $this->createForm(InvoiceType::class, $invoice);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && count($invoice->getInvoicePrestations()) > 0){
 
             $invoice->setStatus($invoice->getType() === 'Devis' ? 'À valider' : 'À payer');
             $invoice->setCreatedAt(new \DateTimeImmutable());
@@ -69,10 +68,37 @@ class InvoiceController extends AbstractController
     #[Route('/{id}/edit', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(InvoiceType::class, $invoice);
+        if ($invoice->getStatus() === 'Payée' || $invoice->getStatus() === 'Annulé(e)' || $invoice->getStatus() === 'Validé') {
+            return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
+        }
+        $oldInvoice = clone $invoice;
+        $oldInvoice->setStatus('Annulé(e)');
+        $entityManager->persist($oldInvoice);
+        $entityManager->flush();
+        $newInvoice = new Invoice();
+        $form = $this->createForm(InvoiceType::class, $oldInvoice);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && count($newInvoice->getInvoicePrestations()) > 0) {
+            // new invoice
+            $newInvoice->setCustomer($oldInvoice->getCustomer());
+            $newInvoice->setType($oldInvoice->getType());
+            $newInvoice->setStatus($newInvoice->getType() === 'Devis' ? 'À valider' : 'À payer');
+            $newInvoice->setCreatedAt(new \DateTimeImmutable());
+            $newInvoice->setClosingDate($oldInvoice->getClosingDate());
+            $total = 0;
+            foreach ($oldInvoice->getInvoicePrestations() as $invoicePrestation) {
+                $newInvoicePrestation = clone $invoicePrestation; // clone the InvoicePrestation
+                $newInvoicePrestation->setInvoice($newInvoice); // set the new Invoice as the Invoice of the new InvoicePrestation
+                $newInvoice->addInvoicePrestation($newInvoicePrestation); // add the new InvoicePrestation to the new Invoice
+                $total += (
+                    $newInvoicePrestation->getPrestation()->getPrice() +
+                    ($newInvoicePrestation->getPrestation()->getPrice() *
+                        ($newInvoicePrestation->getPrestation()->getTva() / 100))
+                ) * $newInvoicePrestation->getQuantity();
+            }
+            $newInvoice->setTotal($total);
+            $entityManager->persist($newInvoice);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);

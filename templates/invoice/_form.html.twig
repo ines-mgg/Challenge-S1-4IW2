@@ -25,8 +25,11 @@
             data-prototype="{{ form_widget(form.invoicePrestations.vars.prototype)|e('html_attr') }}"
           >
             {% for prestations in form.invoicePrestations %}
-            {{ form_widget(prestations.prestation) }}
-            {{ form_widget(prestations.quantity) }}
+            <div class="mt-4">
+              {{ form_row(prestations.prestation) }}
+              {{ form_row(prestations.quantity) }}
+              <button class="remove-prestation">Supprimer</button>
+            </div>
             {% endfor %}
           </div>
         </div>

@@ -1,46 +1,132 @@
-{% extends 'baseDash.html.twig' %}
+{% extends 'baseDash.html.twig' %} {% block title %}Invoice{% endblock %} {%
+block body %}
+<div class="p-4 flex flex-col gap-3">
+  {# Button group #}
+  <div class="flex items-center gap-3 mt-4 sm:mt-6">
+    <button
+      class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+    >
+      <a href="{{ path('app_invoice_index') }}">back to list</a>
+    </button>
+    {% if invoice.status == 'À valider' or invoice.status == 'À payer' %}
+    <a
+      class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+      href="{{ path('app_invoice_edit', { id: invoice.id }) }}"
+      >Edit</a
+    >
+    {{ include("invoice/_delete_form.html.twig") }}
+    {# TODO #} Button relance client {% endif %}
+  </div>
 
-{% block title %}Invoice{% endblock %}
+  {# Infos Invoice #} {% set todayDate = "now"|date('Y-m-d') %}
+  <div class="self-center flex items-center gap-2">
+    <h1 class="font-bold">Facture n° {{ invoice.id }}</h1>
+    {# Status #} {% if invoice.status == 'Validé' or invoice.status == 'Payée'
+    %}
+    <span
+      class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
+      >{{ invoice.status }}</span
+    >
+    {% elseif invoice.closingDate|date('Y-m-d') < todayDate %}
+    <span
+      class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+      >En retard</span
+    >
+    {% elseif invoice.status == 'À valider' or invoice.status == 'À payer' %}
+    <span
+      class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300"
+      >{{ invoice.status }}</span
+    >
+    {% elseif invoice.status == 'Annulé(e)' %}
+    <span
+      class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+      >{{ invoice.status }}
+    </span>
+    {% endif %}
+  </div>
 
-{% block body %}
-    <h1>Invoice</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ invoice.id }}</td>
-            </tr>
-            <tr>
-                <th>Created_at</th>
-                <td>{{ invoice.createdAt ? invoice.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Price</th>
-                <td>{{ invoice.price }}</td>
-            </tr>
-            <tr>
-                <th>Total</th>
-                <td>{{ invoice.total }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ invoice.type }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ invoice.status }}</td>
-            </tr>
-            <tr>
-                <th>Closing_date</th>
-                <td>{{ invoice.closingDate ? invoice.closingDate|date('Y-m-d') : '' }}</td>
-            </tr>
-        </tbody>
+  {# Invoice #}
+  <div class="border-2 border-light-dark p-4 flex flex-col">
+    {# Company #}
+    <section class="font-medium text-light-dark">
+      {% if invoice.customer.getCompany().logo %}
+      <img
+        src="{{ invoice.customer.getCompany().logo }}"
+        alt="company logo"
+        width="150px"
+        height="150px"
+      />
+      {% endif %}
+      <p>{{ invoice.customer.getCompany().name }}</p>
+      <p>{{ invoice.customer.getCompany().siret }}</p>
+      <p>{{ invoice.customer.getCompany().headOffice }}</p>
+    </section>
+    {# Client #}
+    <section class="font-medium text-light-dark self-end">
+      <p>
+        {{
+          invoice.customer.getFullname() ? invoice.customer.getFullname() : ""
+        }}
+      </p>
+      <p>{{ invoice.customer.getEmail() }}</p>
+      <p>
+        {{ invoice.customer.getNumber() ? invoice.customer.getNumber() : "" }}
+      </p>
+      <p>
+        {{ invoice.customer.getSiret() ? invoice.customer.getSiret() : "" }}
+      </p>
+    </section>
+    <p class="font-medium text-light-dark">
+      {{ invoice.createdAt ? invoice.createdAt|date('d/m/Y') : "" }}
+    </p>
+    {# Prestation #}
+    <table class="mt-4 self-center min-w-full">
+      <thead>
+        <tr>
+          <th scope="col" class="text-left">Prestation</th>
+          <th scope="col" class="text-center">Prix unitaire</th>
+          <th scope="col" class="text-center">Quantité</th>
+          <th scope="col" class="text-center">Total HT</th>
+          <th scope="col" class="text-center">TVA</th>
+          <th scope="col" class="text-right">Total TTC</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set totalHT = 0 %} {% for prestation in invoice.invoicePrestations %}
+        {% set subtotal = prestation.getPrestation().price * prestation.quantity
+        %} {% set totalHT = totalHT + subtotal %}
+        <tr>
+          <td class="text-left">{{ prestation.getPrestation().name }}</td>
+          <td class="text-center">{{ prestation.getPrestation().price }}</td>
+          <td class="text-center">{{ prestation.quantity }}</td>
+          <td class="text-center">
+            {{ prestation.getPrestation().price * prestation.quantity }}
+          </td>
+          <td class="text-center">{{ prestation.getPrestation().TVA }}%</td>
+          <td class="text-right">
+            {{
+              (prestation.getPrestation().price +
+                (prestation.getPrestation().price *
+                  prestation.getPrestation().TVA) /
+                  100) *
+                prestation.quantity
+            }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot class="flex flex-col mt-4">
+        <tr>
+          <th scope="col">Total HT</th>
+          <td class="self-end">{{ totalHT }}</td>
+        </tr>
+        <tr>
+          <th scope="col">Total TTC</th>
+          <td>{{ invoice.total }}</td>
+        </tr>
+      </tfoot>
     </table>
+  </div>
+</div>
 
-    <a href="{{ path('app_invoice_index') }}">back to list</a>
-
-    <a href="{{ path('app_invoice_edit', {'id': invoice.id}) }}">edit</a>
-
-    {{ include('invoice/_delete_form.html.twig') }}
 {% endblock %}
