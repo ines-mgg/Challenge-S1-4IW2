@@ -30,7 +30,7 @@ final class Version20240209111829 extends AbstractMigration
         $this->addSql('ALTER TABLE quotation DROP CONSTRAINT fk_474a8db98d57a4bb');
         $this->addSql('DROP TABLE quotation_prestation');
         $this->addSql('DROP TABLE quotation');
-        $this->addSql('ALTER TABLE company ADD siret VARCHAR(50) NOT NULL');
+        $this->addSql('ALTER TABLE company ADD siret VARCHAR(14) NOT NULL');
         $this->addSql('ALTER TABLE company ADD head_office VARCHAR(50) NOT NULL');
         $this->addSql('ALTER TABLE company ALTER tva TYPE VARCHAR(50)');
         $this->addSql('ALTER TABLE company ALTER tva DROP NOT NULL');

@@ -1,0 +1,11 @@
+{% extends 'baseDash.html.twig' %}
+
+{% block title %}New Prestation{% endblock %}
+
+{% block body %}
+    <h1>Ajouter une nouvelle prestation</h1>
+
+    {{ include('prestation/_form.html.twig') }}
+
+    <a href="{{ path('app_prestation_index') }}">retour</a>
+{% endblock %}

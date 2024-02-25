@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -15,10 +16,11 @@ class MailerController extends AbstractController
     #[Route('/mailer', name: 'app_mailer')]
     public function sendEmail(MailerInterface $mailer): Response
     {
-        $email = (new Email())
-            ->from('no_reply@facturo.com') // Sender
+        $email = (new TemplatedEmail())
+            ->from('facturoproject@proton.me') // Sender
             ->to('estelle272001@gmail.com')// Recipient
             ->subject('Devis') // Subject
+            ->htmlTemplate('emails/signup.html.twig')
             ->text('Sending emails is fun again!') // Content
             ->html('<p>This is you devis !</p>'); // Content
 

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+{% apply inline_css %}
+    <style>
+        {# here, define your CSS styles as usual #}
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+
+    <h1>Welcome {{ firstName }}!</h1>
+{% endapply %}

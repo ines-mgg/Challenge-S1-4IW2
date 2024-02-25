@@ -4,6 +4,7 @@
 
 {% block body %}
     <h1>User</h1>
+    {%  embed '_composants/tables/_table.html.twig' %}
 
     <table class="table">
         <tbody>
@@ -37,6 +38,7 @@
             </tr>
         </tbody>
     </table>
+    {% endembed %}
 
     <a href="{{ path('app_user_index') }}">back to list</a>
 
