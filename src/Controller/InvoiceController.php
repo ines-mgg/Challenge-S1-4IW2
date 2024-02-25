@@ -29,7 +29,7 @@ class InvoiceController extends AbstractController
         $form = $this->createForm(InvoiceType::class, $invoice);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && count($invoice->getInvoicePrestations()) > 0){
+        if ($form->isSubmitted() && $form->isValid() && count($invoice->getInvoicePrestations()) > 0) {
 
             $invoice->setStatus($invoice->getType() === 'Devis' ? 'À valider' : 'À payer');
             $invoice->setCreatedAt(new \DateTimeImmutable());
@@ -72,11 +72,12 @@ class InvoiceController extends AbstractController
             return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
         }
         $oldInvoice = clone $invoice;
-        $oldInvoice->setStatus('Annulé(e)');
-        $entityManager->persist($oldInvoice);
-        $entityManager->flush();
-        $newInvoice = new Invoice();
-        $form = $this->createForm(InvoiceType::class, $oldInvoice);
+        $entityManager->detach($oldInvoice);
+        $newInvoice = $oldInvoice;
+        $invoice->setStatus('Annulé(e)');
+        $entityManager->persist($invoice);
+
+        $form = $this->createForm(InvoiceType::class, $newInvoice);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid() && count($newInvoice->getInvoicePrestations()) > 0) {
@@ -85,17 +86,15 @@ class InvoiceController extends AbstractController
             $newInvoice->setType($oldInvoice->getType());
             $newInvoice->setStatus($newInvoice->getType() === 'Devis' ? 'À valider' : 'À payer');
             $newInvoice->setCreatedAt(new \DateTimeImmutable());
-            $newInvoice->setClosingDate($oldInvoice->getClosingDate());
+            $newInvoice->setClosingDate($newInvoice->getClosingDate());
             $total = 0;
-            foreach ($oldInvoice->getInvoicePrestations() as $invoicePrestation) {
-                $newInvoicePrestation = clone $invoicePrestation; // clone the InvoicePrestation
-                $newInvoicePrestation->setInvoice($newInvoice); // set the new Invoice as the Invoice of the new InvoicePrestation
-                $newInvoice->addInvoicePrestation($newInvoicePrestation); // add the new InvoicePrestation to the new Invoice
+            foreach ($newInvoice->getInvoicePrestations() as $invoicePrestation) {
                 $total += (
-                    $newInvoicePrestation->getPrestation()->getPrice() +
-                    ($newInvoicePrestation->getPrestation()->getPrice() *
-                        ($newInvoicePrestation->getPrestation()->getTva() / 100))
-                ) * $newInvoicePrestation->getQuantity();
+                    $invoicePrestation->getPrestation()->getPrice() +
+                    ($invoicePrestation->getPrestation()->getPrice() *
+                        ($invoicePrestation->getPrestation()->getTva() / 100))
+                ) * $invoicePrestation->getQuantity();
+                $invoicePrestation->setInvoice($newInvoice);
             }
             $newInvoice->setTotal($total);
             $entityManager->persist($newInvoice);
