@@ -45,4 +45,16 @@ class InvoiceRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findAllInvoices($id): array
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT f
+            FROM App\Entity\Invoice f
+            JOIN f.customer c
+            WHERE c.company = :id_de_l_entreprise
+            ORDER BY f.created_at ASC'
+        )->setParameter('id_de_l_entreprise', $id);
+        return $query->getResult();
+    }
 }
