@@ -14,6 +14,7 @@ use Dompdf\Dompdf;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
 #[Route('/invoice')]
 class InvoiceController extends AbstractController
@@ -35,11 +36,12 @@ class InvoiceController extends AbstractController
         ]));
         $this->dompdf->setPaper('A4', 'portrait');
         $this->dompdf->render();
-        $email = (new Email())
-            ->from('no_reply@facturo.com')
+        $email = (new TemplatedEmail())
             ->to($invoice->getCustomer()->getEmail())
             ->subject($invoice->getType() === 'Devis' ? 'Voici votre devis' : 'Voici votre facture')
+            ->htmlTemplate('emails/invoice.html.twig')
             ->text('test test test')
+            ->html('<p>Voici votre devis/facture</p>')
             ->attach($this->dompdf->output(), 'invoice.pdf', 'application/pdf');
         try {
             $this->email->send($email);
