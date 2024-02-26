@@ -38,13 +38,13 @@ class Company
     private Collection $customers;
 
     #[ORM\Column(length: 50)]
-    private ?string $siret = null;
+    private ?string $siret = "12378945612345";
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $tva = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $head_office = null;
+    private ?string $head_office = "none";
 
     public function __construct()
     {
