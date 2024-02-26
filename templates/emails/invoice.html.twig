@@ -1,0 +1,55 @@
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Arial", sans-serif;
+  }
+  #content {
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    text-align: justify;
+  }
+  #footer {
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+</style>
+
+<body>
+  {# email header #} {% if invoice.customer.company.logo != null %}
+
+  <img
+    src="{{ invoice.invoice.company.logo }}"
+    alt="company logo"
+    width="150px"
+    height="150px"
+  />
+  {% endif %} {# email text #}
+  <section id="content">
+    <p>
+      Bonjour {{ invoice.customer.fullname }} <br />
+      <br />
+      Vous trouverez ci-joint
+      {{ invoice.type == "Devis" ? "le devis fait " : "la facture faite" }} le
+      {{ invoice.createdAt|date('d/m/Y') }} .<br />
+      {% if invoice.type == "Devis" %} Vous avez jusqu'au
+      {{ invoice.closingDate|date('d/m/Y') }} pour
+      <a href="http://">accepter le devis</a> <br />
+      {% else %} Vous avez jusqu'au {{ invoice.closingDate|date('d/m/Y') }} pour
+      régler la facture <br />
+      {% endif %} Montant total : {{ invoice.total }}€<br />
+      Merci pour votre confiance,<br />
+      {% if invoice.customer.company.name != null %}
+        {{ invoice.customer.company.name }}
+      {% endif %}
+    </p>
+  </section>
+
+  {# email footer #}
+  <section id="footer">
+    <p>Copyright © 2023-2024 Facturo. Tous droits réservés.</p>
+  </section>
+</body>
