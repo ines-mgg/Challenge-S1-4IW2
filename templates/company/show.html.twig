@@ -65,20 +65,20 @@
                                             {% for user in users %}
                                                 <div class="grid grid-cols-3 gap-2">
                                                     <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
-                                                        <div class=" p-4  text-gray-700 dark:text-gray-700"> Id utilisateur : {{ user.id }}</div>
+                                                        <div class=" p-4  text-gray-700 dark:text-gray-700">Nom complet : <br> {{ user.lastName }} {{ user.firstName }}</div>
                                                         <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                                                             <a href="{{ path('app_user_edit', {'id': user.id}) }}">Edit </a>
                                                         </button>
                                                     </div>
                                                     <div class="text-gray-700 dark:text-gray-700 p-4 ">Roles  : {{ user.roles|json_encode  }}</div>
-                                                    <div class=" p-4  text-gray-700 dark:text-gray-700">Email : {{ user.email }}</div>
+                                                    <div class=" p-4  text-gray-700 dark:text-gray-700">Email :<br> {{ user.email }}</div>
                                                 </div>
                                                 <hr class="my-4">
                                             {% endfor %}
                                         </div>
                                         <div class="hidden" id="tab-options">
                                             {% for invoice in invoices %}
-                                                <div class="grid grid-cols-3 gap-2">
+                                                <div class="grid gap-2">
                                                     {{ invoice.type }}
                                                     <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
                                                         {%  if invoice.type == 'Facture' %}
@@ -86,11 +86,11 @@
                                                         {%  else %}
                                                             <span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Devis n° {{ invoice.id }}</span>
                                                         {% endif %}
-                                                        <div class="grid grid-cols-2 gap-4">
+                                                        <div class=" grid-cols-2 gap-4">
                                                             <div class="text-gray-700 dark:text-gray-700 p-4 ">Client n° {{ invoice.id }} </div>
-                                                            <div class=" p-4  text-gray-700 dark:text-gray-700"></div>
+                                                            <div class=" p-4  text-gray-700 dark:text-gray-700">Montant TTC : {{ invoice.price }} €</div>
                                                         </div>
-                                                        <div class="grid grid-cols-2 gap-4">
+                                                        <div class=" grid-cols-2 gap-4">
                                                             <div class="text-gray-700 dark:text-gray-700 p-4 ">Date création</div>
                                                             <div class=" p-4  text-gray-700 dark:text-gray-700">{{ invoice.createdAt|date('d-m-Y')  }}</div>
                                                         </div>
@@ -106,7 +106,12 @@
                             </div>
                         </div>
                     </div>
-                    <script type="text/javascript">
+
+                </div>
+        </div>
+    </div>
+    </div>
+ <script type="text/javascript">
                         function changeAtiveTab(event,tabID){
                             let element = event.target;
                             while(element.nodeName !== "A"){
@@ -132,33 +137,5 @@
                         }
                     </script>
 
-                </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-        function changeAtiveTab(event,tabID){
-            let element = event.target;
-            while(element.nodeName !== "A"){
-                element = element.parentNode;
-            }
-            ulElement = element.parentNode.parentNode;
-            aElements = ulElement.querySelectorAll("li > a");
-            tabContents = document.getElementById("tabs-id").querySelectorAll(".tab-content > div");
-            for(let i = 0 ; i < aElements.length; i++){
-                aElements[i].classList.remove("text-white");
-                aElements[i].classList.remove("bg-pink-600");
-                aElements[i].classList.add("text-pink-600");
-                aElements[i].classList.add("bg-white");
-                tabContents[i].classList.add("hidden");
-                tabContents[i].classList.remove("block");
-            }
-            element.classList.remove("text-pink-600");
-            element.classList.remove("bg-white");
-            element.classList.add("text-white");
-            element.classList.add("bg-pink-600");
-            document.getElementById(tabID).classList.remove("hidden");
-            document.getElementById(tabID).classList.add("block");
-        }
-    </script>
 
 {% endblock %}
