@@ -31,19 +31,16 @@
   <section id="content">
     <p>
       Bonjour {{ invoice.customer.fullname }} <br />
-      <br />
-      Vous trouverez ci-joint
-      {{ invoice.type == "Devis" ? "le devis fait " : "la facture faite" }} le
-      {{ invoice.createdAt|date('d/m/Y') }} .<br />
-      {% if invoice.type == "Devis" %} Vous avez jusqu'au
-      {{ invoice.closingDate|date('d/m/Y') }} pour
-      <a href="{{ url }}">accepter le devis</a> <br />
-      {% else %} Vous avez jusqu'au {{ invoice.closingDate|date('d/m/Y') }} pour
-      régler la facture <br />
-      {% endif %} Montant total : {{ invoice.total }}€<br />
+      N'oubliez pas que vous avez {{ invoice.type == "Devis" ? "un devis à valider." : "une facture à payer." }}<br />
+      Vous trouverez ci-joint votre document.<br />
+      {% if invoice.type == "Devis" %} 
+      Pour rappel, vous avez jusqu'au {{ invoice.closingDate|date('d/m/Y') }} pour <a href="{{ url }}">accepter le devis</a> <br />
+      {% else %} 
+      Pour rappel, vous avez jusqu'au {{ invoice.closingDate|date('d/m/Y') }} pour régler la facture <br />
+      {% endif %} 
       Merci pour votre confiance,<br />
       {% if invoice.customer.company.name != null %}
-        {{ invoice.customer.company.name }}
+      {{ invoice.customer.company.name }}
       {% endif %}
     </p>
   </section>

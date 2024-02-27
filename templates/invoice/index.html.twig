@@ -27,12 +27,13 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200" >
                     {% if invoice.status == 'Validé' or invoice.status == 'Payée' %}
                             <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">{{ invoice.status }}</span>
+                    {% elseif invoice.status == 'Annulé(e)' %}
+                            <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">{{ invoice.status }} </span>
                     {% elseif invoice.closingDate|date('Y-m-d') < todayDate %}
                             <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">En retard</span>
                     {% elseif invoice.status == 'À valider' or invoice.status == 'À payer' %}
                              <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">{{ invoice.status}}</span>
-                    {% elseif invoice.status == 'Annulé(e)' %}
-                            <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">{{ invoice.status }} </span>
+                    
                     {% endif %}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">

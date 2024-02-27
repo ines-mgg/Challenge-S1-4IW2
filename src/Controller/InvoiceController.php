@@ -15,7 +15,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
-#[Route('/invoice')]
+#[Route('app/invoice')]
 class InvoiceController extends AbstractController
 {
     private $email;
@@ -43,6 +43,26 @@ class InvoiceController extends AbstractController
             ->to($invoice->getCustomer()->getEmail())
             ->subject($invoice->getType() === 'Devis' ? 'Voici votre devis' : 'Voici votre facture')
             ->htmlTemplate('emails/invoice.html.twig')
+            ->context([
+                'invoice' => $invoice,
+                'url' => $this->generateUrl
+            ])
+            ->attach($this->pdfEmail($invoice), 'invoice.pdf', 'application/pdf');
+        try {
+            $this->email->send($email);
+            return true;
+        } catch (TransportExceptionInterface $e) {
+            dump($e->getMessage());
+            return false;
+        }
+    }
+
+    private function contactCustomer(Invoice $invoice, $choices)
+    {
+        $email = (new TemplatedEmail())
+            ->to($invoice->getCustomer()->getEmail())
+            ->subject($invoice->getType() === 'Devis' ? 'Rappel validation de votre devis' : 'Rappel paiement de votre facture')
+            ->htmlTemplate($choices === '1' ? 'emails/reminder.html.twig' : 'emails/reminder2.html.twig')
             ->context([
                 'invoice' => $invoice,
             ])
@@ -143,9 +163,15 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_invoice_show', methods: ['GET'])]
-    public function show(Invoice $invoice): Response
+    #[Route('/{id}', name: 'app_invoice_show', methods: ['GET', 'POST'])]
+    public function show(Request $request, Invoice $invoice): Response
     {
+        if ($this->isCsrfTokenValid('show' . $invoice->getId(), $request->request->get('_token'))) {
+            if ($this->contactCustomer($invoice, $request->request->get('choices'))) {
+                $this->addFlash('success', 'Le message a bien été envoyé');
+                return $this->redirectToRoute('app_invoice_show', ['id' => $invoice->getId()], Response::HTTP_SEE_OTHER);
+            }
+        }
         return $this->render('invoice/show.html.twig', [
             'invoice' => $invoice,
         ]);
@@ -199,5 +225,17 @@ class InvoiceController extends AbstractController
         }
 
         return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/validate', name: 'app_invoice_validate', methods: ['POST'])]
+    public function validate(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('validate' . $invoice->getId(), $request->request->get('_token'))) {
+            $invoice->setStatus('Payée');
+            $entityManager->persist($invoice);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_invoice_show', ['id' => $invoice->getId()], Response::HTTP_SEE_OTHER);
     }
 }
