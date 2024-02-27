@@ -75,14 +75,35 @@ class CompanyController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_company_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_company_delete', methods: ['POST'])]
     public function delete(Request $request, Company $company, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$company->getId(), $request->request->get('_token'))) {
+            $users = $company->getUsers();
+            foreach ($users as $user) {
+                $entityManager->remove($user);
+            }
+            $prestations = $company->getPrestations();
+            foreach ($prestations as $prestation) {
+                $invoicePrestations = $prestation->getInvoicePrestations();
+
+                foreach ($invoicePrestations as $invoicePrestation) {
+                    $entityManager->remove($invoicePrestation);
+                }
+
+                $entityManager->remove($prestation);
+            }
+            $customers = $company->getCustomers();
+            foreach ($customers as $customer) {
+                $invoices = $customer->getInvoices();
+                foreach ($invoices as $invoice) {
+                    $entityManager->remove($invoice);
+                }
+                $entityManager->remove($customer);
+            }
             $entityManager->remove($company);
             $entityManager->flush();
         }
-
         return $this->redirectToRoute('app_company_index', [], Response::HTTP_SEE_OTHER);
     }
 }

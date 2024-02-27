@@ -19,7 +19,7 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
             for ($i = 0; $i < $numCustomers; $i++) {
                 $customer = new Customer();
                 $customer->setFullname($faker->firstName())
-                    ->setEmail($faker->email())
+                    ->setEmail($faker->companyEmail())
                     ->setNumber($faker->phoneNumber())
                     ->setSiret(str_replace(' ', '', $faker->siret()))
                     ->setTva($faker->randomElement(['0', '2.1', '5.5', '10', '20']))

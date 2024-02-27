@@ -21,7 +21,7 @@ class CompanyFixtures extends Fixture
                 ->setTVA($faker->randomNumber(2))
                 ->setLicenseValidity($faker->dateTimeBetween('-1 years', '+1 years'))
                 ->setIdLicense($faker->randomNumber(2))
-                ->setHeadOffice($faker->name())
+                ->setHeadOffice($faker->address())
                 ->setSiret(str_replace(' ', '', $faker->siret()))
                 ->setIdLicense($faker->randomNumber(2));
             $manager->persist($company);

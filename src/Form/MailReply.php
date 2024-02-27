@@ -13,7 +13,12 @@ class MailReply extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('subject')
+            ->add('subject',null,[
+                'attr' => [
+                    'disabled' => true,
+                    'readonly' => true,
+                    ]
+            ])
             ->add('message',TextareaType::class,[
                 'attr' => [
                     'rows' => 10,
