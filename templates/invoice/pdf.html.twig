@@ -1,0 +1,105 @@
+<style>
+  body {
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    color: #1c1c1a;
+    position: relative;
+  }
+  section#company {
+    font-weight: 200;
+  }
+  section#client {
+    margin-top: 100px;
+    font-weight: 200;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  span#date {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin-top: 200px;
+  }
+  table#prestation {
+    margin-top: 150px;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  table#prestation thead {
+    background-color: #f6f5ef;
+  }
+  table#prestation thead th {
+    padding: 10px;
+    text-align: center;
+  }
+  table#prestation tbody tr {
+    border-bottom: 1px solid #1c1c1a;
+  }
+  table#prestation tbody tr td {
+    text-align: center;
+  }
+  section#total {
+    margin-top: 30px;
+    position: absolute;
+    right: 0;
+  }
+  section#total p span {
+    font-weight: 600;
+  }
+</style>
+
+<body>
+  <section id="company">
+    {% if invoice.company.logo %} <img src="{{ asset("build/images/" ~ invoice.company.logo)
+
+
+    }}" alt="company logo" width="150px" height="150px" /> {% endif %}
+    <p>
+      {{ invoice.company.name ? invoice.company.name : "" }} <br />
+      {{ invoice.company.siret ? invoice.company.siret : "" }} <br />
+      {{ invoice.company.headOffice ? invoice.company.headOffice : "" }}
+    </p>
+  </section>
+  <section id="client">
+    <p>
+      {{ invoice.customer.fullname ? invoice.customer.fullname : "" }} <br />
+      {{ invoice.customer.email ? invoice.customer.email : "" }} <br />
+      {{ invoice.customer.number ? invoice.customer.number : "" }} <br />
+      {{ invoice.customer.siret ? invoice.customer.siret : "" }}
+    </p>
+  </section>
+  <span id="date"
+    >Le {{ invoice.date ? invoice.date : "" }}</span
+  >
+  <table id="prestation">
+    <thead>
+      <tr>
+        <th scope="col">Prestation</th>
+        <th scope="col">Prix unitaire</th>
+        <th scope="col">Quantité</th>
+        <th scope="col">Total HT</th>
+        <th scope="col">TVA</th>
+        <th scope="col">Total TTC</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for prestation in invoice.prestations %}
+      <tr>
+        <td class="text-left">{{ prestation.name }}</td>
+        <td class="text-center">{{ prestation.priceUnit }}</td>
+        <td class="text-center">{{ prestation.quantity }}</td>
+        <td class="text-center">{{ prestation.totalHT }} €</td>
+        <td class="text-center">{{ prestation.tva }}%</td>
+        <td class="text-right">{{ prestation.totalTTC }} €</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <section id="total">
+    <p>
+      Total HT: <span>{{ invoice.total.ht }} €</span> <br />
+      Total TTC: <span>{{ invoice.total.ttc }} €</span>
+    </p>
+  </section>
+</body>
