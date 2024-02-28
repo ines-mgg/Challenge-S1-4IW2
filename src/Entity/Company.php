@@ -38,6 +38,7 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Customer::class)]
     private Collection $customers;
 
+
     #[ORM\Column(length: 14)]
     private ?string $siret = null;
 
@@ -45,7 +46,7 @@ class Company
     private ?string $tva = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $head_office = null;
+    private ?string $head_office;
 
     public function __construct()
     {
