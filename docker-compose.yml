@@ -13,11 +13,6 @@ services:
     restart: unless-stopped
     volumes:
       - php_socket:/var/run/php
-    healthcheck:
-      interval: 10s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-symfony}:${POSTGRES_PASSWORD:-ChangeMe}@database:5432/${POSTGRES_DB:-app}?serverVersion=${POSTGRES_VERSION:-13}
       # Run "composer require symfony/mercure-bundle" to install and configure the Mercure integration
@@ -62,6 +57,22 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-symfony}
     volumes:
       - db_data:/var/lib/postgresql/data:rw
+
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-facturo@facturo.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-FacturoPassword}
+    ports:
+      - 5050:80
+    depends_on:
+      - database
+
+  mailer:
+    image: schickling/mailcatcher
+    ports: [1025, 1080]
+
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###

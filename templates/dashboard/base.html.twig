@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html class="" lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Facturo | {% block title %}{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body class="bg-gray-50 dark:bg-[#1c1c1a]">
+
+
+        {# AJOUT DE LA NAVBAR DASHBOARD #}
+        <nav class="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-[#1c1c1a] dark:border-gray-700">
+            <div class="px-3 py-3 lg:px-5 lg:pl-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-start">
+                        <button id="toggleSidebarMobile" aria-expanded="true" aria-controls="sidebar" class="p-2 text-gray-600 rounded cursor-pointer lg:hidden hover:text-gray-900 hover:bg-gray-100 focus:bg-gray-100 dark:focus:bg-gray-700 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <svg id="toggleSidebarMobileHamburger" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h12"></path>
+                            </svg>
+                            <svg id="toggleSidebarMobileClose" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                        <a href="{{ path('facturo_app_dashboard') }}" class="flex ml-2 md:mr-24">
+                            <svg class="fill-light-dark dark:fill-light-white h-8 mr-3" viewBox="0 0 132 42" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M2.664 34V8.44H19.836V12.796H7.632V19.384H17.784V23.416H7.632V34H2.664ZM20.025 28.42C20.025 27.196 20.361 26.128 21.033 25.216C21.729 24.28 22.689 23.56 23.913 23.056C25.137 22.552 26.541 22.3 28.125 22.3C28.917 22.3 29.721 22.36 30.537 22.48C31.353 22.6 32.061 22.792 32.661 23.056V22.048C32.661 20.848 32.301 19.924 31.581 19.276C30.885 18.628 29.841 18.304 28.449 18.304C27.417 18.304 26.433 18.484 25.497 18.844C24.561 19.204 23.577 19.732 22.545 20.428L20.997 17.26C22.245 16.444 23.517 15.832 24.813 15.424C26.133 15.016 27.513 14.812 28.953 14.812C31.641 14.812 33.729 15.484 35.217 16.828C36.729 18.172 37.485 20.092 37.485 22.588V28.6C37.485 29.104 37.569 29.464 37.737 29.68C37.929 29.896 38.229 30.028 38.637 30.076V34C38.205 34.072 37.809 34.132 37.449 34.18C37.113 34.228 36.825 34.252 36.585 34.252C35.625 34.252 34.893 34.036 34.389 33.604C33.909 33.172 33.609 32.644 33.489 32.02L33.381 31.048C32.565 32.104 31.545 32.92 30.321 33.496C29.097 34.072 27.849 34.36 26.577 34.36C25.329 34.36 24.201 34.108 23.193 33.604C22.209 33.076 21.429 32.368 20.853 31.48C20.301 30.568 20.025 29.548 20.025 28.42ZM31.761 29.392C32.025 29.104 32.241 28.816 32.409 28.528C32.577 28.24 32.661 27.976 32.661 27.736V25.828C32.085 25.588 31.461 25.408 30.789 25.288C30.117 25.144 29.481 25.072 28.881 25.072C27.633 25.072 26.601 25.348 25.785 25.9C24.993 26.428 24.597 27.136 24.597 28.024C24.597 28.504 24.729 28.96 24.993 29.392C25.257 29.824 25.641 30.172 26.145 30.436C26.649 30.7 27.249 30.832 27.945 30.832C28.665 30.832 29.373 30.7 30.069 30.436C30.765 30.148 31.329 29.8 31.761 29.392ZM50.7769 34.36C49.2409 34.36 47.8609 34.108 46.6369 33.604C45.4129 33.076 44.3689 32.356 43.5049 31.444C42.6409 30.508 41.9689 29.452 41.4889 28.276C41.0329 27.1 40.8049 25.864 40.8049 24.568C40.8049 22.792 41.2009 21.172 41.9929 19.708C42.8089 18.22 43.9609 17.032 45.4489 16.144C46.9369 15.256 48.7009 14.812 50.7409 14.812C52.7809 14.812 54.5329 15.256 55.9969 16.144C57.4609 17.032 58.5529 18.196 59.2729 19.636L54.5569 21.076C54.1489 20.38 53.6089 19.852 52.9369 19.492C52.2649 19.108 51.5209 18.916 50.7049 18.916C49.7929 18.916 48.9529 19.156 48.1849 19.636C47.4409 20.092 46.8529 20.752 46.4209 21.616C45.9889 22.456 45.7729 23.44 45.7729 24.568C45.7729 25.672 45.9889 26.656 46.4209 27.52C46.8769 28.36 47.4769 29.032 48.2209 29.536C48.9649 30.016 49.7929 30.256 50.7049 30.256C51.2809 30.256 51.8209 30.16 52.3249 29.968C52.8529 29.776 53.3209 29.512 53.7289 29.176C54.1369 28.84 54.4369 28.456 54.6289 28.024L59.3449 29.464C58.9129 30.4 58.2769 31.24 57.4369 31.984C56.6209 32.728 55.6489 33.316 54.5209 33.748C53.4169 34.156 52.1689 34.36 50.7769 34.36ZM73.6172 33.028C73.2092 33.196 72.7172 33.388 72.1412 33.604C71.5652 33.82 70.9412 33.988 70.2692 34.108C69.6212 34.252 68.9612 34.324 68.2892 34.324C67.4012 34.324 66.5852 34.168 65.8412 33.856C65.0972 33.544 64.4972 33.052 64.0412 32.38C63.6092 31.684 63.3932 30.784 63.3932 29.68V18.844H60.9092V15.136H63.3932V9.016H68.2172V15.136H72.1772V18.844H68.2172V28.06C68.2412 28.708 68.4212 29.176 68.7572 29.464C69.0932 29.752 69.5132 29.896 70.0172 29.896C70.5212 29.896 71.0132 29.812 71.4932 29.644C71.9732 29.476 72.3572 29.332 72.6452 29.212L73.6172 33.028ZM75.9496 26.944V15.136H80.7736V25.9C80.7736 27.34 81.0376 28.432 81.5656 29.176C82.0936 29.896 82.8736 30.256 83.9056 30.256C84.5296 30.256 85.1416 30.136 85.7416 29.896C86.3656 29.632 86.9296 29.248 87.4336 28.744C87.9616 28.24 88.4056 27.604 88.7656 26.836V15.136H93.5896V28.6C93.5896 29.104 93.6736 29.464 93.8416 29.68C94.0336 29.896 94.3336 30.028 94.7416 30.076V34C94.2616 34.072 93.8536 34.12 93.5176 34.144C93.2056 34.192 92.9176 34.216 92.6536 34.216C91.7896 34.216 91.0816 34.024 90.5296 33.64C90.0016 33.232 89.6896 32.68 89.5936 31.984L89.4856 30.472C88.6456 31.744 87.5656 32.716 86.2456 33.388C84.9256 34.036 83.4736 34.36 81.8896 34.36C79.9456 34.36 78.4696 33.736 77.4616 32.488C76.4536 31.216 75.9496 29.368 75.9496 26.944ZM109.616 19.312C108.152 19.312 106.844 19.6 105.691 20.176C104.54 20.728 103.712 21.532 103.208 22.588V34H98.3835V15.136H102.812V19.168C103.484 17.872 104.336 16.852 105.368 16.108C106.4 15.364 107.492 14.956 108.644 14.884C108.908 14.884 109.112 14.884 109.256 14.884C109.4 14.884 109.52 14.896 109.616 14.92V19.312ZM120.771 34.36C119.235 34.36 117.855 34.108 116.631 33.604C115.407 33.076 114.363 32.356 113.499 31.444C112.659 30.532 112.011 29.488 111.555 28.312C111.099 27.136 110.871 25.9 110.871 24.604C110.871 23.284 111.099 22.036 111.555 20.86C112.011 19.684 112.659 18.64 113.499 17.728C114.363 16.816 115.407 16.108 116.631 15.604C117.855 15.076 119.235 14.812 120.771 14.812C122.307 14.812 123.675 15.076 124.875 15.604C126.099 16.108 127.143 16.816 128.007 17.728C128.871 18.64 129.519 19.684 129.951 20.86C130.407 22.036 130.635 23.284 130.635 24.604C130.635 25.9 130.407 27.136 129.951 28.312C129.519 29.488 128.871 30.532 128.007 31.444C127.167 32.356 126.135 33.076 124.911 33.604C123.687 34.108 122.307 34.36 120.771 34.36ZM115.839 24.604C115.839 25.708 116.055 26.692 116.487 27.556C116.919 28.396 117.507 29.056 118.251 29.536C118.995 30.016 119.835 30.256 120.771 30.256C121.683 30.256 122.511 30.016 123.255 29.536C123.999 29.032 124.587 28.36 125.019 27.52C125.475 26.656 125.703 25.672 125.703 24.568C125.703 23.488 125.475 22.516 125.019 21.652C124.587 20.788 123.999 20.116 123.255 19.636C122.511 19.156 121.683 18.916 120.771 18.916C119.835 18.916 118.995 19.168 118.251 19.672C117.507 20.152 116.919 20.824 116.487 21.688C116.055 22.528 115.839 23.5 115.839 24.604Z">
+                                </path>
+                            </svg>
+                        </a>
+
+                    </div>
+                    <div class="flex items-center">
+                        <button id="theme-toggle" data-tooltip-target="tooltip-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                        </button>
+                        <!-- Profile -->
+                        <div class="flex items-center ml-3">
+                            <div>
+                                <button type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5" id="user-menu-button-2" aria-expanded="false" data-dropdown-toggle="dropdown-2">
+                                    <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor">
+                                        <path d="M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm246-164q-59 0-99.5-40.5T340-580q0-59 40.5-99.5T480-720q59 0 99.5 40.5T620-580q0 59-40.5 99.5T480-440Zm0 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q53 0 100-15.5t86-44.5q-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160Zm0-360q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm0-60Zm0 360Z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <!-- Dropdown menu -->
+                            <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-2">
+                                <div class="px-4 py-3" role="none">
+                                    <p class="text-sm text-gray-900 dark:text-white" role="none">
+                                        Prénom NOMDUMEC
+                                    </p>
+                                    <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                                        sonsuperemail@gmail.com
+                                    </p>
+                                    <p class="text-sm text-gray-500 truncate dark:text-gray-300 mt-2" role="none">
+                                        Gérant/Comptable/Administrateur
+                                    </p>
+                                </div>
+                                <ul class="py-1" role="none">
+                                    <li>
+                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Paramètres</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Déconnexion</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+            {# AJOUT DE LA SIDEBAR #}
+            {# TODO : GÉRER LE PAGE SLUG  #}
+            {% set page_slug = "dashboard" %}
+
+            <aside id="sidebar" class="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width" aria-label="Sidebar">
+                <div class="relative flex flex-col flex-1 min-h-0 pt-0 bg-white border-r border-gray-200 dark:bg-[#1c1c1a] dark:border-gray-700">
+                    <div class="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
+                        <div class="flex-1 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-[#1c1c1a] dark:divide-gray-700">
+                            <ul class="pb-2 space-y-2">
+
+                                {# LIEN SIMPLE #}
+                                <li>
+                                    <a href="#" class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
+                                        <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
+                                        <span class="ml-3" sidebar-toggle-item>Lien direct</span>
+                                    </a>
+                                </li>
+                                {# LIEN SIMPLE #}
+
+                                {# LIEN MENU DEROULANT #}
+                                <li>
+                                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" aria-controls="dropdown-layouts" data-collapse-toggle="dropdown-layouts">
+                                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                                        </svg>
+                                        <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Menu déroulant</span>
+                                        <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    </button>
+                                    <ul id="dropdown-layouts" class="hidden py-2 space-y-2">
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Stacked</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Sidebar</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {# LIEN MENU DEROULANT #}
+
+                                {# SAVE DES LIENS DU TEMPLATE POUR GARDER LES SVG #}
+                                <li>
+                                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" aria-controls="dropdown-crud" data-collapse-toggle="dropdown-crud">
+                                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path clip-rule="evenodd" fill-rule="evenodd" d="M.99 5.24A2.25 2.25 0 013.25 3h13.5A2.25 2.25 0 0119 5.25l.01 9.5A2.25 2.25 0 0116.76 17H3.26A2.267 2.267 0 011 14.74l-.01-9.5zm8.26 9.52v-.625a.75.75 0 00-.75-.75H3.25a.75.75 0 00-.75.75v.615c0 .414.336.75.75.75h5.373a.75.75 0 00.627-.74zm1.5 0a.75.75 0 00.627.74h5.373a.75.75 0 00.75-.75v-.615a.75.75 0 00-.75-.75H11.5a.75.75 0 00-.75.75v.625zm6.75-3.63v-.625a.75.75 0 00-.75-.75H11.5a.75.75 0 00-.75.75v.625c0 .414.336.75.75.75h5.25a.75.75 0 00.75-.75zm-8.25 0v-.625a.75.75 0 00-.75-.75H3.25a.75.75 0 00-.75.75v.625c0 .414.336.75.75.75H8.5a.75.75 0 00.75-.75zM17.5 7.5v-.625a.75.75 0 00-.75-.75H11.5a.75.75 0 00-.75.75V7.5c0 .414.336.75.75.75h5.25a.75.75 0 00.75-.75zm-8.25 0v-.625a.75.75 0 00-.75-.75H3.25a.75.75 0 00-.75.75V7.5c0 .414.336.75.75.75H8.5a.75.75 0 00.75-.75z"></path>
+                                        </svg>
+                                        <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>CRUD</span>
+                                        <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    </button>
+
+                                    {#  <ul id="dropdown-crud" class="space-y-2 py-2 {{ if not (eq .Params.group "crud") }}hidden {% endif %}">#}
+                                    <ul id="dropdown-crud" class="space-y-2 py-2">
+                                        <li>
+                                            <a href="{{ path('app_user_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == '/user/' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Utilisateurs</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ path('app_company_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'company' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Compagnies</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ path('app_contact_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'all' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Messages</a>
+                                        </li>
+
+                                        <li>
+                                            <a href="{{ path('app_prestation_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'prestation' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Prestations</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ path('app_invoice_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "invoices" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Invoices</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#" class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "settings" %} bg-gray-100 dark:bg-gray-700 {% endif %}">
+                                        <svg class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path clip-rule="evenodd" fill-rule="evenodd" d="M8.34 1.804A1 1 0 019.32 1h1.36a1 1 0 01.98.804l.295 1.473c.497.144.971.342 1.416.587l1.25-.834a1 1 0 011.262.125l.962.962a1 1 0 01.125 1.262l-.834 1.25c.245.445.443.919.587 1.416l1.473.294a1 1 0 01.804.98v1.361a1 1 0 01-.804.98l-1.473.295a6.95 6.95 0 01-.587 1.416l.834 1.25a1 1 0 01-.125 1.262l-.962.962a1 1 0 01-1.262.125l-1.25-.834a6.953 6.953 0 01-1.416.587l-.294 1.473a1 1 0 01-.98.804H9.32a1 1 0 01-.98-.804l-.295-1.473a6.957 6.957 0 01-1.416-.587l-1.25.834a1 1 0 01-1.262-.125l-.962-.962a1 1 0 01-.125-1.262l.834-1.25a6.957 6.957 0 01-.587-1.416l-1.473-.294A1 1 0 011 10.68V9.32a1 1 0 01.804-.98l1.473-.295c.144-.497.342-.971.587-1.416l-.834-1.25a1 1 0 01.125-1.262l.962-.962A1 1 0 015.38 3.03l1.25.834a6.957 6.957 0 011.416-.587l.294-1.473zM13 10a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                        <span class="ml-3" sidebar-toggle-item>Settings</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" aria-controls="dropdown-pages" data-collapse-toggle="dropdown-pages">
+                                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z" clip-rule="evenodd"></path></svg>
+                                        <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Pages</span>
+                                        <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    </button>
+                                    <ul id="dropdown-pages" class="hidden py-2 space-y-2">
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Pricing</a>
+                                        </li>
+                                        <li>
+                                            <a href="#}" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Maintenance</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">404 not found</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">500 server error</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" aria-controls="dropdown-auth" data-collapse-toggle="dropdown-auth">
+                                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                                        <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Authentication</span>
+                                        <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    </button>
+                                    <ul id="dropdown-auth" class="hidden py-2 space-y-2">
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Sign in</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Sign up</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Forgot password</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Reset password</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">Profile lock</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" aria-controls="dropdown-playground" data-collapse-toggle="dropdown-playground">
+                                        <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path clip-rule="evenodd" fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z"></path>
+                                        </svg>
+                                        <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Playground</span>
+                                        <svg sidebar-toggle-item class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    </button>
+                                    {#  <ul id="dropdown-playground" class="space-y-2 py-2 {{ if not (eq .Params.group "playground") }}hidden {% endif %}">#}
+                                    <ul id="dropdown-playground" class="space-y-2 py-2">
+                                        <li>
+                                            <a href="#" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "stacked" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Stacked</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "sidebar" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Sidebar</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {# SAVE DES LIENS DU TEMPLATE POUR GARDER LES SVG #}
+                            </ul>
+
+                            <div class="pt-2 space-y-2">
+                                <a href="https://flowbite.com/docs/getting-started/introduction/" target="_blank" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
+                                    <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>
+                                    <span class="ml-3" sidebar-toggle-item>Flowbite Docs</span>
+                                </a>
+                                <a href="https://flowbite.com/docs/components/alerts/" target="_blank" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
+                                    <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
+                                    <span class="ml-3" sidebar-toggle-item>Components</span>
+                                </a>
+                                <a href="https://github.com/themesberg/flowbite-admin-dashboard/issues" target="_blank" class="flex items-center p-2 text-base text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
+                                    <svg class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-.08.08-1.53-1.533A5.98 5.98 0 004 10c0 .954.223 1.856.619 2.657l1.54-1.54zm1.088-6.45A5.974 5.974 0 0110 4c.954 0 1.856.223 2.657.619l-1.54 1.54a4.002 4.002 0 00-2.346.033L7.246 4.668zM12 10a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd"></path></svg>
+                                    <span class="ml-3" sidebar-toggle-item>Support</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="fixed inset-0 z-10 hidden bg-gray-900/50 dark:bg-[#252629]/50" id="sidebarBackdrop"></div>
+
+
+            <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
+                <main>
+                    <div class="container grid px-6 mx-auto bg-white">
+                    {% for type, flashMessages in app.flashes %}
+                        {% for message in flashMessages %}
+                            {% if type == 'success' %}
+                                <div id="alert-3" class="flex items-center p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                    </svg>
+                                    <span class="sr-only">Success</span>
+                                    <div class="ms-3 text-sm font-medium">
+                                        {{ message }}
+                                    </div>
+                                    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700" data-dismiss-target="#alert-3" aria-label="Close">
+                                        <span class="sr-only">Close</span>
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            {% elseif type == 'danger' %}
+                                <div id="alert-2" class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                    </svg>
+                                    <span class="sr-only">Oups</span>
+                                    <div class="ms-3 text-sm font-medium">
+                                        {{ message }}
+                                    </div>
+                                    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700" data-dismiss-target="#alert-2" aria-label="Close">
+                                        <span class="sr-only">Close</span>
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            {% elseif type == 'warning' %}
+                                <div id="alert-1" class="flex items-center p-4 mb-4 text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-400" role="alert">
+                                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                    </svg>
+                                    <span class="sr-only">Attention</span>
+                                    <div class="ms-3 text-sm font-medium">
+                                        {{ message }}
+                                    </div>
+                                    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-yellow-50 text-yellow-500 rounded-lg focus:ring-2 focus:ring-yellow-400 p-1.5 hover:bg-yellow-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-yellow-400 dark:hover:bg-gray-700" data-dismiss-target="#alert-1" aria-label="Close">
+                                        <span class="sr-only">Close</span>
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                    </div>
+                    {% block body %}
+                    {% endblock %}
+                </main>
+            </div>
+        </div>
+    <br>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,28 @@
+{% set buttonColorBorder = buttonColorBorder ?? 'light-dark' %}
+{% set buttonTextColor = buttonTextColor ?? 'text-light-dark' %}
+{% set buttonLink = buttonLink ?? false %}
+{% set textButton = textButton ?? false %}
+{% set arrowButton = arrowButton ?? false %}
+{% set arrowColor = arrowColor ?? "light-white" %}
+<button
+  class="flex justify-center items-center gap-1.5 rounded border-2 border-solid border-{{buttonColorBorder}} {{buttonTextColor}} font-bold h-14 px-4 py-5"
+  {% if buttonLink is defined and buttonLink %}
+    onclick="window.location.href='{{ path(buttonLink) }}'"
+  {% endif %}
+>
+  {{textButton}}
+  {%if arrowButton is defined and arrowButton %}
+  <svg
+    width="22"
+    height="23"
+    viewBox="0 0 22 23"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class="fill-{{arrowColor}}"
+  >
+    <path
+      d="M21.0607 12.5607C21.6464 11.9749 21.6464 11.0251 21.0607 10.4393L11.5147 0.893399C10.9289 0.307612 9.97919 0.307612 9.3934 0.893399C8.80761 1.47919 8.80761 2.42893 9.3934 3.01472L17.8787 11.5L9.3934 19.9853C8.80761 20.5711 8.80761 21.5208 9.3934 22.1066C9.97918 22.6924 10.9289 22.6924 11.5147 22.1066L21.0607 12.5607ZM-1.31134e-07 13L20 13L20 10L1.31134e-07 10L-1.31134e-07 13Z"
+    />
+  </svg>
+  {% endif %} 
+</button>

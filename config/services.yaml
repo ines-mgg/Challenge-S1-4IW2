@@ -3,10 +3,13 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+
+# Define parameters
 parameters:
+    insee_api_token: '%env(INSEE_API_TOKEN)%'
 
 services:
-    # default configuration for services in *this* file
+    # app configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
@@ -20,5 +23,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # Service definition for SiretVerifier with API token argument
+    App\Security\SiretVerifier:
+        arguments:
+            $apiToken: '%insee_api_token%'
+
+# add more service definitions when explicit configuration is needed
+# please note that last definitions always *replace* previous ones
