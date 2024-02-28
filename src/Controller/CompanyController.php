@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Entity\Company;
 use App\Form\CompanyType;
 use App\Repository\CompanyRepository;
+use App\Repository\CustomerRepository;
+use App\Repository\InvoiceRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,10 +46,14 @@ class CompanyController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_company_show', methods: ['GET'])]
-    public function show(Company $company): Response
+    public function show(Company $company, InvoiceRepository $invoicesRepository, UserRepository $userRepository): Response
     {
+        $users = $userRepository->findBy(['company' => $company->getId()]);
+        $invoices = $invoicesRepository->findAllInvoices($company->getId());
         return $this->render('company/show.html.twig', [
             'company' => $company,
+            'invoices' => $invoices,
+            'users' => $users
         ]);
     }
 
