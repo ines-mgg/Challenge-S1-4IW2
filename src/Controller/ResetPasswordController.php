@@ -190,7 +190,7 @@ class ResetPasswordController extends AbstractController
         $email = (new TemplatedEmail())
             ->from(new Address('no-reply@facturo.fr', 'Facturo Service'))
             ->to($user->getEmail())
-            ->subject('Your password reset request')
+            ->subject('Modifier votre mot de passe Facturo')
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
