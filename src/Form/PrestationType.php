@@ -21,26 +21,31 @@ class PrestationType extends AbstractType
             ->add('name', null, [
                 'empty_data' => 'Logo',
                 'label' => 'Nom du produit',
+                'required' => true,
                 'attr' => [
                     'placeholder' => 'exemple: Logo'
                 ]
             ])
             ->add('price',NumberType::class, [
                 'html5' => true,
+                'required' => true,
                 'label' => 'Prix',
+                'attr' => [
+                    'placeholder' => 'Prix du produit',
+                    'min' => '0',
+                ]
             ])
-            ->add('tva',ChoiceType::class, [
-                'choices' => [
-                    '0' => '0',
-                    '2,1' => '2.1',
-                    '5,5' => '5.5',
-                    '10' => '10',
-                    '20' => '20',
+            ->add('tva',NumberType::class, [
+                'required' => true,
+                'attr' => [
+                    'placeholder' => '30%',
+                    'min' => '0',
                 ],
                 'label' => 'TVA',
 
             ])
             ->add('description',TextareaType::class, [
+                'required' => false,
                 'label' => 'Description',
                 'attr' => [
                     'placeholder' => 'Description du produit'
@@ -48,12 +53,13 @@ class PrestationType extends AbstractType
             ])
             ->add('archive', ChoiceType::class, [
                 'choices' => [
-                    'Oui' => true,
-                    'Non' => false,
+                    'Non' => true,
+                    'Oui' => false,
                 ],
                 'label' => 'Archivé',
             ])
             ->add('unite', ChoiceType::class, [
+                'required' => true,
                 'choices' => [
                     'heure' => 'h',
                     'cm' => 'cm',

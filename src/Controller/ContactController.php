@@ -62,7 +62,7 @@ class ContactController extends AbstractController
     }
 
     #[Route('/new', name: 'app_contact_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, $mailer): Response
     {
         $contact = new Contact();
         $form = $this->createForm(MailReply::class, $contact);
@@ -78,7 +78,7 @@ class ContactController extends AbstractController
                 'subject' => $form->get('subject')->getData(),
                 'message' => $form->get('message')->getData()
             ];
-            if ($this->extracted($form,$form->get('email'),$context,'emails/contact.html.twig' ,$mailer, $entityManager)) {
+            if ($this->extracted($form->get('subject'),$form->get('email'),$context,'emails/contact.html.twig' ,$mailer)) {
                 $entityManager->persist($contact);
                 $entityManager->flush();
                 $this->addFlash('success', 'Votre message a bien été envoyé');
@@ -105,15 +105,15 @@ class ContactController extends AbstractController
     public function edit(MailerInterface $mailer,Request $request, Contact $contact, EntityManagerInterface $entityManager ): Response
     {
         $form = $this->createForm(MailReply::class);
+        $form->get('subject')->setData('Re: '.$contact->getSubject());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            var_dump($form->getData());
             $context = [
                 'subject' => $form->get('subject')->getData(),
                 'message' => $form->get('message')->getData(),
-                'firstName' => $contact->getFirstName(),
-                'lastName' => $contact->getLastName(),
             ];
-            if ($this->extracted($form,$contact->getEmail(),$context,'emails/reponse.html.twig' ,$mailer,$entityManager )) {
+            if ($this->extracted($form->get('subject')->setData('Re: '.$contact->getSubject()),$contact->getEmail(),$context,'emails/reponse.html.twig' ,$mailer )) {
                 $this->addFlash('success', 'Votre message a bien été envoyé');
             return $this->redirectToRoute('app_contact_index', [], Response::HTTP_SEE_OTHER);
             }else{
@@ -140,15 +140,14 @@ class ContactController extends AbstractController
     /**
      * @param \Symfony\Component\Form\FormInterface $form
      * @param $mailer
-     * @param EntityManagerInterface $entityManager
      * @param $mail
      * @return string
      */
-    public function extracted(\Symfony\Component\Form\FormInterface $form,$to,$context,$template ,$mailer, EntityManagerInterface $entityManager): bool
+    public function extracted($subject,$to,$context,$template ,$mailer): bool
     {
         $sendEmail = (new TemplatedEmail())
             ->to($to)
-            ->subject($form->get('subject')->getData())
+            ->subject($subject)
             ->htmlTemplate($template)
             ->context($context);
         try {

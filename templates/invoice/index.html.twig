@@ -1,9 +1,7 @@
 {% extends 'dashboard/base.html.twig' %}
-
 {% block title %}Invoice index{% endblock %}
 
 {% block body %}
-
 {% embed '_composants/tables/_table.html.twig' %}
     {% block tTitle %}Invoice  {% endblock %}
     {% block pathNew %}{{ path('app_invoice_new') }}{% endblock %}

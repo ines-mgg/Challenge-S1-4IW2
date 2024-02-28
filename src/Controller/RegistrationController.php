@@ -14,6 +14,7 @@ use App\Security\EmailVerifier;
 use App\Security\SiretVerifier;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpClient\HttpClient;
@@ -98,7 +99,7 @@ class RegistrationController extends AbstractController
         $loggedUser = $security->getUser();
         if ($loggedUser) {
             if ($loggedUser->isVerified()) {
-                return $this->redirectToRoute('app_dashboard');
+                return $this->redirectToRoute('facturo_app_dashboard');
             }
 
             $registrationStatus = $session->get(self::SESSION_AUTH_KEY);
@@ -242,12 +243,17 @@ class RegistrationController extends AbstractController
             $entityManager->persist($oneTimeCode);
             $entityManager->flush();
 
-            // TODO : Améliorer le mail
-            $email = (new Email())
-                ->from(new Address('noreply@facturo.fr', 'Facturo.fr'))
+            $email = (new TemplatedEmail())
+                ->from(new Address('no-reply@facturo.fr', 'Facturo.fr'))
                 ->to($user->getEmail())
-                ->subject('Please Confirm your Email')
-                ->text('Voici votre code de confirmation : ' . $oneTimeCode->getCode(). ' Il expirera dans ' . $duration->format('%i minutes'));
+                ->subject("Saisissez ". $oneTimeCode->getCode() ." comme code de confirmation Facturo")
+                ->htmlTemplate('registration/one_time_code_email.html.twig')
+                ->context([
+                    'oneTimeCode' => $oneTimeCode->getCode(),
+                    'expiresAt' => $duration->format('%i minutes'),
+                ])
+            ;
+
             $mailer->send($email);
         }
         $formErrors = $session->getFlashBag()->get('form_errors')[0] ?? [];
