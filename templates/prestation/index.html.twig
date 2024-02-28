@@ -1,4 +1,4 @@
-{% extends 'baseDash.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
 {% block title %}Prestation {% endblock %}
 
@@ -7,13 +7,13 @@
     {% block tTitle %}Prestation  {% endblock %}
     {% block pathNew %}{{ path('app_prestation_new') }}{% endblock %}
                         {% block thead %}
-                            <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Id</th>
-                            <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Name</th>
-                            <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Price</th>
-                            <th class="px-6 py-3 text-end text-center text-xs font-medium text-gray-500 uppercase">Description</th>
-                            <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Unite</th>
-                            <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Tva</th>
-                            <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Archiver</th>
+                            <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Id</th>
+                            <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Name</th>
+                            <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Price</th>
+                            <th class="px-6 py-3 text-start  text-xs font-medium text-gray-500 uppercase">Description</th>
+                            <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Unite</th>
+                            <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Tva</th>
+                            <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Archiver</th>
                     {% endblock %}
                         {% block tbody %}
                         {% for prestation in prestations %}
