@@ -1,6 +1,6 @@
-{% extends 'baseDash.html.twig' %}
+{% extends 'dashboard/index.html.twig' %}
 
-{% block title %}Edit Company{% endblock %}
+{% block title %}Modifier une Compagnie{% endblock %}
 
 {% block body %}
 <div class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
@@ -18,9 +18,7 @@
                     </button>
                 </form>
             </div>
-            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"></h1>
-
-            {{ include('company/_form.html.twig', {'button_label': 'Repondre'}) }}
+            {{ include('company/_form.html.twig', {'button_label': 'Modifier'}) }}
         </div>
     </div>
 </div>

@@ -36,9 +36,14 @@ class PrestationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $alreadyExist = $entityManager->getRepository(Prestation::class)->findOneBy(['name' => $prestation->getName()]);
+            if (!empty($alreadyExist)) {
+                $this->addFlash('danger', 'Cette prestation existe déjà');
+                return $this->redirectToRoute('app_prestation_index');
+            }
             $entityManager->persist($prestation);
             $entityManager->flush();
-
+            $this->addFlash('success', 'Prestation ajoutée avec succès');
             return $this->redirectToRoute('app_prestation_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -47,6 +52,7 @@ class PrestationController extends AbstractController
             'form' => $form,
         ]);
     }
+
 
     #[Route('/{id}', name: 'app_prestation_show', methods: ['GET'])]
     public function show(Prestation $prestation): Response

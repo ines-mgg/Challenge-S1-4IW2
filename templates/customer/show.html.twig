@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Customer{% endblock %}
+
+{% block body %}
+    <h1>Customer</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ customer.id }}</td>
+        </tr>
+        <tr>
+            <th>Fullname</th>
+            <td>{{ customer.fullname }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ customer.email }}</td>
+        </tr>
+        <tr>
+            <th>Number</th>
+            <td>{{ customer.number }}</td>
+        </tr>
+        <tr>
+            <th>Siret</th>
+            <td>{{ customer.siret }}</td>
+        </tr>
+        <tr>
+            <th>Tva</th>
+            <td>{{ customer.tva }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Invoices</h2>
+    {% if customer.invoices|length > 0 %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Created At</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>Type</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for invoice in customer.invoices %}
+                <tr>
+                    <td>{{ invoice.id }}</td>
+                    <td>{{ invoice.createdAt|date('Y-m-d H:i:s') }}</td>
+                    <td>{{ invoice.price }}</td>
+                    <td>{{ invoice.total }}</td>
+                    <td>{{ invoice.type }}</td>
+                    <td>{{ invoice.status }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% set totalOfTotals = customer.invoices|reduce((carry, invoice) => carry + invoice.total, 0) %}
+        {% set totalOfPrices = customer.invoices|reduce((carry, invoice) => carry + invoice.price, 0) %}
+
+        <p>Total TTC: {{ totalOfTotals }}</p>
+        <p>Total HT: {{ totalOfPrices }}</p>
+    {% else %}
+        <p>No invoices found for this customer.</p>
+    {% endif %}
+
+    <a href="{{ path('app_invoice_new', {'id': customer.id}) }}">Nouvelle Facture</a>
+    <a href="{{ path('app_customer_index') }}">back to list</a>
+
+    <a href="{{ path('app_customer_edit', {'id': customer.id}) }}">edit</a>
+
+    {{ include('customer/_delete_form.html.twig') }}
+{% endblock %}

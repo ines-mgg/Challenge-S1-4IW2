@@ -23,7 +23,7 @@
         background-size: auto;
     }
 
-    .isRequired::after {
+    .required::after {
         content: '*';
         color: #E64444;
         font-size: small;

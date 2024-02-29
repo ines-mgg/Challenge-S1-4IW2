@@ -31,32 +31,31 @@
   </section>
   {# BUTTONS #}
   <section class="flex gap-6 my-10 mr-12 items-center">
-    {# check if user is connected and if user.isverified is true#}
-    {% if app.user and app.user.isVerified %}
-      <a href="{{ path('app_logout') }}"
-        class="h-6 text-xl font-medium leading-6 text-white hidden xl:block">
-        Se déconnecter
-      </a>
-      {% embed '_composants/buttons/_button.html.twig' with {
-        'textButton': 'Mon compte',
-        'buttonColorDarkMode': 'bg-light-white',
-        'buttonLink': 'facturo_app_dashboard',
-      } %}{% endembed %} {# BUTTON DARK MODE #}
-    {% else %}
-      {# BUTTON #}
-      <a href="{{ path('app_login') }}"
-         class="h-6 text-xl font-medium leading-6 text-white hidden xl:block">
-        Se connecter
-      </a>
-      {% embed '_composants/buttons/_button.html.twig' with {
-        'textButton': 'Ouvrir un compte',
-        'buttonColorDarkMode': 'bg-light-white',
-        'buttonLink': 'app_register_start',
-      } %}{% endembed %} {# BUTTON DARK MODE #}
-    {% endif %}
-    {# BUTTON DARK MODE #}
+    {# check if user is connected and if user.isverified is true#} {% if
+    app.user and app.user.isVerified %}
+    <a
+      href="{{ path('app_logout') }}"
+      class="h-6 text-xl font-medium leading-6 text-white hidden xl:block"
+    >
+      Se déconnecter
+    </a>
+    {% embed '_composants/buttons/_button.html.twig' with { 'textButton': 'Mon
+    compte', 'buttonColorDarkMode': 'bg-light-white', 'buttonLink':
+    'app_dashboard', } %}{% endembed %} {# BUTTON DARK MODE #} {% else %} {#
+    BUTTON #}
+    <a
+      href="{{ path('app_login') }}"
+      class="h-6 text-xl font-medium leading-6 text-white hidden xl:block"
+    >
+      Se connecter
+    </a>
+    {% embed '_composants/buttons/_button.html.twig' with { 'textButton':
+    'Ouvrir un compte', 'buttonColorDarkMode': 'bg-light-white', 'buttonLink':
+    'app_register_start', } %}{% endembed %} {# BUTTON DARK MODE #} {% endif %}
+    {# BUTTON DARK MODE {%
+    include'_composants/buttons/_buttonDarkMode.html.twig' %} BURGER MENU BUTTON
+    #}
 
-    {% include'_composants/buttons/_buttonDarkMode.html.twig' %} {# BURGER MENU BUTTON #}
     <button id="hamburger-menu" class="xl:hidden">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -111,20 +110,18 @@
         <a href="{{ path('showcase_pricing') }}">Tarifs</a>
         <a href="{{ path('showcase_contact') }}">Contact</a>
       </section>
-      {# BUTTONS #}
+      {# BUTTONS #} {#
       <section class="flex flex-col gap-4 mx-4">
-        {# BUTTON DARK MODE #} {% include'_composants/buttons/_buttonDarkMode.html.twig' %}
-        {% embed '_composants/buttons/_button.html.twig' with {
-          'buttonColor':'bg-light-dark',
-          'buttonTextColor': 'text-light-white',
-          'textButton': 'Ouvrir un compte',
-          'buttonLink': 'app_register_start',
-        } %} {% endembed %}
-        {% embed '_composants/buttons/_buttonBorder.html.twig' with {
-          'textButton': 'Se connecter',
-          'buttonLink': 'app_login',
-        } %} {% endembed %}
+        {# BUTTON DARK MODE {%
+        include'_composants/buttons/_buttonDarkMode.html.twig' %} {% embed
+        '_composants/buttons/_button.html.twig' with {
+        'buttonColor':'bg-light-dark', 'buttonTextColor': 'text-light-white',
+        'textButton': 'Ouvrir un compte', 'buttonLink': 'app_register_start', }
+        %} {% endembed %} {% embed '_composants/buttons/_buttonBorder.html.twig'
+        with { 'textButton': 'Se connecter', 'buttonLink': 'app_login', } %} {%
+        endembed %}
       </section>
+      #}
     </nav>
   </nav>
 </header>

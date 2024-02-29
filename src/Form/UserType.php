@@ -19,7 +19,9 @@ class UserType extends AbstractType
         $builder
         ->add('email',EmailType::class, [
             'required' => true,
+
             'attr' => [
+                'label' => 'Email',
                 'placeholder' => 'exemple@exemple.com'
             ]
         ])
@@ -37,6 +39,7 @@ class UserType extends AbstractType
                 //]
            // ])
             ->add('isVerified', ChoiceType::class, [
+                'label' => 'Compte vérifié',
                 'choices' => [
                     'Oui' => true,
                     'Non' => false,
@@ -44,12 +47,14 @@ class UserType extends AbstractType
             ])
             ->add('lastname',null, [
                 'required' => true,
+                'label' => 'Nom',
                 'attr' => [
                     'placeholder' => 'Dupont'
                 ]
             ])
             ->add('firstname',null, [
                 'required' => true,
+                'label' => 'Prénom',
                 'attr' => [
                     'placeholder' => 'Jean'
                 ]
