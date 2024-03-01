@@ -41,6 +41,9 @@ class Invoice
     #[ORM\Column(nullable: true)]
     private ?array $invoice = null;
 
+    #[ORM\Column(length: 64)]
+    private ?string $Token = null;
+
     public function __construct()
     {
         $this->invoicePrestations = new ArrayCollection();
@@ -161,6 +164,18 @@ class Invoice
     public function setInvoice(?array $invoice): static
     {
         $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->Token;
+    }
+
+    public function setToken(string $Token): static
+    {
+        $this->Token = $Token;
 
         return $this;
     }

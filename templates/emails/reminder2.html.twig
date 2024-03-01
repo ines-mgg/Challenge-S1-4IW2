@@ -1,52 +1,125 @@
 <style>
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: "Arial", sans-serif;
-  }
-  #content {
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-    text-align: justify;
-  }
-  #footer {
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-  }
+  @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+      * {
+        font-family: 'Arial', sans-serif;'
+    }
+
+    .specific-font {
+        font-family: 'Raleway', sans-serif !important;
+    }
 </style>
 
-<body>
-  {# email header #} {% if invoice.customer.company.logo != null %}
+<body style="margin: 0;background-color: #1c1c1a;">
+<div>
+    <div>
+        <div>
+            <div style="background:#f9f9f7;margin:0;padding:0">
+                <table style="background:#f9f9f7;min-width:320px;width: 100%">
+                    <tbody>
+                    <tr>
+                        <td style="padding:0 24px">
+                            <table style="max-width:600px;margin:0 auto;">
+                                <tbody>
+                                <!-- START Header -->
+                                <!-- END Header -->
 
-  <img
-    src="{{ invoice.invoice.company.logo }}"
-    alt="company logo"
-    width="150px"
-    height="150px"
-  />
-  {% endif %} {# email text #}
-  <section id="content">
-    <p>
-      Bonjour {{ invoice.customer.fullname }} <br />
-      N'oubliez pas que vous avez {{ invoice.type == "Devis" ? "un devis à valider." : "une facture à payer." }}<br />
-      Vous trouverez ci-joint votre document.<br />
-      {% if invoice.type == "Devis" %} 
-      Pour rappel, vous avez jusqu'au {{ invoice.closingDate|date('d/m/Y') }} pour <a href="{{ url }}">accepter le devis</a> <br />
-      {% else %} 
-      Pour rappel, vous avez jusqu'au {{ invoice.closingDate|date('d/m/Y') }} pour régler la facture <br />
-      {% endif %} 
-      Merci pour votre confiance,<br />
-      {% if invoice.customer.company.name != null %}
-      {{ invoice.customer.company.name }}
-      {% endif %}
-    </p>
-  </section>
+                                <!-- START Content -->
+                                <tr style="margin-bottom: 30px;">
+                                    <td style="background:#fff;padding:44px 64px 57px;border:1px solid #dcdcd9;border-radius:8px">
+                                        <table style="max-width:472px;margin:0 auto;text-align: center">
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <table>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <h1 style="font-weight:400;color:#1d1d1b;font-size:24px;margin-bottom:20px">
+                                                                    Validation de votre {{ invoice.type == "Devis" ? "devis" : "facture" }}
+                                                                </h1>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding:0 0 32px 0;text-align: center;">
+                                                              {#<img src="{{ asset("build/images/" ~ invoice.company.logo)}}" alt="company logo" width="150px" height="150px" />#}
+                                                              <img
+                                                                src="{{ invoice.invoice.company.logo }}"
+                                                                alt="company logo"
+                                                                width="150px"
+                                                                height="150px"
+                                                              />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding:0 0 32px 0; font-weight:400;color:#1d1d1b;font-size: 14px;text-align: left;">
+                                                                Bonjour {{ invoice.customer.fullname }}, <br />
+                                                                <br>
+                                                                J'espère que vous allez bien. <br />
+                                                                <br>
+                                                                
+                                                                Nous vous rappelons que vous avez {{ invoice.type == "Devis" ? "un devis que nous vous prions de bien vouloir examiner attentivement. 
+                                                                Pour votre convenance, veuillez trouver ci-joint le document en question." 
+                                                                : "une facture à payer. Pour votre convenance, veuillez trouver ci-joint le document en question." }}<br />
+                                                                <br>
+                                                                {% if invoice.type == "Devis" %}
+                                                                Nous souhaitons attirer votre attention sur la date limite de validation de ce devis, fixée au {{ invoice.closingDate|date('d/m/Y') }}.  
+                                                                Nous vous encourageons à prendre le temps nécessaire pour examiner les détails et à <a href="{{ url }}" class="specific-font" style="text-decoration: underline;color: #2222d9;">valider le devis</a> avant cette échéance.<br />
+                                                                {% else %}
+                                                                Nous souhaitons attirer votre attention sur la date limite de paiement de cette facture, fixée au {{ invoice.closingDate|date('d/m/Y') }}.  
+                                                                Nous vous encourageons à régler rapidement avant cette échéance.<br />
+                                                                {% endif %}
+                                                                <br>
+                                                                Nous tenons à vous exprimer notre gratitude pour la confiance que vous accordez à {{ invoice.customer.company.name }} 
+                                                                et restons à votre disposition pour toute clarification ou information supplémentaire dont vous pourriez avoir besoin. <br>
+                                                                <br>
+                                                                Nous vous prions d'agréer, {{ invoice.customer.fullname }}, l'expression de nos salutations distinguées. <br>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <p style="font-weight:400;font-size:14px;color:#70706d;padding-top:32px;text-align: left;">
+                                                                          Cordialement,<br />
+                                                                          {% if invoice.customer.company.name != null %}
+                                                                            {{ invoice.customer.company.name }}
+                                                                          {% endif %}
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- END Content -->
 
-  {# email footer #}
-  <section id="footer">
-    <p>Copyright © 2023-2024 Facturo. Tous droits réservés.</p>
-  </section>
-</body>
+
+                                <!-- START Footer -->
+                                <tr>
+                                    <td>
+                                        <table style="margin:0 auto;padding:0 0 60px">
+                                            <tbody>
+                                            <tr>
+                                                <td style="padding:0 0 33px;font-size:12px;color:#70706d;text-align: center">
+                                                    <span class="specific-font">En cas de problème, n'hésitez pas à nous contactez </span>
+                                                    <span>&nbsp;•&nbsp;</span>
+                                                    <a href="https://facturo.fr/contact" target="_blank" class="specific-font" style="text-decoration: underline;color: #2222d9;">Page de contact</a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- END Footer -->
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

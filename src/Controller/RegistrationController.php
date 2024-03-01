@@ -244,7 +244,7 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             $email = (new TemplatedEmail())
-                ->from(new Address('no-reply@facturo.fr', 'Facturo.fr'))
+                ->from(new Address($_ENV['MAILER_NOREPLY_EMAIL_ADDRESS'], $_ENV['MAILER_NOREPLY_EMAIL_NAME']))
                 ->to($user->getEmail())
                 ->subject("Saisissez ". $oneTimeCode->getCode() ." comme code de confirmation Facturo")
                 ->htmlTemplate('registration/one_time_code_email.html.twig')
