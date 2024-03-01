@@ -14,6 +14,9 @@
     >
       <option value="1">Message simple</option>
       <option value="2">Message serieux</option>
+      {% if invoice.closingDate|date('Y-m-d') < todayDate %}
+        <option value="3">Message d'urgence</option>
+      {% endif %}
     </select>
     <button
       class="px-5 text-light-white py-2.5 text-sm font-medium text-center bg-electric-blue bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"

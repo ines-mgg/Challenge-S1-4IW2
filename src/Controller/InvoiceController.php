@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Dompdf\Dompdf;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('app/invoice')]
 class InvoiceController extends AbstractController
@@ -40,12 +42,13 @@ class InvoiceController extends AbstractController
     private function sendEmail(Invoice $invoice)
     {
         $email = (new TemplatedEmail())
+            ->from(new Address($_ENV['MAILER_NOREPLY_EMAIL_ADDRESS'], $_ENV['MAILER_NOREPLY_EMAIL_NAME']))
             ->to($invoice->getCustomer()->getEmail())
             ->subject($invoice->getType() === 'Devis' ? 'Voici votre devis' : 'Voici votre facture')
             ->htmlTemplate('emails/invoice.html.twig')
             ->context([
                 'invoice' => $invoice,
-                'url' => $this->generateUrl
+                'url' => $this->generateUrl('app_validate', ['id' => $invoice->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
             ])
             ->attach($this->pdfEmail($invoice), 'invoice.pdf', 'application/pdf');
         try {
@@ -59,10 +62,22 @@ class InvoiceController extends AbstractController
 
     private function contactCustomer(Invoice $invoice, $choices)
     {
+        switch ($choices) {
+            case '1':
+                $emailType = 'emails/reminder.html.twig';
+                break;
+            case '2':
+                $emailType = 'emails/reminder2.html.twig';
+                break;
+            default:
+                $emailType = 'emails/reminder3.html.twig';
+        }
+
         $email = (new TemplatedEmail())
+            ->from(new Address($_ENV['MAILER_NOREPLY_EMAIL_ADDRESS'], $_ENV['MAILER_NOREPLY_EMAIL_NAME']))
             ->to($invoice->getCustomer()->getEmail())
             ->subject($invoice->getType() === 'Devis' ? 'Rappel validation de votre devis' : 'Rappel paiement de votre facture')
-            ->htmlTemplate($choices === '1' ? 'emails/reminder.html.twig' : 'emails/reminder2.html.twig')
+            ->htmlTemplate($emailType)
             ->context([
                 'invoice' => $invoice,
             ])
@@ -127,8 +142,8 @@ class InvoiceController extends AbstractController
             ];
             $invoice->setTotal($totalTTC);
             $invoice->setInvoice($dataInvoice);
+            $entityManager->persist($invoice);
             if ($this->sendEmail($invoice)) {
-                $entityManager->persist($invoice);
                 $entityManager->flush();
             } else {
                 $this->addFlash('danger', 'Une erreur est survenue lors de la création');
@@ -142,6 +157,8 @@ class InvoiceController extends AbstractController
 
         return $this->render('invoice/index.html.twig', [
             'invoices' => $invoiceRepository->findAll()
+        ]);
+    }
 
     #[Route('/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -168,8 +185,12 @@ class InvoiceController extends AbstractController
                 $this->addFlash('success', 'Le message a bien été envoyé');
                 return $this->redirectToRoute('app_invoice_show', ['id' => $invoice->getId()], Response::HTTP_SEE_OTHER);
             }
-        }  
-      
+        }
+        return $this->render('invoice/show.html.twig', [
+            'invoice' => $invoice,
+        ]);
+    }
+
     #[Route('/{id}/pdf', name: 'app_invoice_pdf', methods: ['GET'])]
     public function pdf(Invoice $invoice): Response
     {
