@@ -66,6 +66,7 @@ class InvoiceFixtures extends Fixture implements DependentFixtureInterface
                     ]
                 ];
                 $invoice->setInvoice($dataInvoice);
+                $invoice->setToken(bin2hex(random_bytes(32)));
                 $referenceName = self::INVOICE_REFERENCE . $i;
                 if ($this->hasReference($referenceName)) {
                     // Override the existing reference

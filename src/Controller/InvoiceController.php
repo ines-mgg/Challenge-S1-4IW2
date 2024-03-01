@@ -17,7 +17,6 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-#[Route('app/invoice')]
 class InvoiceController extends AbstractController
 {
     private $email;
@@ -48,7 +47,7 @@ class InvoiceController extends AbstractController
             ->htmlTemplate('emails/invoice.html.twig')
             ->context([
                 'invoice' => $invoice,
-                'url' => $this->generateUrl('app_validate', ['id' => $invoice->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
+                'url' => $this->generateUrl('app_validate', ['id' => $invoice->getId(), 'token' => $invoice->getToken()], UrlGeneratorInterface::ABSOLUTE_URL)
             ])
             ->attach($this->pdfEmail($invoice), 'invoice.pdf', 'application/pdf');
         try {
@@ -80,6 +79,7 @@ class InvoiceController extends AbstractController
             ->htmlTemplate($emailType)
             ->context([
                 'invoice' => $invoice,
+                'url' => $this->generateUrl('app_validate', ['id' => $invoice->getId(), 'token' => $invoice->getToken()], UrlGeneratorInterface::ABSOLUTE_URL)
             ])
             ->attach($this->pdfEmail($invoice), 'invoice.pdf', 'application/pdf');
         try {
@@ -89,6 +89,13 @@ class InvoiceController extends AbstractController
             dump($e->getMessage());
             return false;
         }
+    }
+
+    private function setInvoiceStatus(Invoice $invoice, string $status, EntityManagerInterface $entityManager): void
+    {
+        $invoice->setStatus($status);
+        $entityManager->persist($invoice);
+        $entityManager->flush();
     }
 
     private function createInvoice(Invoice $invoice, EntityManagerInterface $entityManager)
@@ -142,16 +149,19 @@ class InvoiceController extends AbstractController
             ];
             $invoice->setTotal($totalTTC);
             $invoice->setInvoice($dataInvoice);
+            $invoice->setToken(bin2hex(random_bytes(32)));
             $entityManager->persist($invoice);
+            $entityManager->flush();
+
             if ($this->sendEmail($invoice)) {
-                $entityManager->flush();
+                $this->addFlash('success', 'La facture a bien été créée');
             } else {
                 $this->addFlash('danger', 'Une erreur est survenue lors de la création');
             }
         }
     }
 
-    #[Route('/', name: 'app_invoice_index', methods: ['GET'])]
+    #[Route('app/invoice/', name: 'app_invoice_index', methods: ['GET'])]
     public function index(InvoiceRepository $invoiceRepository): Response
     {
 
@@ -160,7 +170,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
+    #[Route('app/invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $invoice = new Invoice();
@@ -177,7 +187,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_invoice_show', methods: ['GET', 'POST'])]
+    #[Route('app/invoice/{id}', name: 'app_invoice_show', methods: ['GET', 'POST'])]
     public function show(Request $request, Invoice $invoice): Response
     {
         if ($this->isCsrfTokenValid('show' . $invoice->getId(), $request->request->get('_token'))) {
@@ -191,7 +201,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/pdf', name: 'app_invoice_pdf', methods: ['GET'])]
+    #[Route('app/invoice/{id}/pdf', name: 'app_invoice_pdf', methods: ['GET'])]
     public function pdf(Invoice $invoice): Response
     {
         $pdfContent = $this->pdfEmail($invoice);
@@ -202,7 +212,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
+    #[Route('app/invoice/{id}/edit', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         if ($invoice->getStatus() === 'Payée' || $invoice->getStatus() === 'Annulé(e)' || $invoice->getStatus() === 'Validé') {
@@ -228,7 +238,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_invoice_delete', methods: ['POST'])]
+    #[Route('app/invoice/{id}', name: 'app_invoice_delete', methods: ['POST'])]
     public function delete(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $invoice->getId(), $request->request->get('_token'))) {
@@ -240,7 +250,7 @@ class InvoiceController extends AbstractController
 
         return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
     }
-    #[Route('/{id}/validate', name: 'app_invoice_validate', methods: ['POST'])]
+    #[Route('app/invoice/{id}/validate', name: 'app_invoice_validate', methods: ['POST'])]
     public function validate(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('validate' . $invoice->getId(), $request->request->get('_token'))) {
@@ -250,5 +260,38 @@ class InvoiceController extends AbstractController
         }
 
         return $this->redirectToRoute('app_invoice_show', ['id' => $invoice->getId()], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('validate/confirm/', name: 'app_invoice_confirm', methods: ['GET'])]
+    public function confirm(): Response
+    {
+        return $this->render('invoice/confirm.html.twig');
+    }
+
+    #[Route('validate/cancelled/', name: 'app_invoice_cancelled', methods: ['GET'])]
+    public function cancelledInvoice(): Response
+    {
+        return $this->render('invoice/cancelled.html.twig');
+    }
+
+    #[Route('validate/{id}/{token}', name: 'app_validate', methods: ['GET', 'POST'])]
+    public function validateInvoice(Request $request, Invoice $invoice, string $token, EntityManagerInterface $entityManager): Response
+    {
+        if ($invoice->getToken() != $token) {
+            return $this->redirectToRoute('app_invoice_cancelled', [], Response::HTTP_SEE_OTHER);
+        } elseif ($invoice->getStatus() === 'Validé' || $invoice->getStatus() === 'Annulé(e)' || $invoice->getStatus() === 'Payée') {
+            return $this->redirectToRoute('app_invoice_confirm', [], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($this->isCsrfTokenValid('validate' . $invoice->getId() . $invoice->getToken(), $request->request->get('_token'))) {
+            $status = $request->request->get('choices') === '1' ? 'Validé' : 'Annulé(e)';
+            $this->setInvoiceStatus($invoice, $status, $entityManager);
+            return $this->redirectToRoute('app_invoice_confirm', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('invoice/validate.html.twig', [
+            'invoice' => $invoice,
+            'token' => $token,
+        ]);
     }
 }
