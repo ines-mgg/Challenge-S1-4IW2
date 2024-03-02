@@ -15,14 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class PrestationController extends AbstractController
 {
     #[Route('/', name: 'app_prestation_index', methods: ['GET'])]
-    public function index(Request $request,PrestationRepository $prestationRepository): Response
+    public function index(Request $request, PrestationRepository $prestationRepository): Response
     {
-        $prestations = $prestationRepository->findAll();
+        $prestations = $prestationRepository->findAllPrestations($this->getUser()->getCompany()->getId());
         $prestation = new Prestation();
         $form = $this->createForm(PrestationType::class, $prestation);
         $form->handleRequest($request);
         return $this->render('prestation/index.html.twig', [
-            'prestations' => $prestationRepository->findAll(),
+            'prestations' => $prestations,
             'form' => $form,
 
         ]);
@@ -41,6 +41,7 @@ class PrestationController extends AbstractController
                 $this->addFlash('danger', 'Cette prestation existe déjà');
                 return $this->redirectToRoute('app_prestation_index');
             }
+            $prestation->setCompany($this->getUser()->getCompany()->getId());
             $entityManager->persist($prestation);
             $entityManager->flush();
             $this->addFlash('success', 'Prestation ajoutée avec succès');
@@ -83,7 +84,6 @@ class PrestationController extends AbstractController
             $entityManager->persist($prestationToPersist);
             $entityManager->flush();
             $this->addFlash('success', 'Prestation modifiée avec succès');
-
         }
         return $this->render('prestation/edit.html.twig', [
             'prestation' => $prestationToPersist,

@@ -1,78 +1,104 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Customer{% endblock %}
-
+{% extends 'dashboard/base.html.twig' %} {% block title %}Customer{% endblock %}
 {% block body %}
-    <h1>Customer</h1>
+{% set todayDate = "now"|date('Y-m-d') %}
+<div class="p-4 flex flex-col gap-3">
+  <div class="flex items-center justify-between mt-4 sm:mt-6">
+    <button
+      class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+    >
+      <a href="{{ path('app_customer_index') }}">back to list</a>
+    </button>
+      <div class="flex items-center gap-3">
+        <button class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+        >
+            <a href="{{ path('app_invoice_new', { id: customer.id }) }}"
+            >Nouvelle Facture</a
+        >
+        </button>
+        <button class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"><a href="{{ path('app_customer_edit', { id: customer.id }) }}">Modifier</a></button>
+        {{ include("customer/_delete_form.html.twig") }}
+      </div>
+    </button>
+  </div>
+  <h1 class="font-bold">{{ customer.fullname }}</h1>
 
-    <table class="table">
-        <tbody>
+<table class="mt-4">
+    <tbody>
         <tr>
-            <th>Id</th>
-            <td>{{ customer.id }}</td>
-        </tr>
-        <tr>
-            <th>Fullname</th>
-            <td>{{ customer.fullname }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
+            <th class="text-left">Email</th>
             <td>{{ customer.email }}</td>
         </tr>
         <tr>
-            <th>Number</th>
+            <th class="text-left">Numéro de téléphone</th>
             <td>{{ customer.number }}</td>
         </tr>
         <tr>
-            <th>Siret</th>
+            <th class="text-left">Siret</th>
             <td>{{ customer.siret }}</td>
         </tr>
         <tr>
-            <th>Tva</th>
+            <th class="text-left">Tva</th>
             <td>{{ customer.tva }}</td>
         </tr>
-        </tbody>
-    </table>
+    </tbody>
+</table>
 
-    <h2>Invoices</h2>
-    {% if customer.invoices|length > 0 %}
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Id</th>
-                <th>Created At</th>
-                <th>Price</th>
-                <th>Total</th>
-                <th>Type</th>
-                <th>Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for invoice in customer.invoices %}
-                <tr>
-                    <td>{{ invoice.id }}</td>
-                    <td>{{ invoice.createdAt|date('Y-m-d H:i:s') }}</td>
-                    <td>{{ invoice.price }}</td>
-                    <td>{{ invoice.total }}</td>
-                    <td>{{ invoice.type }}</td>
-                    <td>{{ invoice.status }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {% set totalOfTotals = customer.invoices|reduce((carry, invoice) => carry + invoice.total, 0) %}
-        {% set totalOfPrices = customer.invoices|reduce((carry, invoice) => carry + invoice.price, 0) %}
-
-        <p>Total TTC: {{ totalOfTotals }}</p>
-        <p>Total HT: {{ totalOfPrices }}</p>
-    {% else %}
-        <p>No invoices found for this customer.</p>
+  <h2 class="font-bold">Devis / Factures</h2>
+  {% if customer.invoices|length > 0 %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="text-left">Le</th>
+        <th class="text-left">Type</th>
+        <th class="text-left">Total</th>  
+        <th class="text-left">Status</th>
+        <th class="text-left">Date limite</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for invoice in customer.invoices %}
+      <tr>
+        <td>{{ invoice.createdAt|date('d/m/Y') }}</td>
+        <td>{{ invoice.type }}</td>
+        <td>{{ invoice.total }}€</td>
+        <td>
+    {% if invoice.status == 'Validé' or invoice.status == 'Payée'%}
+    <span
+      class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
+      >{{ invoice.status }}</span
+    >
+    {% elseif invoice.status == 'Annulé(e)' %}
+    <span
+      class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+      >{{ invoice.status }}
+    </span>
+    {% elseif invoice.closingDate|date('Y-m-d') < todayDate %}
+        <span
+      class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+      >En retard</span>
+    {% elseif invoice.status == 'À valider' or invoice.status == 'À payer' %}
+        <span
+        class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300"
+        >{{ invoice.status }}</span>
     {% endif %}
+        </td>
+        <td>
+            {{invoice.closingDate|date('d/m/Y')}}
+        </td>
+        <td>
+            <a class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+            href="{{ path('app_invoice_pdf', { id: invoice.id , token: invoice.token}) }}" target="_blank">Afficher</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% set totalOfTotals = customer.invoices|reduce((carry, invoice) => carry +
+  invoice.total, 0) %}
 
-    <a href="{{ path('app_invoice_new', {'id': customer.id}) }}">Nouvelle Facture</a>
-    <a href="{{ path('app_customer_index') }}">back to list</a>
-
-    <a href="{{ path('app_customer_edit', {'id': customer.id}) }}">edit</a>
-
-    {{ include('customer/_delete_form.html.twig') }}
+  <p class="font-bold">Total TTC: {{ totalOfTotals }}€</p>
+  {% else %}
+  <p>No invoices found for this customer.</p>
+  {% endif %}
+</div>
 {% endblock %}

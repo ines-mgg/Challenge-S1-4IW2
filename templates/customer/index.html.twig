@@ -1,43 +1,76 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard/base.html.twig' %} {% block title %}Customer index{%
+endblock %} {% block body %} {% embed '_composants/tables/_table.html.twig' %}
+{% block tTitle %}Clients{% endblock %} {% block pathNew %}{{
+  path("app_customer_new")
+}}{% endblock %} {% block thead %}
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Id
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Fullname
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Email
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Number
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Siret
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Tva
+</th>
+{% endblock %} {% block tbody %} {% for customer in customers %}
+<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ customer.id }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ customer.fullname }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ customer.email }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ customer.number }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ customer.siret }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ customer.tva }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    <a
+      class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+      href="{{ path('app_customer_show', { id: customer.id }) }}"
+      >Afficher</a
+    >
+    <a
+      class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+      href="{{ path('app_customer_edit', { id: customer.id }) }}"
+      >Modifier</a
+    >
+  </td>
+  {% else %}
+</tr>
 
-{% block title %}Customer index{% endblock %}
-
-{% block body %}
-    <h1>Customer index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Fullname</th>
-                <th>Email</th>
-                <th>Number</th>
-                <th>Siret</th>
-                <th>Tva</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for customer in customers %}
-            <tr>
-                <td>{{ customer.id }}</td>
-                <td>{{ customer.fullname }}</td>
-                <td>{{ customer.email }}</td>
-                <td>{{ customer.number }}</td>
-                <td>{{ customer.siret }}</td>
-                <td>{{ customer.tva }}</td>
-                <td>
-                    <a href="{{ path('app_customer_show', {'id': customer.id}) }}">show</a>
-                    <a href="{{ path('app_customer_edit', {'id': customer.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_customer_new') }}">Create new</a>
-{% endblock %}
+<tr>
+  <td colspan="8">no records found</td>
+</tr>
+{% endfor %} {% endblock tbody %} {% endembed %} {% endblock %}

@@ -53,8 +53,8 @@ class PrestationType extends AbstractType
             ])
             ->add('archive', ChoiceType::class, [
                 'choices' => [
-                    'Non' => true,
-                    'Oui' => false,
+                    'Non' => false,
+                    'Oui' => true,
                 ],
                 'label' => 'Archivé',
             ])

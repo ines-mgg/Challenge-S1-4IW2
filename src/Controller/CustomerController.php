@@ -18,7 +18,7 @@ class CustomerController extends AbstractController
     public function index(CustomerRepository $customerRepository): Response
     {
         return $this->render('customer/index.html.twig', [
-            'customers' => $customerRepository->findAll(),
+            'customers' => $customerRepository->findAllCustomers($this->getUser()->getCompany()->getId()),
         ]);
     }
 
@@ -30,6 +30,7 @@ class CustomerController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $customer->setCompany($this->getUser()->getCompany()->getId());
             $entityManager->persist($customer);
             $entityManager->flush();
 

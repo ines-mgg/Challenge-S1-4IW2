@@ -161,20 +161,22 @@ class InvoiceController extends AbstractController
         }
     }
 
-    #[Route('app/invoice/', name: 'app_invoice_index', methods: ['GET'])]
+    #[Route('invoice/', name: 'app_invoice_index', methods: ['GET'])]
     public function index(InvoiceRepository $invoiceRepository): Response
     {
 
         return $this->render('invoice/index.html.twig', [
-            'invoices' => $invoiceRepository->findAll()
+            'invoices' => $invoiceRepository->findAllInvoices($this->getUser()->getCompany()->getId())
         ]);
     }
 
-    #[Route('app/invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
+    #[Route('invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $invoice = new Invoice();
-        $form = $this->createForm(InvoiceType::class, $invoice);
+        $form = $this->createForm(InvoiceType::class, $invoice, [
+            'user' => $this->getUser(),
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid() && count($invoice->getInvoicePrestations()) > 0) {
             $this->createInvoice($invoice, $entityManager);
@@ -187,7 +189,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('app/invoice/{id}', name: 'app_invoice_show', methods: ['GET', 'POST'])]
+    #[Route('invoice/{id}', name: 'app_invoice_show', methods: ['GET', 'POST'])]
     public function show(Request $request, Invoice $invoice): Response
     {
         if ($this->isCsrfTokenValid('show' . $invoice->getId(), $request->request->get('_token'))) {
@@ -201,9 +203,12 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('app/invoice/{id}/pdf', name: 'app_invoice_pdf', methods: ['GET'])]
-    public function pdf(Invoice $invoice): Response
+    #[Route('invoice/{id}/{token}/pdf', name: 'app_invoice_pdf', methods: ['GET'])]
+    public function pdf(Invoice $invoice, string $token): Response
     {
+        if ($invoice->getToken() != $token) {
+            return $this->redirectToRoute('app_invoice_cancelled', [], Response::HTTP_SEE_OTHER);
+        }
         $pdfContent = $this->pdfEmail($invoice);
 
         return new Response($pdfContent, 200, [
@@ -212,7 +217,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('app/invoice/{id}/edit', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
+    #[Route('invoice/{id}/edit', name: 'app_invoice_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         if ($invoice->getStatus() === 'Payée' || $invoice->getStatus() === 'Annulé(e)' || $invoice->getStatus() === 'Validé') {
@@ -224,7 +229,9 @@ class InvoiceController extends AbstractController
         $invoice->setStatus('Annulé(e)');
         $entityManager->persist($invoice);
 
-        $form = $this->createForm(InvoiceType::class, $newInvoice);
+        $form = $this->createForm(InvoiceType::class, $invoice, [
+            'user' => $this->getUser(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid() && count($newInvoice->getInvoicePrestations()) > 0) {
@@ -238,7 +245,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('app/invoice/{id}', name: 'app_invoice_delete', methods: ['POST'])]
+    #[Route('invoice/{id}', name: 'app_invoice_delete', methods: ['POST'])]
     public function delete(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $invoice->getId(), $request->request->get('_token'))) {
@@ -250,7 +257,7 @@ class InvoiceController extends AbstractController
 
         return $this->redirectToRoute('app_invoice_index', [], Response::HTTP_SEE_OTHER);
     }
-    #[Route('app/invoice/{id}/validate', name: 'app_invoice_validate', methods: ['POST'])]
+    #[Route('invoice/{id}/validate', name: 'app_invoice_validate', methods: ['POST'])]
     public function validate(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('validate' . $invoice->getId(), $request->request->get('_token'))) {
