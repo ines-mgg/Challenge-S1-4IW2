@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\Invoice;
 use App\Form\InvoiceType;
 use App\Repository\InvoiceRepository;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,8 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+
+#[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_USER"))')]
 class InvoiceController extends AbstractController
 {
     private $email;

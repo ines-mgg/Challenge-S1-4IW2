@@ -1,104 +1,166 @@
-{% extends 'dashboard/base.html.twig' %} {% block title %}Customer{% endblock %}
+{% extends 'dashboard/index.html.twig' %}
+
+    {% block title %}Informations Client{% endblock %}
+
 {% block body %}
 {% set todayDate = "now"|date('Y-m-d') %}
-<div class="p-4 flex flex-col gap-3">
-  <div class="flex items-center justify-between mt-4 sm:mt-6">
-    <button
-      class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
-    >
-      <a href="{{ path('app_customer_index') }}">Retour à la liste</a>
-    </button>
-      <div class="flex items-center gap-3">
-        <button class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
-        >
-            <a href="{{ path('app_invoice_new', { id: customer.id }) }}"
-            >Nouvelle Facture</a
-        >
-        </button>
-        <button class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"><a href="{{ path('app_customer_edit', { id: customer.id }) }}">Modifier</a></button>
-        {{ include("customer/_delete_form.html.twig") }}
-      </div>
-    </button>
-  </div>
-  <h1 class="font-bold">{{ customer.fullname }}</h1>
+        <div class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
+            <div class="w-full mb-1">
+                <div class="mb-4">
+                    <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white py-3 px-2">Information Client n° {{  customer.id }}</h1>
+                    <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
+                        <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                            <a href="{{ path('app_customer_index') }}">Retour à la liste</a>
+                        </button>
+                        <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                            <a href="{{ path('app_customer_edit', {'id': customer.id}) }}">Modifier </a>
+                        </button>
+                        <form method="post" action="{{ path('app_customer_delete', {'id': customer.id}) }}" onsubmit="return confirm('Voulez-vous supprimer ce client ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ customer.id) }}">
+                            <button class="btn bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none   focus:ring-4 focus:ring-red-300  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex flex-wrap" id="tabs-id">
+                        <div class="w-full">
+                            <ul class="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row">
+                                <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
+                                    <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-white bg-pink-600" onclick="changeAtiveTab(event,'tab-profile')">
+                                        <i class="fas fa-space-shuttle text-base mr-1"></i>  Information cliente
+                                    </a>
+                                </li>
+                                <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
+                                    <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-pink-600 bg-white" onclick="changeAtiveTab(event,'tab-settings')">
+                                        <i class="fas fa-cog text-base mr-1"></i>  Factures/ Devis
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
+                                <div class="px-4 py-5 flex-auto">
+                                    <div class="tab-content tab-space">
+                                        <div class="block" id="tab-profile">
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="text-gray-700 dark:text-gray-700 p-4 ">Nom Complet</div>
+                                                <div class=" p-4  text-gray-700 dark:text-gray-700">{{ customer.fullname }}</div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="text-gray-700 dark:text-gray-700 p-4 ">Email</div>
+                                                <div class=" p-4  text-gray-700 dark:text-gray-700">{{ customer.email }}</div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="text-gray-700 dark:text-gray-700 p-4 ">TVA</div>
+                                                <div class=" p-4  text-gray-700 dark:text-gray-700">{{ customer.tva }}%</div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="text-gray-700 dark:text-gray-700 p-4 ">SIRET</div>
+                                                <div class=" p-4  text-gray-700 dark:text-gray-700">{{ customer.siret }}</div>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="text-gray-700 dark:text-gray-700 p-4 ">Numéro de téléphone</div>
+                                                <div class=" p-4  text-gray-700 dark:text-gray-700">{{ customer.number }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="hidden" id="tab-settings">
+                                            {% if customer.invoices|length > 0 %}
+                                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Id</th>
+                                                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Created At</th>
+                                                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Total</th>
+                                                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Type</th>
+                                                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Status</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                                    {% for invoice in customer.invoices %}
+                                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.id }}</td>
+                                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.createdAt|date('Y-m-d H:i:s') }}</td>
+                                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.total }}€</td>
+                                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.type }}</td>
+                                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                                {% if invoice.status == 'Validé' or invoice.status == 'Payée'%}
+                                                                    <span
+                                                                    class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
+                                                                    >{{ invoice.status }}</span
+                                                                    >
+                                                                    {% elseif invoice.status == 'Annulé(e)' %}
+                                                                    <span
+                                                                    class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+                                                                    >{{ invoice.status }}
+                                                                    </span>
+                                                                    {% elseif invoice.closingDate|date('Y-m-d') < todayDate %}
+                                                                        <span
+                                                                    class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+                                                                    >En retard</span>
+                                                                    {% elseif invoice.status == 'À valider' or invoice.status == 'À payer' %}
+                                                                        <span
+                                                                        class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300"
+                                                                        >{{ invoice.status }}</span>
+                                                                    {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                                <div class="relative overflow-hidden bg-white rounded-b-lg shadow-md dark:bg-gray-800">
+                                                    <nav class="flex flex-row items-center justify-between p-4"
+                                                         aria-label="Table navigation">
+                                                        <button type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                                                            Voir le rapport
+                                                        </button>
+                                                {% set totalOfTotals = customer.invoices|reduce((carry, invoice) => carry + invoice.total, 0) %}
+                                                        <p class="text-sm">
+                                                            <span class="font-normal text-gray-500 dark:text-gray-400">Total TTC: </span>
+                                                            <span class="font-semibold text-gray-900 dark:text-white">{{ totalOfTotals }}€</span>
+                                                        </p>
+                                                    </nav>
+                                                </div>
+                                                {# set totalOfPrices = customer.invoices|reduce((carry, invoice) => carry + invoice.price, 0) #}
 
-<table class="mt-4">
-    <tbody>
-        <tr>
-            <th class="text-left">Email</th>
-            <td>{{ customer.email }}</td>
-        </tr>
-        <tr>
-            <th class="text-left">Numéro de téléphone</th>
-            <td>{{ customer.number }}</td>
-        </tr>
-        <tr>
-            <th class="text-left">Siret</th>
-            <td>{{ customer.siret }}</td>
-        </tr>
-        <tr>
-            <th class="text-left">Tva</th>
-            <td>{{ customer.tva }}</td>
-        </tr>
-    </tbody>
-</table>
+                                                <p></p>
+                                                {# <p>Total HT: {{ totalOfPrices }}</p> #}
+                                            {% else %}
+                                                <p>Aucunes factures trouvées pour ce client.</p>
+                                            {% endif %}
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-  <h2 class="font-bold">Devis / Factures</h2>
-  {% if customer.invoices|length > 0 %}
-  <table class="table">
-    <thead>
-      <tr>
-        <th class="text-left">Le</th>
-        <th class="text-left">Type</th>
-        <th class="text-left">Total</th>  
-        <th class="text-left">Status</th>
-        <th class="text-left">Date limite</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for invoice in customer.invoices %}
-      <tr>
-        <td>{{ invoice.createdAt|date('d/m/Y') }}</td>
-        <td>{{ invoice.type }}</td>
-        <td>{{ invoice.total }}€</td>
-        <td>
-    {% if invoice.status == 'Validé' or invoice.status == 'Payée'%}
-    <span
-      class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
-      >{{ invoice.status }}</span
-    >
-    {% elseif invoice.status == 'Annulé(e)' %}
-    <span
-      class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
-      >{{ invoice.status }}
-    </span>
-    {% elseif invoice.closingDate|date('Y-m-d') < todayDate %}
-        <span
-      class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
-      >En retard</span>
-    {% elseif invoice.status == 'À valider' or invoice.status == 'À payer' %}
-        <span
-        class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300"
-        >{{ invoice.status }}</span>
-    {% endif %}
-        </td>
-        <td>
-            {{invoice.closingDate|date('d/m/Y')}}
-        </td>
-        <td>
-            <a class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            href="{{ path('app_invoice_pdf', { id: invoice.id , token: invoice.token}) }}" target="_blank">Afficher</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  {% set totalOfTotals = customer.invoices|reduce((carry, invoice) => carry +
-  invoice.total, 0) %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            function changeAtiveTab(event,tabID){
+                let element = event.target;
+                while(element.nodeName !== "A"){
+                    element = element.parentNode;
+                }
+                ulElement = element.parentNode.parentNode;
+                aElements = ulElement.querySelectorAll("li > a");
+                tabContents = document.getElementById("tabs-id").querySelectorAll(".tab-content > div");
+                for(let i = 0 ; i < aElements.length; i++){
+                    aElements[i].classList.remove("text-white");
+                    aElements[i].classList.remove("bg-pink-600");
+                    aElements[i].classList.add("text-pink-600");
+                    aElements[i].classList.add("bg-white");
+                    tabContents[i].classList.add("hidden");
+                    tabContents[i].classList.remove("block");
+                }
+                element.classList.remove("text-pink-600");
+                element.classList.remove("bg-white");
+                element.classList.add("text-white");
+                element.classList.add("bg-pink-600");
+                document.getElementById(tabID).classList.remove("hidden");
+                document.getElementById(tabID).classList.add("block");
+            }
+        </script>
 
-  <p class="font-bold">Total TTC: {{ totalOfTotals }}€</p>
-  {% else %}
-  <p>No invoices found for this customer.</p>
-  {% endif %}
-</div>
-{% endblock %}
+
+    {% endblock %}

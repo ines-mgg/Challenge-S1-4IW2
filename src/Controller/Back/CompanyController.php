@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\Company;
 use App\Form\CompanyType;
 use App\Repository\CompanyRepository;
-use App\Repository\CustomerRepository;
 use App\Repository\InvoiceRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,8 +12,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/company')]
+#[IsGranted('ROLE_ADMIN')]
 class CompanyController extends AbstractController
 {
     #[Route('/', name: 'app_company_index', methods: ['GET'])]

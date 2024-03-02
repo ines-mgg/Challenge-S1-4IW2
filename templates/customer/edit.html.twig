@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html.twig' %} {% block title %}Modifier Prestation{%
+{% extends 'dashboard/base.html.twig' %} {% block title %}Modification client{%
 endblock %} {% block body %}
 <div
   class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
@@ -8,7 +8,7 @@ endblock %} {% block body %}
       <h1
         class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white py-3 px-2"
       >
-        Modifier le client
+        Modifier le client n° {{ customer.id }} | {{ customer.fullname }}
       </h1>
       <div
         class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"

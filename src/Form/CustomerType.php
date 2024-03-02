@@ -6,9 +6,10 @@ use App\Entity\Company;
 use App\Entity\Customer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class CustomerType extends AbstractType
 {
@@ -16,42 +17,47 @@ class CustomerType extends AbstractType
     {
         $builder
             ->add('fullname', null, [
-                'label' => 'Nom complet',
                 'required' => true,
                 'attr' => [
-                    'class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500',
+                    'placeholder' => 'Pauline Dupont',
+                    'pattern' => '^[A-Za-zéèàêëïîôöùç\-]+(?: [A-Za-zéèàêëïîôöùç\-]+)+$',
                 ],
-                'label_attr' => ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'],
-
+                'label' => 'Nom complet'
             ])
-            ->add('email', null, [
-                'label' => 'Email',
+            ->add('email', EmailType::class, [
                 'required' => true,
+                'label' => 'Email', // 'Adresse email
                 'attr' => [
-                    'class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500',
-                ],
-                'label_attr' => ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'],
-            ])
-            ->add('number', NumberType::class, [
+                    'placeholder' => 'example@example.com',
+                    'type' => 'email',
+                ]
+                ])
+            ->add('number', null, [
+                'required' => true,
                 'label' => 'Numéro de téléphone',
-                'required' => true,
                 'attr' => [
-                    'class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500',
-                ],
-                'label_attr' => ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'],
+                    'placeholder' => '06 12 34 56 78',
+                    'title' => 'Le numéro de téléphone doit être au format 06 12 34 56 78',
+                    'maxlength' => '10',
+                    'minlength' => '10'
+                ]
             ])
-            ->add('siret', null, [
-                'label' => 'Siret',
+            ->add('siret',NumberType::class, [
                 'required' => true,
+                'label' => 'Numéro de SIRET',
                 'attr' => [
-                    'class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500',
-                ],
-                'label_attr' => ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'],
+                    'placeholder' => '12345678912345',
+                    'pattern' => '[0-9]{14}',
+                    'title' => 'Le numéro de SIRET doit être au format 12345678912345',
+                    'maxlength' => '14',
+                    'minlength' => '14'
+                ]
             ]);
-            // ->add('company', EntityType::class, [
-            //     'class' => Company::class,
-            //     'choice_label' => 'id',
-            // ]);
+            /*->add('company', EntityType::class, [
+                'class' => Company::class,
+                'choice_label' => 'id',
+            ])
+        ;*/
     }
 
     public function configureOptions(OptionsResolver $resolver): void

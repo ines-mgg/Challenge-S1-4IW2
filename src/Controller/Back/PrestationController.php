@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\Prestation;
 use App\Form\PrestationType;
 use App\Repository\PrestationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/prestation')]
+#[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_USER"))') ]
 class PrestationController extends AbstractController
 {
     #[Route('/', name: 'app_prestation_index', methods: ['GET'])]
@@ -64,19 +66,17 @@ class PrestationController extends AbstractController
 
     #[Route('/{id}/edit', name: 'app_prestation_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Prestation $prestation, EntityManagerInterface $entityManager): Response
-    {
-        if (count($prestation->getInvoicePrestations()) > 0) {
-            $newPrestation = clone $prestation;
-            $entityManager->detach($newPrestation);
-            $prestationToPersist = $newPrestation;
-            $prestationToPersist->setArchive(false);
-            $prestation->setArchive(true);
-            $entityManager->persist($prestation);
-            $this->addFlash('warning', 'Attention, cette prestation est déjà liée à une facture, vous ne pouvez pas la modifier');
-        } else {
-            $prestationToPersist = $prestation;
-        }
-
+    {if (count($prestation->getInvoicePrestations()) > 0) {
+        $newPrestation = clone $prestation;
+        $entityManager->detach($newPrestation);
+        $prestationToPersist = $newPrestation;
+        $prestationToPersist->setArchive(false);
+        $prestation->setArchive(true);
+        $entityManager->persist($prestation);
+        $this->addFlash('warning', 'Attention, cette prestation est déjà liée à une facture, vous ne pouvez pas la modifier');
+    } else {
+        $prestationToPersist = $prestation;
+    }
         $form = $this->createForm(PrestationType::class, $prestationToPersist);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -93,7 +93,11 @@ class PrestationController extends AbstractController
     #[Route('/{id}', name: 'app_prestation_delete', methods: ['POST'])]
     public function delete(Request $request, Prestation $prestation, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $prestation->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$prestation->getId(), $request->request->get('_token'))) {
+            $invoicePrestations = $prestation->getInvoicePrestations();
+            foreach ($invoicePrestations as $invoicePrestation) {
+                $entityManager->remove($invoicePrestation);
+            }
             $entityManager->remove($prestation);
             $entityManager->flush();
         }

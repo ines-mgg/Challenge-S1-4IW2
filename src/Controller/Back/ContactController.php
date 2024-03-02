@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\Contact;
-use App\Form\MailReply;
 use App\Form\ContactType;
+use App\Form\MailReply;
 use App\Repository\ContactRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Id;
-use phpDocumentor\Reflection\Type;
-use PhpParser\Node\Stmt\TryCatch;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/contact')]
+#[IsGranted('ROLE_ADMIN')]
 class ContactController extends AbstractController
 {
     #[Route('/', name: 'showcase_contact', methods: ['GET', 'POST'])]
@@ -33,7 +33,7 @@ class ContactController extends AbstractController
                 'lastName' => $form->get('lastName')->getData(),
                 'userEmail' => $form->get('email')->getData(),
                 'phoneNumber' => $form->get('phone')->getData(),
-                'company' => $form->get('society_name')->getData(),
+                'companyName' => $form->get('society_name')->getData(),
                 'companySize' => $form->get('society_size')->getData(),
                 'subject' => $form->get('subject')->getData(),
                 'message' => $form->get('message')->getData()
@@ -69,21 +69,26 @@ class ContactController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $context = [
-                'firstName' => $form->get('firstName')->getData(),
-                'lastName' => $form->get('lastName')->getData(),
-                'userEmail' => $form->get('email')->getData(),
-                'phoneNumber' => $form->get('phone')->getData(),
-                'company' => $form->get('society_name')->getData(),
-                'subject' => $form->get('subject')->getData(),
-                'message' => $form->get('message')->getData()
-            ];
-            if ($this->extracted($form->get('subject'),$form->get('email'),$context,'emails/contact.html.twig' ,$mailer)) {
-                $entityManager->persist($contact);
-                $entityManager->flush();
+            $email = (new TemplatedEmail())
+                ->from(new Address($_ENV['MAILER_NOREPLY_EMAIL_ADDRESS'], $_ENV['MAILER_NOREPLY_EMAIL_NAME']))
+                ->to($form->get('email'))
+                ->subject($form->get('subject'))
+                ->htmlTemplate('emails/contact.html.twig')
+                ->context([
+                    'firstName' => $form->get('firstName')->getData(),
+                    'lastName' => $form->get('lastName')->getData(),
+                    'userEmail' => $form->get('email')->getData(),
+                    'phoneNumber' => $form->get('phone')->getData(),
+                    'company' => $form->get('society_name')->getData(),
+                    'subject' => $form->get('subject')->getData(),
+                    'message' => $form->get('message')->getData()
+                ])
+            ;
+            try {
+                $mailer->send($email);
                 $this->addFlash('success', 'Votre message a bien été envoyé');
                 return $this->redirectToRoute('app_contact_index', [], Response::HTTP_SEE_OTHER);
-            }else{
+            } catch (TransportExceptionInterface $e) {
                 $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi du mail');
             }
         }
@@ -108,15 +113,20 @@ class ContactController extends AbstractController
         $form->get('subject')->setData('Re: '.$contact->getSubject());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            var_dump($form->getData());
-            $context = [
-                'subject' => $form->get('subject')->getData(),
-                'message' => $form->get('message')->getData(),
-            ];
-            if ($this->extracted($form->get('subject')->setData('Re: '.$contact->getSubject()),$contact->getEmail(),$context,'emails/reponse.html.twig' ,$mailer )) {
+            $email = (new TemplatedEmail())
+                ->from(new Address($_ENV['MAILER_NOREPLY_EMAIL_ADDRESS'], $_ENV['MAILER_NOREPLY_EMAIL_NAME']))
+                ->to($form->get('email')->getData())
+                ->subject($form->get('subject')->setData('Re: '.$contact->getSubject()))
+                ->htmlTemplate('emails/contactReply.html.twig')
+                ->context([
+                    'subject' => $form->get('subject')->getData(),
+                    'message' => $form->get('message')->getData(),
+                ]);
+            try {
+                $mailer->send($email);
                 $this->addFlash('success', 'Votre message a bien été envoyé');
-            return $this->redirectToRoute('app_contact_index', [], Response::HTTP_SEE_OTHER);
-            }else{
+                return $this->redirectToRoute('app_contact_index', [], Response::HTTP_SEE_OTHER);
+            } catch (TransportExceptionInterface $e) {
                  $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi du mail');
             }
         }
@@ -135,28 +145,6 @@ class ContactController extends AbstractController
         }
 
         return $this->redirectToRoute('app_contact_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    /**
-     * @param \Symfony\Component\Form\FormInterface $form
-     * @param $mailer
-     * @param $mail
-     * @return string
-     */
-    public function extracted($subject,$to,$context,$template ,$mailer): bool
-    {
-        $sendEmail = (new TemplatedEmail())
-            ->to($to)
-            ->subject($subject)
-            ->htmlTemplate($template)
-            ->context($context);
-        try {
-            $mailer->send($sendEmail);
-            return true;
-        } catch (TransportExceptionInterface $e) {
-            dump($e->getMessage());
-            return false;
-        }
     }
 
 }
