@@ -26,12 +26,12 @@ body %} {% include '_composants/headers/_header.html.twig' %}
       class="flex flex-col mx-4 mb-12 gap-2 xl:flex-row xl:ml-20 xl:-mt-28 xl:mb-32"
     >
       {% embed '_composants/buttons/_button.html.twig' with {'buttonColor':
-      'bg-black','buttonTextColor': 'text-light-white','textButton': 'Créer un
-      compte gratuit','arrowButton': false}%} {% endembed %} {% embed
+      'bg-black','buttonLink':'app_register_start','buttonTextColor': 'text-light-white','textButton': 'Créer un
+      compte gratuit','arrowButton': false}%} {% endembed %} {#  embed
       '_composants/buttons/_button.html.twig' with {'buttonColor':
       'bg-electric-blue','buttonTextColor': 'text-light-white','textButton':
       'Consulter nos offres','arrowButton': true, 'buttonLink':
-      'showcase_pricing'}%} {% endembed %}
+      'showcase_pricing'}} {% endembed #}
     </section>
   </article>
   <article
@@ -90,19 +90,12 @@ body %} {% include '_composants/headers/_header.html.twig' %}
           de fou qui parle de création de devis etc;
         </p>
         {% embed '_composants/buttons/_button.html.twig' with {'buttonColor':
-        'bg-black','buttonTextColor': 'text-light-white','textButton': 'Ouvrir
+        'bg-black','buttonLink':'app_register_start','buttonTextColor': 'text-light-white','textButton': 'Ouvrir
         un compte','arrowButton': true}%} {% endembed %}
       </section>
     </section>
   </article>
-  <article
-    class="py-6 px-32 xl:h-64 xl:p-0 flex justify-center items-center customBanner"
-  >
-    {% embed '_composants/buttons/_button.html.twig' with {'buttonColor':
-    'bg-white','buttonTextColor': 'text-light-dark','textButton': 'Découvrir nos
-    offres','arrowButton': true,'arrowColor': "#1C1C1A", 'buttonLink':
-    'showcase_pricing','buttonColorDarkMode': 'bg-light-white'}%} {% endembed %}
-  </article>
+
   <article class="bg-lilac flex flex-col items-center py-10">
     <h1
       class="mb-16 w-80 font-bold text-xl leading-normal xl:w-118 xl:text-4xl"
@@ -133,11 +126,7 @@ body %} {% include '_composants/headers/_header.html.twig' %}
     </h1>
     <section class="flex gap-4 mt-4 xl:gap-10 xl:mt-16">
       {% embed '_composants/buttons/_button.html.twig' with {'textButton':
-      'Ouvrir un compte','arrowButton': false,'buttonColorDarkMode': 'bg-light-white'}%} {% endembed %} {% embed
-      '_composants/buttons/_button.html.twig' with {'buttonColor':
-      'bg-electric-blue','buttonTextColor': 'text-light-white','textButton':
-      'Consulter nos offres','arrowButton': true, 'buttonLink':
-      'showcase_pricing'}%} {% endembed %}
+      'Ouvrir un compte','arrowButton': false,'buttonColorDarkMode': 'bg-light-white'}%} {% endembed %}
     </section>
   </article>
 </main>

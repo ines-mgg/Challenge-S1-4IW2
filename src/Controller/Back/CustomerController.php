@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\Customer;
 use App\Form\CustomerType;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/customer')]
+#[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_USER"))') ]
 class CustomerController extends AbstractController
 {
     #[Route('/', name: 'app_customer_index', methods: ['GET'])]
@@ -26,8 +28,10 @@ class CustomerController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $customer = new Customer();
+        $customer->setCompany($this->getUser()->getCompany());
         $form = $this->createForm(CustomerType::class, $customer);
         $form->handleRequest($request);
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($customer);

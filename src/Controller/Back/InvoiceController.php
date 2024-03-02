@@ -1,21 +1,24 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Back;
 
 use App\Entity\Invoice;
 use App\Form\InvoiceType;
 use App\Repository\InvoiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Dompdf\Dompdf;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('app/invoice')]
+#[IsGranted('ROLE_ADMIN')]
 class InvoiceController extends AbstractController
 {
     private $email;
@@ -45,7 +48,6 @@ class InvoiceController extends AbstractController
             ->htmlTemplate('emails/invoice.html.twig')
             ->context([
                 'invoice' => $invoice,
-                'url' => $this->generateUrl
             ])
             ->attach($this->pdfEmail($invoice), 'invoice.pdf', 'application/pdf');
         try {
@@ -137,11 +139,13 @@ class InvoiceController extends AbstractController
     }
 
     #[Route('/', name: 'app_invoice_index', methods: ['GET'])]
+    #[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_COMPTABLE"))') ]
     public function index(InvoiceRepository $invoiceRepository): Response
     {
-
         return $this->render('invoice/index.html.twig', [
-            'invoices' => $invoiceRepository->findAll()
+            'invoices' => $invoiceRepository->findAll(),
+        ]);
+    }
 
     #[Route('/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -168,7 +172,11 @@ class InvoiceController extends AbstractController
                 $this->addFlash('success', 'Le message a bien été envoyé');
                 return $this->redirectToRoute('app_invoice_show', ['id' => $invoice->getId()], Response::HTTP_SEE_OTHER);
             }
-        }  
+        }
+        return $this->render('invoice/show.html.twig', [
+            'invoice' => $invoice,
+        ]);
+    }
       
     #[Route('/{id}/pdf', name: 'app_invoice_pdf', methods: ['GET'])]
     public function pdf(Invoice $invoice): Response
@@ -230,4 +238,5 @@ class InvoiceController extends AbstractController
 
         return $this->redirectToRoute('app_invoice_show', ['id' => $invoice->getId()], Response::HTTP_SEE_OTHER);
     }
+
 }
