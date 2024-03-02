@@ -33,7 +33,7 @@ class ContactController extends AbstractController
                 'lastName' => $form->get('lastName')->getData(),
                 'userEmail' => $form->get('email')->getData(),
                 'phoneNumber' => $form->get('phone')->getData(),
-                'company' => $form->get('society_name')->getData(),
+                'companyName' => $form->get('society_name')->getData(),
                 'companySize' => $form->get('society_size')->getData(),
                 'subject' => $form->get('subject')->getData(),
                 'message' => $form->get('message')->getData()
@@ -113,7 +113,7 @@ class ContactController extends AbstractController
                 'subject' => $form->get('subject')->getData(),
                 'message' => $form->get('message')->getData(),
             ];
-            if ($this->extracted($form->get('subject')->setData('Re: '.$contact->getSubject()),$contact->getEmail(),$context,'emails/reponse.html.twig' ,$mailer )) {
+            if ($this->extracted($form->get('subject')->setData('Re: '.$contact->getSubject()),$contact->getEmail(),$context,'emails/contactReply.html.twig' ,$mailer )) {
                 $this->addFlash('success', 'Votre message a bien été envoyé');
             return $this->redirectToRoute('app_contact_index', [], Response::HTTP_SEE_OTHER);
             }else{

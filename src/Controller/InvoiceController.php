@@ -142,6 +142,8 @@ class InvoiceController extends AbstractController
 
         return $this->render('invoice/index.html.twig', [
             'invoices' => $invoiceRepository->findAll()
+        ]);
+    }
 
     #[Route('/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -168,7 +170,11 @@ class InvoiceController extends AbstractController
                 $this->addFlash('success', 'Le message a bien été envoyé');
                 return $this->redirectToRoute('app_invoice_show', ['id' => $invoice->getId()], Response::HTTP_SEE_OTHER);
             }
-        }  
+        }
+        return $this->render('invoice/show.html.twig', [
+            'invoice' => $invoice,
+        ]);
+    }
       
     #[Route('/{id}/pdf', name: 'app_invoice_pdf', methods: ['GET'])]
     public function pdf(Invoice $invoice): Response
