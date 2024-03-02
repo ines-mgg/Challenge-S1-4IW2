@@ -1,3 +1,14 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+
+
+controllers_security:
+    resource: ../src/Controller/SecurityController.php
+    type: attribute
+
+
+controllers_front:
+    resource: ../src/Controller/Front
+    type: attribute
+    name_prefix:  front_

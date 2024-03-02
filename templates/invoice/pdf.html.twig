@@ -51,10 +51,18 @@
 
 <body>
   <section id="company">
-    {% if invoice.company.logo %} <img src="{{ asset("build/images/" ~ invoice.company.logo)
+    {% if invoice.company.logo %} {#<img src="{{ asset("build/images/" ~ invoice.company.logo)
 
 
-    }}" alt="company logo" width="150px" height="150px" /> {% endif %}
+
+    }}" alt="company logo" width="150px" height="150px" />#}
+    <img
+      src="{{ invoice.company.logo }}"
+      alt="company logo"
+      width="150px"
+      height="150px"
+    />
+    {% endif %}
     <p>
       {{ invoice.company.name ? invoice.company.name : "" }} <br />
       {{ invoice.company.siret ? invoice.company.siret : "" }} <br />
@@ -69,9 +77,7 @@
       {{ invoice.customer.siret ? invoice.customer.siret : "" }}
     </p>
   </section>
-  <span id="date"
-    >Le {{ invoice.date ? invoice.date : "" }}</span
-  >
+  <span id="date">Le {{ invoice.date ? invoice.date : "" }}</span>
   <table id="prestation">
     <thead>
       <tr>
@@ -87,7 +93,7 @@
       {% for prestation in invoice.prestations %}
       <tr>
         <td class="text-left">{{ prestation.name }}</td>
-        <td class="text-center">{{ prestation.priceUnit }}</td>
+        <td class="text-center">{{ prestation.priceUnit }} €</td>
         <td class="text-center">{{ prestation.quantity }}</td>
         <td class="text-center">{{ prestation.totalHT }} €</td>
         <td class="text-center">{{ prestation.tva }}%</td>

@@ -22,7 +22,15 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ user.firstname }}  {{ user.lastname }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ user.company.id }} </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ user.email }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ user.roles ? user.roles|json_encode : '' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                    {% if user.roles|json_encode == '["ROLE_ADMIN","ROLE_USER"]' %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-500 dark:text-green-100">Admin</span>
+                    {% elseif user.roles|json_encode == '["ROLE_COMPTABLE","ROLE_USER"]' %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-pink-100  text-pink-800 dark:bg-pink-500 dark:text-pink-100">Comptable</span>
+                    {% else %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-500 dark:text-blue-100">User</span>
+                    {% endif %}
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ user.isVerified ? 'Yes' : 'No' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ user.createdAt ? user.createdAt|date('Y-m-d') : '' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">

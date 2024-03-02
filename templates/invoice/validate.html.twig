@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %} {% block title %}Facturo{% endblock %} {% block
+body %}
+
+<main class="flex flex-col items-center justify-center p-10">
+  <div
+    class="w-7 p-6 flex flex-col items-center rounded border border-solid border-light-dark shadow-custom-blue bg-white text-light-dark"
+  >
+    <h1 class="text-2xl font-bold mb-4 text-gray-900">
+      Validation de votre devis
+    </h1>
+    <p class="italic text-center text-gray-500 mb-7">
+      Pour rappel, vous avez jusqu'au
+      {{ invoice.closingDate|date('d/m/Y') }} pour valider ou refuser ce devis.
+    </p>
+    <form
+      class="flex gap-4"
+      method="post"
+      action="{{
+        path('app_validate', { id: invoice.id, token: invoice.token })
+      }}"
+    >
+      <select
+        name="choices"
+        id="choices"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-1.5"
+      >
+        <option value="1">Valider</option>
+        <option value="2">Refuser</option>
+      </select>
+      <input
+        type="hidden"
+        name="_token"
+        value="{{ csrf_token('validate' ~ invoice.id ~ invoice.token) }}"
+      />
+      <button
+      class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black  bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+      >
+        Confirmer
+      </button>
+    </form>
+    <p class="mt-7 self-start text-gray-900">
+      Merci de votre confiance, {{ invoice.customer.fullName }}. <br />
+      L'équipe {{ invoice.customer.company.name }}
+    </p>
+  </div>
+</main>
+
+{% endblock %}

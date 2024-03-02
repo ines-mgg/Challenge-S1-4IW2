@@ -3,15 +3,15 @@
 
 {% block body %}
 {% embed '_composants/tables/_table.html.twig' %}
-    {% block tTitle %}Invoice  {% endblock %}
+    {% block tTitle %}Devis / Factures{% endblock %}
     {% block pathNew %}{{ path('app_invoice_new') }}{% endblock %}
     {% block thead %}
-        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Id</th>
-        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Client</th>
-        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Type</th>
-        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Total TTC</th>
-        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Date limite</th>
-        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Status</th>
+        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Id</th>
+        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Client</th>
+        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Type</th>
+        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Total TTC</th>
+        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Date limite</th>
+        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Status</th>
     {% endblock %}
     {% block tbody %}
         {% set todayDate = "now"|date('Y-m-d') %}
