@@ -35,7 +35,7 @@
                                                         <tr>
                                                             <td>
                                                                 <h1 style="font-weight:400;color:#1d1d1b;font-size:24px;margin-bottom:20px">
-                                                                    Petit rappel
+                                                                    Relance concernant {{ invoice.type == "Devis" ? "la validation du devis" : "la paiement de la facture" }}
                                                                 </h1>
                                                             </td>
                                                         </tr>
@@ -52,20 +52,42 @@
                                                         </tr>
                                                         <tr>
                                                             <td style="padding:0 0 32px 0; font-weight:400;color:#1d1d1b;font-size: 14px;text-align: left;">
-                                                                Bonjour {{ invoice.customer.fullname }} <br />
-                                                                N'oubliez pas que vous avez {{ invoice.type == "Devis" ? "un devis à valider." : "une facture à payer." }}<br />
-                                                                Vous trouverez ci-joint votre document.<br />
-                                                                {% if invoice.type == "Devis" %} 
-                                                                Pour rappel, vous avez jusqu'au {{ invoice.closingDate|date('d/m/Y') }} pour <a href="{{ url }}" class="specific-font" style="text-decoration: underline;color: #2222d9;">valider le devis</a><br />
-                                                                {% else %} 
-                                                                Pour rappel, vous avez jusqu'au {{ invoice.closingDate|date('d/m/Y') }} pour régler la facture <br />
-                                                                {% endif %} 
+                                                                Bonjour {{ invoice.customer.fullname }}, <br />
+                                                                <br>
+                                                                J'espère que ce courriel vous trouve bien. <br />
+                                                                <br>
+                                                                Nous vous contactons au sujet {{ invoice.type == "Devis" ? 
+                                                                "du devis que vous avez reçu de notre part. Nous constatons que la date limite de validation est désormais dépassée." 
+                                                                : "de la facture que vous avez reçu de notre part. Nous constatons que la date limite de paiement est désormais dépassée." }}<br />
+                                                                <br>
+                                                                {% if invoice.type == "Devis" %}
+                                                                    Nous comprenons que diverses circonstances peuvent influencer le processus de décision, 
+                                                                    et nous sommes tout à fait disposés à discuter de tout ajustement nécessaire. 
+                                                                    Cependant, nous devons également souligner l'importance de finaliser ce processus afin de garantir 
+                                                                    une planification et une exécution efficaces.<br />
+                                                                    <br>
+                                                                    Veuillez prendre le temps nécessaire pour examiner les détails du devis et à <a href="{{ url }}" class="specific-font" style="text-decoration: underline;color: #2222d9;">valider le devis</a> 
+                                                                    dès que possible. Si des éléments nécessitent une clarification ou si vous avez des préoccupations, n'hésitez 
+                                                                    pas à nous en faire part. <br>
+                                                                    <br>
+                                                                {% else %}
+                                                                Nous comprenons que diverses circonstances peuvent influencer le processus de paiement, et nous sommes tout à fait disposés 
+                                                                à discuter de tout ajustement nécessaire. Cependant, nous devons souligner l'importance de finaliser ce processus dans les plus brefs 
+                                                                délais afin de garantir une gestion efficace de nos ressources et une continuité sans heurts de nos services.<br />
+                                                                <br>
+                                                                Nous vous prions de bien vouloir prendre le temps nécessaire pour examiner les détails de la facture et de nous faire part de votre intention de règlement dès que possible. 
+                                                                Si des éléments nécessitent une clarification ou si vous avez des préoccupations, n'hésitez pas à nous en faire part. <br>
+                                                                <br>
+                                                                {% endif %}
+                                                                Nous sommes conscients des défis que peut représenter ce processus et apprécions votre coopération dans ce dossier.
+                                                                <br>
+                                                                Nous vous prions d'agréer, {{ invoice.customer.fullname }}, l'expression de nos salutations distinguées. <br>
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
                                                                 <p style="font-weight:400;font-size:14px;color:#70706d;padding-top:32px;text-align: left;">
-                                                                          Merci pour votre confiance,<br />
+                                                                          Cordialement<br />
                                                                           {% if invoice.customer.company.name != null %}
                                                                             {{ invoice.customer.company.name }}
                                                                           {% endif %}

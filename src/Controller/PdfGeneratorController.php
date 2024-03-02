@@ -7,6 +7,7 @@ use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Controller\MailerController;
@@ -35,7 +36,7 @@ class PdfGeneratorController extends AbstractController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
         $email = (new Email())
-            ->from('no_reply@facturo.com') // Sender
+            ->from(new Address($_ENV['MAILER_NOREPLY_EMAIL_ADDRESS'], $_ENV['MAILER_NOREPLY_EMAIL_NAME'])) // Sender
             ->to('estelle272001@gmail.com')// Recipient
             ->subject('Devis') // Subject
             ->text('Sending Devis is fun again!') // Content

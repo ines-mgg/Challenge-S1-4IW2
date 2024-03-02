@@ -21,13 +21,52 @@ class InvoiceFixtures extends Fixture implements DependentFixtureInterface
         $customers = $manager->getRepository(Customer::class)->findAll();
         foreach ($customers as $customer) {
             for ($i = 0; $i < 10; ++$i) {
+                $date = new \DateTimeImmutable();
+                $type = $faker->randomElement(['Devis', 'Facture']);
+                $status = $type === 'Devis' ? 'À valider' : 'À payer';
+                $priceUnit = $faker->randomFloat(2, 0, 1000);
+                $quantity = $faker->randomDigitNotNull;
+                $tva = $faker->randomElement(['0', '2.1', '5.5', '10', '20']);
+                $totalHT = $priceUnit * $quantity;
+                $totalTTC = ($priceUnit + ($priceUnit * $tva / 100)) * $quantity;
                 $invoice = new Invoice();
-                $invoice->setCreatedAt(new \DateTimeImmutable())
-                    ->setStatus($faker->boolean())
-                    ->setType($faker->randomElement(['Devis', 'Facture']))
+                $invoice->setCreatedAt($date)
+                    ->setStatus($status)
+                    ->setType($type)
                     ->setCustomer($customer)
                     ->setTotal($faker->randomFloat(2, 0, 1000))
                     ->setClosingDate($faker->dateTimeBetween('-1 years', 'now'));
+                $dataInvoice = [
+                    "date" => $date->format('d/m/Y'),
+                    "company" => [
+                        'logo' => $faker->imageUrl(),
+                        'name' => $faker->company,
+                        'siret' => $faker->siret,
+                        'headOffice' => $faker->address
+                    ],
+                    "customer" => [
+                        "fullname" => $faker->name,
+                        "email" => $faker->email,
+                        "number" => $faker->phoneNumber,
+                        "siret" => $faker->siret,
+                    ],
+                    "prestations" => [
+                        [
+                            'name' => $faker->word,
+                            'priceUnit' => $priceUnit,
+                            'quantity' => $quantity,
+                            'totalHT' => $totalHT,
+                            'tva' => $tva,
+                            'totalTTC' => $totalTTC
+                        ],
+                    ],
+                    "total" => [
+                        "ht" => $totalHT,
+                        "ttc" => $totalTTC
+                    ]
+                ];
+                $invoice->setInvoice($dataInvoice);
+                $invoice->setToken(bin2hex(random_bytes(32)));
                 $referenceName = self::INVOICE_REFERENCE . $i;
                 if ($this->hasReference($referenceName)) {
                     // Override the existing reference
@@ -38,7 +77,7 @@ class InvoiceFixtures extends Fixture implements DependentFixtureInterface
                 }
                 $manager->persist($invoice);
             }
-    }
+        }
         $manager->flush();
     }
 
