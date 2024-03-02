@@ -17,8 +17,13 @@ class CustomerController extends AbstractController
     #[Route('/', name: 'app_customer_index', methods: ['GET'])]
     public function index(CustomerRepository $customerRepository): Response
     {
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            $customers = $customerRepository->findAll();
+        } else {
+            $customers = $customerRepository->findAllCustomers($this->getUser()->getCompany()->getId());
+        }
         return $this->render('customer/index.html.twig', [
-            'customers' => $customerRepository->findAllCustomers($this->getUser()->getCompany()->getId()),
+            'customers' => $customers,
         ]);
     }
 
@@ -30,7 +35,7 @@ class CustomerController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $customer->setCompany($this->getUser()->getCompany()->getId());
+            $customer->setCompany($this->getUser()->getCompany());
             $entityManager->persist($customer);
             $entityManager->flush();
 

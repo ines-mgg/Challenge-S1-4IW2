@@ -8,7 +8,7 @@ Compagnie{% endblock %} {% block body %}
       <h1
         class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white py-3 px-2"
       >
-        Information sur l'entreprise n° {{ company.id }}
+        Information sur l'entreprise n° {{ company.id }} | {{ company.name }}
       </h1>
       <div
         class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
@@ -95,20 +95,6 @@ Compagnie{% endblock %} {% block body %}
                     </div>
                     <div class="p-4 text-gray-700 dark:text-gray-700">
                       {{ company.headOffice }}
-                    </div>
-                  </div>
-                  <div class="grid grid-cols-2 gap-4">
-                    <div class="text-gray-700 dark:text-gray-700 p-4">TVA</div>
-                    <div class="p-4 text-gray-700 dark:text-gray-700">
-                      {{ company.tva }}
-                    </div>
-                  </div>
-                  <div class="grid grid-cols-2 gap-4">
-                    <div class="text-gray-700 dark:text-gray-700 p-4">
-                      Date de validité de la Licence
-                    </div>
-                    <div class="p-4 text-gray-700 dark:text-gray-700">
-                      {{ company.licenseValidity|date('d/m/Y')  }}
                     </div>
                   </div>
                 </div>

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Invoice;
 use App\Form\InvoiceType;
 use App\Repository\InvoiceRepository;
+use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -164,15 +165,22 @@ class InvoiceController extends AbstractController
     #[Route('invoice/', name: 'app_invoice_index', methods: ['GET'])]
     public function index(InvoiceRepository $invoiceRepository): Response
     {
-
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            $invoices = $invoiceRepository->findAll();
+        } else {
+            $invoices = $invoiceRepository->findAllInvoices($this->getUser()->getCompany()->getId());
+        }
         return $this->render('invoice/index.html.twig', [
-            'invoices' => $invoiceRepository->findAllInvoices($this->getUser()->getCompany()->getId())
+            'invoices' => $invoices,
         ]);
     }
 
     #[Route('invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CustomerRepository $customerRepository): Response
     {
+        if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            $customers = $customerRepository->findAllCustomers($this->getUser()->getCompany()->getId());
+        }
         $invoice = new Invoice();
         $form = $this->createForm(InvoiceType::class, $invoice, [
             'user' => $this->getUser(),
@@ -186,6 +194,7 @@ class InvoiceController extends AbstractController
         return $this->render('invoice/new.html.twig', [
             'invoice' => $invoice,
             'form' => $form,
+            'customers' => $customers,
         ]);
     }
 

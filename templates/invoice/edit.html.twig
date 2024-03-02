@@ -1,6 +1,6 @@
 {% extends 'dashboard/base.html.twig' %} {% block title %}Modifier Invoice{%
 endblock %} {% block body %}
-<h1>Modifier Invoice</h1>
+<h1>Modifier le devis / la facture</h1>
 
 <section class="bg-white dark:bg-gray-900">
   <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
@@ -44,7 +44,7 @@ endblock %} {% block body %}
         type="submit"
         class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
       >
-        {{ button_label|default('Save') }}
+        {{ button_label|default('Sauvegarder') }}
       </button>
     </div>
     {{ form_end(form) }}
@@ -88,6 +88,6 @@ endblock %} {% block body %}
 <button
   class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
 >
-  <a href="{{ path('app_invoice_index') }}">back to list</a>
+  <a href="{{ path('app_invoice_index') }}">Retour à la liste</a>
 </button>
 {% endblock %}

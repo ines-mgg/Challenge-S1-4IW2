@@ -34,7 +34,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200" >
                                    <!-- <a class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ path('app_prestation_show', {'id': prestation.id}) }}">Afficher</a>-->
-                                    <a class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ path('app_prestation_edit', {'id': prestation.id}) }}">Editer</a>
+                                    <a class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="{{ path('app_prestation_edit', {'id': prestation.id}) }}">Modifier</a>
                                     <form method="post" action="{{ path('app_prestation_delete', {'id': prestation.id}) }}" onsubmit="return confirm('Voulez-vous supprimer cette prestation ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ prestation.id) }}">
                                         <button class="btn inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-red-600 hover:text-red-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">Supprimer</button>
@@ -43,7 +43,7 @@
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="6">no records found</td>
+                                <td colspan="6">Aucunes données disponible</td>
                             </tr>
                         {% endfor %}
                     {% endblock %}

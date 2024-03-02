@@ -20,8 +20,13 @@ class CompanyController extends AbstractController
     #[Route('/', name: 'app_company_index', methods: ['GET'])]
     public function index(CompanyRepository $companyRepository): Response
     {
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            $companies = $companyRepository->findAll();
+        } else {
+            $companies = $companyRepository->findAllCompanies($this->getUser()->getCompany()->getId());
+        }
         return $this->render('company/index.html.twig', [
-            'companies' => $companyRepository->findAll(),
+            'companies' => $companies,
         ]);
     }
 

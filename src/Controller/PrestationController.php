@@ -17,14 +17,13 @@ class PrestationController extends AbstractController
     #[Route('/', name: 'app_prestation_index', methods: ['GET'])]
     public function index(Request $request, PrestationRepository $prestationRepository): Response
     {
-        $prestations = $prestationRepository->findAllPrestations($this->getUser()->getCompany()->getId());
-        $prestation = new Prestation();
-        $form = $this->createForm(PrestationType::class, $prestation);
-        $form->handleRequest($request);
+        if ( in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            $prestations = $prestationRepository->findAll();
+        } else {
+            $prestations = $prestationRepository->findAllPrestations($this->getUser()->getCompany()->getId());
+        }
         return $this->render('prestation/index.html.twig', [
             'prestations' => $prestations,
-            'form' => $form,
-
         ]);
     }
 
@@ -41,7 +40,7 @@ class PrestationController extends AbstractController
                 $this->addFlash('danger', 'Cette prestation existe déjà');
                 return $this->redirectToRoute('app_prestation_index');
             }
-            $prestation->setCompany($this->getUser()->getCompany()->getId());
+            $prestation->setCompany($this->getUser()->getCompany());
             $entityManager->persist($prestation);
             $entityManager->flush();
             $this->addFlash('success', 'Prestation ajoutée avec succès');
@@ -94,7 +93,7 @@ class PrestationController extends AbstractController
     #[Route('/{id}', name: 'app_prestation_delete', methods: ['POST'])]
     public function delete(Request $request, Prestation $prestation, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$prestation->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $prestation->getId(), $request->request->get('_token'))) {
             $entityManager->remove($prestation);
             $entityManager->flush();
         }
