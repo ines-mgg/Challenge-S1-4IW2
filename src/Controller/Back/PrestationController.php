@@ -26,7 +26,6 @@ class PrestationController extends AbstractController
         }
         return $this->render('prestation/index.html.twig', [
             'prestations' => $prestationRepository->findAll(),
-            'form' => $form,
             'prestations' => $prestations,
             'connectedUser' => $this->getUser()
         ]);
