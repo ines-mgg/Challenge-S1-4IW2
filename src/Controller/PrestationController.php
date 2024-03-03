@@ -24,7 +24,6 @@ class PrestationController extends AbstractController
         return $this->render('prestation/index.html.twig', [
             'prestations' => $prestationRepository->findAll(),
             'form' => $form,
-
         ]);
     }
 
@@ -41,6 +40,7 @@ class PrestationController extends AbstractController
                 $this->addFlash('danger', 'Cette prestation existe déjà');
                 return $this->redirectToRoute('app_prestation_index');
             }
+            $prestation->setCompany($this->getUser()->getCompany());
             $entityManager->persist($prestation);
             $entityManager->flush();
             $this->addFlash('success', 'Prestation ajoutée avec succès');
