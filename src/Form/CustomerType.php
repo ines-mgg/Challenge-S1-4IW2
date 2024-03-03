@@ -52,28 +52,21 @@ class CustomerType extends AbstractType
                     'maxlength' => '14',
                     'minlength' => '14'
                 ]
-            ])
-            ->add('tva',NumberType::class, [
-                'required' => true,
-                'label' => 'TVA',
-                'attr' => [
-                    'placeholder' => '10%',
-                    'title' => 'Le numéro de TVA doit être au format FR12345678912345',
-                    'maxlength' => '3',
-                    'minlength' => '1'
-                ]
-            ]);
-            /*->add('company', EntityType::class, [
-                'class' => Company::class,
-                'choice_label' => 'id',
-            ])
-        ;*/
+                ]);
+    if (in_array('ROLE_ADMIN', $options['roles'])) {
+        $builder->add('company', EntityType::class, [
+            'class' => Company::class,
+            'label' => 'Entreprise',
+            'choice_label' => 'name',
+        ]);
+            }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Customer::class,
+            'roles' => null,
         ]);
     }
 }

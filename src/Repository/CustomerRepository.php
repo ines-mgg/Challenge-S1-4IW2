@@ -45,4 +45,15 @@ class CustomerRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findAllCustomers($id): array
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT c
+            FROM App\Entity\Customer c
+            WHERE c.company = :id_de_l_entreprise'
+        )->setParameter('id_de_l_entreprise', $id);
+        return $query->getResult();
+    }
 }

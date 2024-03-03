@@ -56,10 +56,18 @@
                                     <p class="text-sm text-gray-900 dark:text-white" role="none">
                                     </p>
                                     <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                        sonsuperemail@gmail.com
+                                        {% if connectedUser is defined %}
+                                            {{connectedUser.firstname}} {{connectedUser.lastname}} | {{ connectedUser.email }}
+                                        {% endif %}
                                     </p>
                                     <p class="text-sm text-gray-500 truncate dark:text-gray-300 mt-2" role="none">
-                                        Gérant/Comptable/Administrateur
+                                        {% if connectedUser is defined %}
+                                            {% for role in connectedUser.roles %}
+                                                {% if loop %}
+                                                    {{ role|replace({'ROLE_': ''})|lower|capitalize }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
                                     </p>
                                 </div>
                                 <ul class="py-1" role="none">
@@ -103,20 +111,21 @@
                                             <a href="{{ path('app_user_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == '/user/' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Utilisateurs</a>
                                         </li>
                                         <li>
-                                            <a href="{{ path('app_company_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'company' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Compagnies</a>
+                                            <a href="{{ path('app_company_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'company' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Entreprise</a>
                                         </li>
+                                        {% if connectedUser is defined and 'ROLE_ADMIN' in connectedUser.roles %}
                                         <li>
                                             <a href="{{ path('app_contact_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'all' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Messages</a>
                                         </li>
-
+                                        {% endif %}
+                                        <li>
+                                            <a href="{{ path('app_customer_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'prestation' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Clients</a>
+                                        </li>
                                         <li>
                                             <a href="{{ path('app_prestation_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'prestation' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Prestations</a>
                                         </li>
                                         <li>
                                             <a href="{{ path('app_invoice_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "invoices" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Devis / Factures</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ path('app_customer_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "invoices" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Clients</a>
                                         </li>
                                     </ul>
                                 </li>
