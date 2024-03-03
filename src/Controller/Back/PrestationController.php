@@ -10,13 +10,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/prestation')]
 #[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_USER"))')]
 class PrestationController extends AbstractController
 {
-    #[Route('/', name: 'app_prestation_index', methods: ['GET'])]
+    #[Route('', name: 'app_prestation_index', methods: ['GET'])]
     public function index(Request $request, PrestationRepository $prestationRepository): Response
     {
         if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
@@ -27,7 +27,6 @@ class PrestationController extends AbstractController
         return $this->render('prestation/index.html.twig', [
             'prestations' => $prestationRepository->findAll(),
             'prestations' => $prestations,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -54,7 +53,6 @@ class PrestationController extends AbstractController
         return $this->render('prestation/new.html.twig', [
             'prestation' => $prestation,
             'form' => $form,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -64,7 +62,6 @@ class PrestationController extends AbstractController
     {
         return $this->render('prestation/show.html.twig', [
             'prestation' => $prestation,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -92,7 +89,6 @@ class PrestationController extends AbstractController
         return $this->render('prestation/edit.html.twig', [
             'prestation' => $prestationToPersist,
             'form' => $form,
-            'connectedUser' => $this->getUser()
         ]);
     }
 

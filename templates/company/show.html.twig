@@ -27,7 +27,7 @@ Compagnie{% endblock %} {% block body %}
             >Modifier
           </a>
         </button>
-        {% if 'ROLE_ADMIN' in connectedUser.roles %}
+        {% if 'ROLE_ADMIN' in app.user.roles %}
         <form
           method="post"
           action="{{ path('app_company_delete', { id: company.id }) }}"

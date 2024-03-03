@@ -1,7 +1,7 @@
 {% extends 'dashboard/base.html.twig' %} {% block title %}User {% endblock %} {%
 block body %} 
 
-{% if 'ROLE_ADMIN' in connectedUser.roles %}
+{% if 'ROLE_ADMIN' in app.user.roles %}
   <div class="pb-4 px-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
     <button class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
     <a href="{{ path('app_user_new') }}">Ajouter</a>
@@ -92,7 +92,7 @@ block body %}
       href="{{ path('app_user_edit', { id: user.id }) }}"
       >Editer</a
     >
-    {% if 'ROLE_ADMIN' in connectedUser.roles %}
+    {% if 'ROLE_ADMIN' in app.user.roles %}
     <form
       method="post"
       action="{{ path('app_user_delete', { id: user.id }) }}"
