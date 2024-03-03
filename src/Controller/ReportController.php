@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Controller\Back;
+namespace App\Controller;
 
 use App\Repository\InvoiceRepository;
-use App\Service\ReportGeneratorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\ReportGeneratorService;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/app', name: 'facturo_app_')]
-class DashboardController extends AbstractController
+class ReportController extends AbstractController
 {
     private ReportGeneratorService $reportGeneratorService;
 
@@ -22,8 +20,9 @@ class DashboardController extends AbstractController
         $this->reportGeneratorService = $reportGeneratorService;
     }
 
-    #[Route('/dashboard', name: 'dashboard')]
-    #[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_COMPTABLE"))') ]
+    /**
+     * @Route("/report", name="report")
+     */
     public function index(Request $request, InvoiceRepository $invoiceRepository): Response
     {
         $user = $this->getUser();
@@ -51,6 +50,7 @@ class DashboardController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Get startDate and endDate from the form data
             $startDate = $form->get('startDate')->getData();
             $endDate = $form->get('endDate')->getData();
 
@@ -58,22 +58,10 @@ class DashboardController extends AbstractController
             $invoices = $invoiceRepository->findInvoicesForCompanyBetweenDates($company, $startDate, $endDate);
         }
 
-        return $this->render('dashboard/index.html.twig', [
+        return $this->render('report/index.html.twig', [
             'form' => $form->createView(),
             'report' => $report,
             'invoices' => $invoices,
         ]);
-    }
-
-    #[Route('/crud-example-user', name: 'crud-example-user')]
-    public function crudExampleUser(): Response
-    {
-        return $this->render('dashboard/crud-example-user.html.twig');
-    }
-
-    #[Route('/crud-example-product', name: 'crud-example-product')]
-    public function crudExampleProduct(): Response
-    {
-        return $this->render('dashboard/crud-example-products.html.twig');
     }
 }
