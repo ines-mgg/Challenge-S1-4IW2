@@ -35,9 +35,6 @@ class Company
     private ?string $siret = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    private ?string $tva = null;
-
-    #[ORM\Column(length: 50, nullable: true)]
     private ?string $head_office;
 
     public function __construct()

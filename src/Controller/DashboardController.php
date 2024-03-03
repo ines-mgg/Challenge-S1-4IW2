@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Back;
+namespace App\Controller;
 
 use App\Repository\InvoiceRepository;
 use App\Service\ReportGeneratorService;

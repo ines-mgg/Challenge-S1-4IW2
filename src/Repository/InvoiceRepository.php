@@ -57,4 +57,18 @@ class InvoiceRepository extends ServiceEntityRepository
         )->setParameter('id_de_l_entreprise', $id);
         return $query->getResult();
     }
+
+    public function findInvoicesForCompanyBetweenDates(\App\Entity\Company $company, \DateTime $startDate, \DateTime $endDate): array
+    {
+        return $this->createQueryBuilder('i')
+            ->join('i.customer', 'c')
+            ->andWhere('c.company = :company')
+            ->andWhere('i.created_at >= :start_date')
+            ->andWhere('i.created_at <= :end_date')
+            ->setParameter('company', $company)
+            ->setParameter('start_date', $startDate)
+            ->setParameter('end_date', $endDate)
+            ->getQuery()
+            ->getResult();
+    }
 }

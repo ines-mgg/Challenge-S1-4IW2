@@ -1,0 +1,51 @@
+{# templates/report/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Rapport de Revenus{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+    {{ form_row(form.startDate) }}
+    {{ form_row(form.endDate) }}
+    <button type="submit">Générer un rapport financier</button>
+    {{ form_end(form) }}
+    <h1>Rapport de Revenus</h1>
+    {% if report is not null %}
+        Date de début: {{ report.startDate|date('Y-m-d') }}
+        Date de fin: {{ report.endDate|date('Y-m-d') }}
+        <p>Total des revenus : {{ report.totalRevenue }}</p>
+        <p>Nombre de factures : {{ report.invoiceCount }}</p>
+
+    {% else %}
+        <p>Générez un rapport.</p>
+    {% endif %}
+
+    {% if invoices is not empty %}
+        <h2>Invoices</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Created At</th>
+                <th>Total</th>
+                <th>Type</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.id }}</td>
+                    <td>{{ invoice.createdAt|date('Y-m-d') }}</td>
+                    <td>{{ invoice.total }}</td>
+                    <td>{{ invoice.type }}</td>
+                    <td>{{ invoice.status }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune facture sur cette période.</p>
+    {% endif %}
+{% endblock %}
