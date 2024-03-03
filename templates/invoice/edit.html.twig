@@ -1,9 +1,25 @@
-{% extends 'dashboard/base.html.twig' %} {% block title %}Edit Invoice{% endblock %}
-{% block body %}
-<h1>Edit Invoice</h1>
-
-<section class="bg-white dark:bg-gray-900">
-  <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+{% extends 'dashboard/base.html.twig' %} {% block title %}Modifier Invoice{%
+endblock %} {% block body %}
+<div
+  class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
+>
+  <div class="w-full mb-1">
+    <h1
+      class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white py-3 px-2"
+    >
+      Modifier {{form.type.vars.data == "Devis" ? "le devis" : "la facture"}}
+    </h1>
+    <div
+      class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700"
+    >
+      <button
+        type="submit"
+        class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+      >
+        <a href="{{ path('app_invoice_index') }}">Retour à la liste</a>
+      </button>
+    </div>
+      <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
     {{ form_start(form) }}
     <div>
       <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -34,7 +50,7 @@
             <div class="mt-4">
               {{ form_row(prestations.prestation) }}
               {{ form_row(prestations.quantity) }}
-              <button class="remove-prestation">Supprimer</button>
+              <button class="remove-prestation inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm text-center font-medium border border-red-500 text-red-500 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">Supprimer</button>
             </div>
             {% endfor %}
           </div>
@@ -44,12 +60,13 @@
         type="submit"
         class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
       >
-        {{ button_label|default('Save') }}
+        {{ button_label|default('Sauvegarder') }}
       </button>
     </div>
     {{ form_end(form) }}
   </div>
-</section>
+  </div>
+</div>
 
 <script>
   document
@@ -70,6 +87,24 @@
       var removeButton = document.createElement("button");
       removeButton.innerHTML = "Supprimer";
       removeButton.classList.add("remove-prestation");
+      removeButton.classList.add("inline-flex");
+      removeButton.classList.add("items-center");
+      removeButton.classList.add("px-5");
+      removeButton.classList.add("py-2.5");
+      removeButton.classList.add("mt-4");
+      removeButton.classList.add("sm:mt-6");
+      removeButton.classList.add("text-sm");
+      removeButton.classList.add("text-center");
+      removeButton.classList.add("font-medium");
+      removeButton.classList.add("border");
+      removeButton.classList.add("border-red-500");
+      removeButton.classList.add("text-red-500");
+      removeButton.classList.add("rounded-lg");
+      removeButton.classList.add("focus:ring-4");
+      removeButton.classList.add("focus:ring-red-200");
+      removeButton.classList.add("dark:focus:ring-red-900");
+      removeButton.classList.add("hover:bg-red-800");
+      
       div.appendChild(removeButton);
 
       collectionHolder.appendChild(div);
@@ -85,9 +120,4 @@
     });
 </script>
 
-<button
-  class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
->
-  <a href="{{ path('app_invoice_index') }}">back to list</a>
-</button>
 {% endblock %}

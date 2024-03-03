@@ -119,6 +119,11 @@ class Invoice
         return $this->closing_date;
     }
 
+    public function getCompany(): ?Company
+    {
+        return $this->getCustomer()->getCompany();
+    }
+
     public function setClosingDate(?\DateTimeInterface $closing_date): static
     {
         $this->closing_date = $closing_date;

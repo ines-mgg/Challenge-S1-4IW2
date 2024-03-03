@@ -22,7 +22,6 @@ class CustomerFixtures extends Fixture implements DependentFixtureInterface
                     ->setEmail($faker->companyEmail())
                     ->setNumber($faker->phoneNumber())
                     ->setSiret(str_replace(' ', '', $faker->siret()))
-                    ->setTva($faker->randomElement(['0', '2.1', '5.5', '10', '20']))
                     ->setCompany($company);
             }
                 $manager->persist($customer);

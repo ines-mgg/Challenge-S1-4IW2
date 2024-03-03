@@ -25,7 +25,12 @@ class InvoiceType extends AbstractType
                 'label' => 'Client',
                 'attr' => ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'],
                 'label_attr' => ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'],
-                'required' => true
+                'required' => true,
+                'query_builder' => function (\Doctrine\ORM\EntityRepository $er) use ($options) {
+                    return $er->createQueryBuilder('c')
+                        ->where('c.company = :company')
+                        ->setParameter('company', $options['user']->getCompany()->getId());
+                }
             ])
             ->add('type', ChoiceType::class, [
                 'choices' => [
@@ -46,6 +51,7 @@ class InvoiceType extends AbstractType
             ])
             ->add('invoicePrestations', CollectionType::class, [
                 'entry_type' => InvoicePrestationType::class,
+                'entry_options' => ['user' => $options['user']],
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
@@ -58,6 +64,7 @@ class InvoiceType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Invoice::class,
+            'user' => null,
         ]);
     }
 }

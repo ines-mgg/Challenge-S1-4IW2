@@ -1,38 +1,35 @@
-{% extends 'dashboard/base.html.twig' %}
+{% extends 'dashboard/base.html.twig' %} {% block title %}Prestation{% endblock
+%} {% block body %}
+<h1>Prestation</h1>
 
-{% block title %}Prestation{% endblock %}
+<table class="table">
+  <tbody>
+    <tr>
+      <th>Id</th>
+      <td>{{ prestation.id }}</td>
+    </tr>
+    <tr>
+      <th>Name</th>
+      <td>{{ prestation.name }}</td>
+    </tr>
+    <tr>
+      <th>Price</th>
+      <td>{{ prestation.price }}</td>
+    </tr>
+    <tr>
+      <th>Description</th>
+      <td>{{ prestation.description }}</td>
+    </tr>
+    <tr>
+      <th>Tva</th>
+      <td>{{ prestation.tva }}</td>
+    </tr>
+  </tbody>
+</table>
 
-{% block body %}
-    <h1>Prestation</h1>
+<a href="{{ path('app_prestation_index') }}">Retour à la liste</a>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ prestation.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ prestation.name }}</td>
-            </tr>
-            <tr>
-                <th>Price</th>
-                <td>{{ prestation.price }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ prestation.description }}</td>
-            </tr>
-            <tr>
-                <th>Tva</th>
-                <td>{{ prestation.tva }}</td>
-            </tr>
-        </tbody>
-    </table>
+<a href="{{ path('app_prestation_edit', { id: prestation.id }) }}">Modifier</a>
 
-    <a href="{{ path('app_prestation_index') }}">back to list</a>
-
-    <a href="{{ path('app_prestation_edit', {'id': prestation.id}) }}">edit</a>
-
-    {{ include('prestation/_delete_form.html.twig') }}
+{{ include("prestation/_delete_form.html.twig") }}
 {% endblock %}

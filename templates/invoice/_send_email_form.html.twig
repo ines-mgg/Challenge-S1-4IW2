@@ -15,7 +15,7 @@
       <option value="1">Message simple</option>
       <option value="2">Message serieux</option>
       {% if invoice.closingDate|date('Y-m-d') < todayDate %}
-        <option value="3">Message d'urgence</option>
+      <option value="3">Message d'urgence</option>
       {% endif %}
     </select>
     <button
