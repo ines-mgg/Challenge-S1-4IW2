@@ -6,6 +6,7 @@ use App\Entity\Invoice;
 use App\Form\InvoiceType;
 use App\Repository\InvoiceRepository;
 use App\Repository\CustomerRepository;
+use App\Repository\PrestationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -184,10 +185,11 @@ class InvoiceController extends AbstractController
     }
 
     #[Route('invoice/new', name: 'app_invoice_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CustomerRepository $customerRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CustomerRepository $customerRepository, PrestationRepository $prestationRepository ): Response
     {
         if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
             $customers = $customerRepository->findAllCustomers($this->getUser()->getCompany()->getId());
+            $prestations = $prestationRepository->findAllPrestations($this->getUser()->getCompany()->getId());
         }
         $invoice = new Invoice();
         $form = $this->createForm(InvoiceType::class, $invoice, [
@@ -203,6 +205,7 @@ class InvoiceController extends AbstractController
             'invoice' => $invoice,
             'form' => $form,
             'customers' => $customers,
+            'prestations' => $prestations,
             'connectedUser' => $this->getUser()
         ]);
     }

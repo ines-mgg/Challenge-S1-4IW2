@@ -73,6 +73,7 @@
             })
           }}
         </div>
+        {% if form.password is defined and form.company is defined %}
         <div>
           {{
             form_row(form.password, {
@@ -86,7 +87,7 @@
               }
             })
           }}
-        </div>
+        </div>     
         <div>
           {{
             form_row(form.company, {
@@ -101,6 +102,7 @@
             })
           }}
         </div>
+        {% endif %}
       </div>
       <button
         type="submit"

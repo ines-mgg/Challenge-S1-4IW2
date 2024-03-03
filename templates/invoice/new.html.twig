@@ -1,6 +1,6 @@
 {% extends 'dashboard/base.html.twig' %} {% block title %}New Invoice{% endblock
 %} {% block body %} 
-{% if customers|length == 0 %} 
+{% if customers|length == 0 or prestations|length == 0 %} 
 <div
   class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700"
 >
@@ -17,7 +17,7 @@
       <h1
         class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white py-3 px-2 mt-4"
       >
-        Aucun client n'a été trouvé
+        {{customers|length == 0 ? "Aucuns clients n'a été trouvés" : "Aucunes prestations n'a été trouvées"}} 
       </h1>
   </div>
 </div>
