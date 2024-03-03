@@ -38,8 +38,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             ->setCreatedAt(new \DateTimeImmutable())
             ->setUpdatedAt(new \DateTimeImmutable())
             ->setCompany($company)
-            ->setEmail('user@user.fr')
-            ->setIsVerified($faker->boolean())
+            ->setIsVerified(true)
             ->setEmail('admin@user.fr')
             ->setRoles(['ROLE_ADMIN']);
         $user->setPassword($this->passwordHasher->hashPassword($user, $pwd));

@@ -18,12 +18,8 @@ class CompanyFixtures extends Fixture
             $company = new Company();
             $company->setName($faker->company())
                 ->setLogo($faker->imageUrl())
-                ->setTVA($faker->randomNumber(2))
-                ->setLicenseValidity($faker->dateTimeBetween('-1 years', '+1 years'))
-                ->setIdLicense($faker->randomNumber(2))
                 ->setHeadOffice($faker->address())
-                ->setSiret(str_replace(' ', '', $faker->siret()))
-                ->setIdLicense($faker->randomNumber(2));
+                ->setSiret(str_replace(' ', '', $faker->siret()));
             $manager->persist($company);
             $referenceName = self::COMPANY_REFERENCE . $i;
 

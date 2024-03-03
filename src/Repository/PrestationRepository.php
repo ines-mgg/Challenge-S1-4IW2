@@ -54,4 +54,15 @@ class PrestationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAllPrestations($id): array
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT p
+            FROM App\Entity\Prestation p
+            WHERE p.company = :id_de_l_entreprise'
+        )->setParameter('id_de_l_entreprise', $id);
+        return $query->getResult();
+    }
 }

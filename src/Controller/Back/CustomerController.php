@@ -13,14 +13,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/customer')]
-#[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_USER"))') ]
+#[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_USER"))')]
 class CustomerController extends AbstractController
 {
     #[Route('/', name: 'app_customer_index', methods: ['GET'])]
     public function index(CustomerRepository $customerRepository): Response
     {
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            $customers = $customerRepository->findAll();
+        } else {
+            $customers = $customerRepository->findAllCustomers($this->getUser()->getCompany()->getId());
+        }
         return $this->render('customer/index.html.twig', [
-            'customers' => $customerRepository->findAll(),
+            'customers' => $customers,
+            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -29,11 +35,16 @@ class CustomerController extends AbstractController
     {
         $customer = new Customer();
         $customer->setCompany($this->getUser()->getCompany());
-        $form = $this->createForm(CustomerType::class, $customer);
+        $form = $this->createForm(CustomerType::class, $customer, [
+            'roles' => $this->getUser()->getRoles(),
+        ]);
         $form->handleRequest($request);
 
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+                $customer->setCompany($this->getUser()->getCompany());
+            }
             $entityManager->persist($customer);
             $entityManager->flush();
 
@@ -43,6 +54,7 @@ class CustomerController extends AbstractController
         return $this->render('customer/new.html.twig', [
             'customer' => $customer,
             'form' => $form,
+            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -51,13 +63,16 @@ class CustomerController extends AbstractController
     {
         return $this->render('customer/show.html.twig', [
             'customer' => $customer,
+            'connectedUser' => $this->getUser()
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_customer_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Customer $customer, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(CustomerType::class, $customer);
+        $form = $this->createForm(CustomerType::class, $customer, [
+            'roles' => $this->getUser()->getRoles(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -69,13 +84,14 @@ class CustomerController extends AbstractController
         return $this->render('customer/edit.html.twig', [
             'customer' => $customer,
             'form' => $form,
+            'connectedUser' => $this->getUser()
         ]);
     }
 
     #[Route('/{id}', name: 'app_customer_delete', methods: ['POST'])]
     public function delete(Request $request, Customer $customer, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$customer->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $customer->getId(), $request->request->get('_token'))) {
             $entityManager->remove($customer);
             $entityManager->flush();
         }
