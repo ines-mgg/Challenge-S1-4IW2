@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-#[Route('/app', name: 'facturo_app_')]
+#[Route(name: 'facturo_app_')]
 class DashboardController extends AbstractController
 {
 
