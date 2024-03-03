@@ -3,5 +3,50 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
+    {% embed '_composants/tables/_table.html.twig' %}
+        {% block tTitle %}Rapport Financier{% endblock %}
+        {% block tbody %}
+            {{ form_start(form) }}
+            {{ form_row(form.startDate) }}
+            {{ form_row(form.endDate) }}
+            <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                Générer un rapport financier
+            </button>
+            {{ form_end(form) }}
 
+            {% if report is not null %}
+                <br>
+                Date de début: {{ report.startDate|date('Y-m-d') }}
+                Date de fin: {{ report.endDate|date('Y-m-d') }}
+                <p>Total des revenus : {{ report.totalRevenue }}</p>
+                <p>Nombre de factures : {{ report.invoiceCount }}</p>
+            {% endif %}
+
+            {% if invoices is not empty %}
+                <h2 class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Invoices</h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">ID</th>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Created At</th>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Total</th>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Type</th>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for invoice in invoices %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.createdAt|date('Y-m-d') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.total }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.type }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.status }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

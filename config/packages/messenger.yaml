@@ -1,23 +1,23 @@
 framework:
     messenger:
-        failure_transport: failed
+        #failure_transport: failed
 
-        transports:
+        #transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
-            async:
-                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-                options:
-                    use_notify: true
-                    check_delayed_interval: 60000
-                    auto_setup: false
+            #async:
+                #dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                #options:
+                    #use_notify: true
+                    #check_delayed_interval: 60000
+                    #auto_setup: false
 
-                retry_strategy:
-                    max_retries: 3
-                    multiplier: 2
-            failed: 'doctrine://app?queue_name=failed'
+                #retry_strategy:
+                    #max_retries: 3
+                    #multiplier: 2
+            #failed: 'doctrine://app?queue_name=failed'
             # sync: 'sync://'
 
-        routing:
+        #routing:
             # Commenté pour que le mail soit synchrone (sans messenger)
             #Symfony\Component\Mailer\Messenger\SendEmailMessage: async
             # Pour le SendEmailMessage, voir configuration de ce repo
