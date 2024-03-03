@@ -119,7 +119,7 @@
                                         </li>
                                         {% endif %}
                                         <li>
-                                            <a href="{{ path('app_customer_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'prestation' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Clients</a>
+                                            <a href="{{ path('app_customer_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'customer' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Clients</a>
                                         </li>
                                         <li>
                                             <a href="{{ path('app_prestation_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {{ page_slug == 'prestation' ? 'bg-gray-100 dark:bg-gray-700' : '' }}  ">Prestations</a>
@@ -127,6 +127,11 @@
                                         <li>
                                             <a href="{{ path('app_invoice_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "invoices" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Devis / Factures</a>
                                         </li>
+                                        {% if connectedUser is defined and 'ROLE_COMPTABLE' in connectedUser.roles %}
+                                        <li>
+                                            <a href="{{ path('app_financial_index') }}" class="text-base text-gray-900 rounded-lg flex items-center p-2 group hover:bg-gray-100 transition duration-75 pl-11 dark:text-gray-200 dark:hover:bg-gray-700 {% if page_slug == "financial" %} bg-gray-100 dark:bg-gray-700 {% endif %}">Rapport Financier</a>
+                                        </li>
+                                        {% endif %}
                                     </ul>
                                 </li>
                             </ul>
