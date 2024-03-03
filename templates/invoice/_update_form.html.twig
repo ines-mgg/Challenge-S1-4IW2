@@ -1,0 +1,16 @@
+<form
+  method="post"
+  action="{{ path('app_invoice_validate', { id: invoice.id }) }}"
+  onsubmit="return confirm('Confirmez-vous que cette facture est payée ?');"
+>
+  <input
+    type="hidden"
+    name="_token"
+    value="{{ csrf_token('validate' ~ invoice.id) }}"
+  />
+  <button
+    class="btn inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-green-600 hover:text-green-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+  >
+    Valider la facture
+  </button>
+</form>

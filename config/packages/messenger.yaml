@@ -1,0 +1,31 @@
+framework:
+    messenger:
+        failure_transport: failed
+
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+                    auto_setup: false
+
+                retry_strategy:
+                    max_retries: 3
+                    multiplier: 2
+            failed: 'doctrine://app?queue_name=failed'
+            # sync: 'sync://'
+
+        routing:
+            # Commenté pour que le mail soit synchrone (sans messenger)
+            #Symfony\Component\Mailer\Messenger\SendEmailMessage: async
+            # Pour le SendEmailMessage, voir configuration de ce repo
+            # Repository symfony avec messenger et supervisor
+            #[Lien repository](https://github.com/Eddaoust/Docker-Symfony/blob/main/docker-compose.yml)
+            #
+            #Symfony\Component\Notifier\Message\ChatMessage: async
+            #Symfony\Component\Notifier\Message\SmsMessage: async
+
+            # Route your messages to the transports
+            # 'App\Message\YourMessage': async

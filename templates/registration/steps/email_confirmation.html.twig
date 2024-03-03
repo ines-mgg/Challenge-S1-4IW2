@@ -1,0 +1,35 @@
+{% extends 'registration/base.html.twig' %}
+
+{% block title %}Création de votre compte Facturo - Étape {{ step.order }}/{{ stepTotal }}{% endblock %}
+
+{% block body %}
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm, {
+        'attr': {
+            'novalidate': 'novalidate',
+            'class': 'mt-8 flex flex-col gap-8'
+        }
+    }) }}
+
+    <p class="font-bold">
+        Un code confidentiel de confirmation vous a été envoyé par e-mail à l’adresse précédemment renseignée.
+    </p>
+
+    {{ form_widget(registrationForm.code, {
+        'attr': {
+            'class': 'flex gap-x-8 gap-y-2 flex-wrap pl-2 h-16 border border-gray-400 text-center rounded focus:outline-none placeholder:font-semibold placeholder:text-2xl text-2xl placeholder:leading-normal w-full tracking-[.5em]'
+        }
+    }) }}
+
+    {{ form_rest(registrationForm) }}
+    <p class="font-bold">Vous pourrez souscrire à votre abonnement Facturo dès le premier accès à votre espace personnel.</p>
+    {#
+    TODO: Utiliser un composant pour le bouton
+    #}
+    <button class="w-full flex justify-center items-center gap-1.5 rounded bg-light-dark text-light-white dark:bg-light-dark font-bold h-12">
+        Suivant
+    </button>
+
+    {{ form_end(registrationForm) }}
+{% endblock %}

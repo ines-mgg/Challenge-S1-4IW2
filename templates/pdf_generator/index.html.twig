@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PdfGeneratorController!{% endblock %}
+
+{% block body %}
+    <div class="grid grid-cols-2 gap-6">
+        <div>
+{#            <img src="{{ logo }}">#}
+        </div>
+        <div>
+            <h1 class="text-4xl font-bold text-gray-900">DEVIS</h1>
+            <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-gray-700">Date d'émission : </p>
+{#                        <p class="text-gray-700">Date d'expiration : </p>#}
+                    </div>
+                    <div>
+                        <p class="text-gray-700">Client :</p>
+                        <p class="text-gray-700">Adresse : </p>
+                        <p class="text-gray-700">Code postal : </p>
+                        <p class="text-gray-700">Ville :</p>
+                    </div>
+            <div>
+                <table class="table-auto">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Produit</th>
+                            <th class="px-4 py-2">Quantité</th>
+                            <th class="px-4 py-2">Prix unitaire</th>
+                            <th class="px-4 py-2">TVA</th>
+                            <th class="px-4 py-2">Prix total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+{#                        {% for product in products %}#}
+{#                            <tr>#}
+{#                                <td class="border px-4 py-2">{{ product.name }}</td>#}
+{#                                <td class="border px-4 py-2">{{ product.quantity }}</td>#}
+{#                                <td class="border px-4 py-2">{{ product.price }}</td>#}
+{#                                <td class="border px-4 py-2">{{ product.tva }}</td>#}
+{#                                <td class="border px-4 py-2">{{ product.total }}</td>#}
+{#                            </tr>#}
+{#                        {% endfor %}#}
+                    </tbody>
+                </table>
+                <p class="text-gray-700">Total HT : </p>
+                <p class="text-gray-700">Total TVA : </p>
+                <p class="text-gray-700">Total TTC : </p>
+                <img src=""> //signature
+
+
+        </div>
+    </div>
+        </div>
+    </div>
+
+{% endblock %}

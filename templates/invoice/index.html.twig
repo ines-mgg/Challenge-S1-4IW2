@@ -1,0 +1,101 @@
+{% extends 'dashboard/base.html.twig' %} {% block title %}Invoice index{%
+endblock %} {% block body %} {% embed '_composants/tables/_table.html.twig' %}
+{% block tTitle %}Devis / Factures{% endblock %} {% block pathNew %}{{
+  path("app_invoice_new")
+}}{% endblock %} {% block thead %}
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Id
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Client
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Type
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Total TTC
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Date limite
+</th>
+<th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">
+  Status
+</th>
+{% endblock %} {% block tbody %} {% set todayDate = "now"|date('Y-m-d') %} {%
+for invoice in invoices %}
+<tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ invoice.id }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ invoice.customer.getFullname() }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ invoice.type }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ invoice.total }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {{ invoice.closingDate ? invoice.closingDate|date('d/m/Y') : '' }}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    {% if invoice.status == 'Validé' or invoice.status == 'Payée' %}
+    <span
+      class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
+      >{{ invoice.status }}</span
+    >
+    {% elseif invoice.status == 'Annulé(e)' %}
+    <span
+      class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+      >{{ invoice.status }}
+    </span>
+    {% elseif invoice.closingDate|date('Y-m-d') < todayDate %}
+    <span
+      class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+      >En retard</span
+    >
+    {% elseif invoice.status == 'À valider' or invoice.status == 'À payer' %}
+    <span
+      class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300"
+      >{{ invoice.status }}</span
+    >
+
+    {% endif %}
+  </td>
+  <td
+    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+  >
+    <a
+      class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+      href="{{ path('app_invoice_show', { id: invoice.id }) }}"
+      >Afficher</a
+    >
+    {% if invoice.status == 'À valider' or invoice.status == 'À payer' %}
+    <a
+      class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+      href="{{ path('app_invoice_edit', { id: invoice.id }) }}"
+      >Modifier</a
+    >
+    {{ include("invoice/_delete_form.html.twig") }}
+    {% endif %}
+  </td>
+  {% else %}
+</tr>
+
+<tr>
+  <td colspan="8">Aucunes données disponible</td>
+</tr>
+{% endfor %} {% endblock tbody %} {% endembed %} {% endblock %}

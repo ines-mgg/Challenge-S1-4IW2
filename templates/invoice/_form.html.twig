@@ -1,0 +1,98 @@
+<section class="bg-white dark:bg-gray-900">
+  <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+    {{ form_start(form) }}
+    <div>
+      <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+        <div class="sm:col-span-2">
+          {{ form_row(form.customer) }}
+        </div>
+        <div>
+          {{ form_row(form.type) }}
+        </div>
+        <div>
+          {{ form_row(form.closing_date) }}
+        </div>
+        <div>
+          <button
+            id="add-prestation"
+            class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+          >
+            Ajouter une prestation
+          </button>
+          <div
+            class=""
+            id="invoicePrestations"
+            data-prototype="{{ form_widget(form.invoicePrestations.vars.prototype)|e('html_attr') }}"
+          >
+            {% for prestations in form.invoicePrestations %}
+            <div class="mt-4">
+              {{ form_row(prestations.prestation) }}
+              {{ form_row(prestations.quantity) }}
+              <button class="remove-prestation inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm text-center font-medium border border-red-500 text-red-500 rounded-lg focus:ring-4 focus:ring-red-200 dark:focus:ring-red-900 hover:bg-red-800">Supprimer</button>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+      >
+        {{ button_label|default('Sauvegarder') }}
+      </button>
+    </div>
+    {{ form_end(form) }}
+  </div>
+</section>
+
+<script>
+  document
+    .getElementById("add-prestation")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      var collectionHolder = document.getElementById("invoicePrestations");
+      var prototype = collectionHolder.dataset.prototype;
+      var newForm = prototype.replace(
+        /__name__/g,
+        collectionHolder.children.length
+      );
+
+      var div = document.createElement("div");
+      div.innerHTML = newForm;
+      div.classList.add("mt-4");
+
+      var removeButton = document.createElement("button");
+      removeButton.innerHTML = "Supprimer";
+      removeButton.classList.add("remove-prestation");
+      removeButton.classList.add("inline-flex");
+      removeButton.classList.add("items-center");
+      removeButton.classList.add("px-5");
+      removeButton.classList.add("py-2.5");
+      removeButton.classList.add("mt-4");
+      removeButton.classList.add("sm:mt-6");
+      removeButton.classList.add("text-sm");
+      removeButton.classList.add("text-center");
+      removeButton.classList.add("font-medium");
+      removeButton.classList.add("border");
+      removeButton.classList.add("border-red-500");
+      removeButton.classList.add("text-red-500");
+      removeButton.classList.add("rounded-lg");
+      removeButton.classList.add("focus:ring-4");
+      removeButton.classList.add("focus:ring-red-200");
+      removeButton.classList.add("dark:focus:ring-red-900");
+      removeButton.classList.add("hover:bg-red-800");
+      
+      div.appendChild(removeButton);
+
+      collectionHolder.appendChild(div);
+    });
+
+  document
+    .getElementById("invoicePrestations")
+    .addEventListener("click", function (e) {
+      if (e.target && e.target.matches(".remove-prestation")) {
+        e.preventDefault();
+        e.target.parentNode.remove();
+      }
+    });
+</script>

@@ -1,0 +1,32 @@
+<form
+  action="{{ path('app_invoice_show', { id: invoice.id }) }}"
+  method="post"
+  class="flex flex-col gap-2 items-center"
+>
+  <label class="block font-medium text-gray-900 dark:text-white"
+    >Relancer le client ?</label
+  >
+  <div class="flex gap-2">
+    <select
+      name="choices"
+      id="choices"
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-1.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+    >
+      <option value="1">Message simple</option>
+      <option value="2">Message serieux</option>
+      {% if invoice.closingDate|date('Y-m-d') < todayDate %}
+      <option value="3">Message d'urgence</option>
+      {% endif %}
+    </select>
+    <button
+      class="px-5 text-light-white py-2.5 text-sm font-medium text-center bg-electric-blue bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+    >
+      Envoyer
+    </button>
+    <input
+      type="hidden"
+      name="_token"
+      value="{{ csrf_token('show' ~ invoice.id) }}"
+    />
+  </div>
+</form>

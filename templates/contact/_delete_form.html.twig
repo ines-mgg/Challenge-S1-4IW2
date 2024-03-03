@@ -1,0 +1,12 @@
+<form
+  method="post"
+  action="{{ path('app_contact_delete', { id: contact.id }) }}"
+  onsubmit="return confirm('Supprimer ce message ?');"
+>
+  <input
+    type="hidden"
+    name="_token"
+    value="{{ csrf_token('delete' ~ contact.id) }}"
+  />
+  <button class="btn">Supprimer</button>
+</form>
