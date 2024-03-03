@@ -92,7 +92,9 @@ class CustomerController extends AbstractController
     public function delete(Request $request, Customer $customer, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $customer->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($customer);
+            $customer->setIsDeleted(true);
+            // $entityManager->remove($customer);
+            $entityManager->persist($customer);
             $entityManager->flush();
         }
 
