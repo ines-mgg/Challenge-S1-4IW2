@@ -469,8 +469,28 @@ class RegistrationController extends AbstractController
                 );
                 $user->setIsVerified(true);
                 $entityManager->persist($user);
+
+
+                // si le user a skippé la partie company, on lui crée une company
+                if (is_null($user->getCompany())) {
+                    $company = new Company();
+                    $company->setName("Entreprise de " . $user->getFirstname() . " " . $user->getLastname());
+                    $entityManager->persist($company);
+                    $user->setCompany($company);
+                    $entityManager->persist($user);
+                    $entityManager->flush();
+                }
+
+                // get all one time code related to user and delete them (if any)
+                $oneTimeCodes = $entityManager->getRepository(OneTimeCode::class)->findBy(['user' => $user]);
+                if(is_array($oneTimeCodes) && count($oneTimeCodes) > 0){
+                    foreach ($oneTimeCodes as $oneTimeCode) {
+                        $entityManager->remove($oneTimeCode);
+                    }
+                }
+
                 $entityManager->flush();
-                // do anything else you need here, like send an email
+
 
                 $session->remove(self::SESSION_AUTH_KEY);
                 return $this->redirectToRoute('app_login');
