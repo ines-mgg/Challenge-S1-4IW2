@@ -25,13 +25,6 @@ class CompanyType extends AbstractType
                     'placeholder' => 'Nom de la société'
                 ]
             ])
-            ->add('tva',NumberType::class, [
-                'attr' => [
-                    'placeholder' => '30%'
-                ],
-                'label' => 'TVA',
-
-            ])
             ->add('siret', null, [
                 'label' => 'Siret',
                 'attr' => [

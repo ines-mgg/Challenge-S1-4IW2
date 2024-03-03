@@ -45,4 +45,15 @@ class CompanyRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findAllCompanies($id): array
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT c
+            FROM App\Entity\Company c
+            WHERE c.id = :id_de_l_entreprise'
+        )->setParameter('id_de_l_entreprise', $id);
+        return $query->getResult();
+    }
 }

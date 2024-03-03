@@ -23,12 +23,6 @@ class Company
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logo = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $license_validity = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $id_license = null;
-
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Prestation::class)]
     private Collection $prestations;
 
@@ -78,42 +72,6 @@ class Company
     public function setLogo(string $logo): static
     {
         $this->logo = $logo;
-
-        return $this;
-    }
-
-    public function getTVA(): ?string
-    {
-        return $this->tva;
-    }
-
-    public function setTVA(string $tva): static
-    {
-        $this->tva = $tva;
-
-        return $this;
-    }
-
-    public function getLicenseValidity(): ?\DateTimeInterface
-    {
-        return $this->license_validity;
-    }
-
-    public function setLicenseValidity(\DateTimeInterface $license_validity): static
-    {
-        $this->license_validity = $license_validity;
-
-        return $this;
-    }
-
-    public function getIdLicense(): ?int
-    {
-        return $this->id_license;
-    }
-
-    public function setIdLicense(int $id_license): static
-    {
-        $this->id_license = $id_license;
 
         return $this;
     }

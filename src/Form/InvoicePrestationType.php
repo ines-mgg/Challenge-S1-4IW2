@@ -19,10 +19,12 @@ class InvoicePrestationType extends AbstractType
         $builder
             ->add('prestation', EntityType::class, [
                 'class' => Prestation::class,
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => function (\Doctrine\ORM\EntityRepository $er) use ($options) {
                     return $er->createQueryBuilder('p')
                         ->where('p.archive = false')
-                        ->orderBy('p.name', 'ASC');
+                        ->andWhere('p.company = :company')
+                        ->orderBy('p.name', 'ASC')
+                        ->setParameter('company', $options['user']->getCompany()->getId());
                 },
                 'choice_label' => 'name',
                 'label' => 'Prestation',
@@ -46,6 +48,7 @@ class InvoicePrestationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => InvoicePrestation::class,
+            'user' => null,
         ]);
     }
 }
