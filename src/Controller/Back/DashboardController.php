@@ -16,7 +16,6 @@ use Symfony\Component\Routing\Attribute\Route;
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'dashboard')]
-    #[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_COMPTABLE"))') ]
     public function index(UserRepository $userRepository): Response
     {
         $userRepository = $userRepository->findAll();
