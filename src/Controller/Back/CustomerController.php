@@ -10,13 +10,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/customer')]
 #[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_USER"))')]
 class CustomerController extends AbstractController
 {
-    #[Route('/', name: 'app_customer_index', methods: ['GET'])]
+    #[Route('', name: 'app_customer_index', methods: ['GET'])]
     public function index(CustomerRepository $customerRepository): Response
     {
         if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
@@ -26,7 +26,6 @@ class CustomerController extends AbstractController
         }
         return $this->render('customer/index.html.twig', [
             'customers' => $customers,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -54,7 +53,6 @@ class CustomerController extends AbstractController
         return $this->render('customer/new.html.twig', [
             'customer' => $customer,
             'form' => $form,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -63,7 +61,6 @@ class CustomerController extends AbstractController
     {
         return $this->render('customer/show.html.twig', [
             'customer' => $customer,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -84,7 +81,6 @@ class CustomerController extends AbstractController
         return $this->render('customer/edit.html.twig', [
             'customer' => $customer,
             'form' => $form,
-            'connectedUser' => $this->getUser()
         ]);
     }
 

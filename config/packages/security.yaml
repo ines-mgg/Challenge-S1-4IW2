@@ -50,11 +50,11 @@ security:
         # disallow /login & /register to role TEST
         # -> IS_NOT_VERIFIED est un voter qui vérifie si l'utilisateur est vérifié ou nons
         #- { path: ^/(login|register), roles: [PUBLIC_ACCESS, IS_NOT_VERIFIED] }
+        - { path: ^/app, roles: IS_VERIFIED }
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/reset-password, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
-        - { path: ^/logout, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/, roles: PUBLIC_ACCESS }
 
 
 
