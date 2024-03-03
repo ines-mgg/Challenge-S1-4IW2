@@ -7,6 +7,7 @@
 
 // any CSS you import will output into a single css file (showcase.css in this case)
 import './styles/app.css';
-
+import './styles/dracula.css';
 import './dark-mode.js';
 import './sidebar.js';
+
