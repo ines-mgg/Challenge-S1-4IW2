@@ -18,10 +18,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/contact')]
-#[IsGranted('ROLE_ADMIN')]
 class ContactController extends AbstractController
 {
     #[Route('/', name: 'showcase_contact', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function index(MailerInterface $mailer,Request $request,ContactRepository $contactRepository, EntityManagerInterface $entityManager): Response
     {
         $mail = new Contact();
@@ -52,8 +52,9 @@ class ContactController extends AbstractController
             'form' => $form
         ]);
     }
-
+    
     #[Route('/all', name: 'app_contact_index', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function all(ContactRepository $contactRepository): Response
     {
         return $this->render('contact/index.html.twig', [
@@ -62,6 +63,7 @@ class ContactController extends AbstractController
     }
 
     #[Route('/new', name: 'app_contact_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, EntityManagerInterface $entityManager, $mailer): Response
     {
         $contact = new Contact();
@@ -99,6 +101,7 @@ class ContactController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_contact_show', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function show(Contact $contact): Response
     {
         return $this->render('contact/show.html.twig', [
@@ -107,6 +110,7 @@ class ContactController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_contact_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function edit(MailerInterface $mailer,Request $request, Contact $contact, EntityManagerInterface $entityManager ): Response
     {
         $form = $this->createForm(MailReply::class);
@@ -137,6 +141,7 @@ class ContactController extends AbstractController
         ]);
     }
     #[Route('/{id}', name: 'app_contact_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Contact $contact, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$contact->getId(), $request->request->get('_token'))) {
