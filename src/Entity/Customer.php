@@ -27,9 +27,6 @@ class Customer
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $siret = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $tva = null;
-
     #[ORM\ManyToOne(inversedBy: 'customers')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
@@ -91,18 +88,6 @@ class Customer
     public function setSiret(?string $siret): static
     {
         $this->siret = $siret;
-
-        return $this;
-    }
-
-    public function getTva(): ?string
-    {
-        return $this->tva;
-    }
-
-    public function setTva(?string $tva): static
-    {
-        $this->tva = $tva;
 
         return $this;
     }

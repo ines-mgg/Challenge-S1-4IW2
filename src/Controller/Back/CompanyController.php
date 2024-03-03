@@ -15,14 +15,21 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/company')]
-#[IsGranted('ROLE_ADMIN')]
+
+#[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_USER"))')]
 class CompanyController extends AbstractController
 {
     #[Route('/', name: 'app_company_index', methods: ['GET'])]
     public function index(CompanyRepository $companyRepository): Response
     {
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            $companies = $companyRepository->findAll();
+        } else {
+            $companies = $companyRepository->findAllCompanies($this->getUser()->getCompany()->getId());
+        }
         return $this->render('company/index.html.twig', [
-            'companies' => $companyRepository->findAll(),
+            'companies' => $companies,
+            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -54,7 +61,8 @@ class CompanyController extends AbstractController
         return $this->render('company/show.html.twig', [
             'company' => $company,
             'invoices' => $invoices,
-            'users' => $users
+            'users' => $users,
+            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -73,13 +81,14 @@ class CompanyController extends AbstractController
         return $this->render('company/edit.html.twig', [
             'company' => $company,
             'form' => $form,
+            'connectedUser' => $this->getUser()
         ]);
     }
 
     #[Route('/{id}/delete', name: 'app_company_delete', methods: ['POST'])]
     public function delete(Request $request, Company $company, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$company->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $company->getId(), $request->request->get('_token'))) {
             $users = $company->getUsers();
             foreach ($users as $user) {
                 $entityManager->remove($user);

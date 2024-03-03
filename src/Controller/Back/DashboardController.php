@@ -23,7 +23,6 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard', name: 'dashboard')]
-    #[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_COMPTABLE"))') ]
     public function index(Request $request, InvoiceRepository $invoiceRepository): Response
     {
         $user = $this->getUser();

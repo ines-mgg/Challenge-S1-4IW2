@@ -3,20 +3,21 @@
     {% block title %}Informations Client{% endblock %}
 
 {% block body %}
+{% set todayDate = "now"|date('Y-m-d') %}
         <div class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
             <div class="w-full mb-1">
                 <div class="mb-4">
                     <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white py-3 px-2">Information Client n° {{  customer.id }}</h1>
                     <div class="items-center justify-between block sm:flex md:divide-x md:divide-gray-100 dark:divide-gray-700">
-                        <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                        <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                             <a href="{{ path('app_customer_index') }}">Retour à la liste</a>
                         </button>
-                        <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                        <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                             <a href="{{ path('app_customer_edit', {'id': customer.id}) }}">Modifier </a>
                         </button>
-                        <form method="post" action="{{ path('app_customer_delete', {'id': customer.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                        <form method="post" action="{{ path('app_customer_delete', {'id': customer.id}) }}" onsubmit="return confirm('Voulez-vous supprimer ce client ?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ customer.id) }}">
-                            <button class="btn bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none   focus:ring-4 focus:ring-red-300  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                            <button class="btn bg-red-700 hover:bg-red-800 text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none   focus:ring-4 focus:ring-red-300  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Supprimer</button>
                         </form>
                     </div>
                 </div>
@@ -48,10 +49,6 @@
                                                 <div class=" p-4  text-gray-700 dark:text-gray-700">{{ customer.email }}</div>
                                             </div>
                                             <div class="grid grid-cols-2 gap-4">
-                                                <div class="text-gray-700 dark:text-gray-700 p-4 ">TVA</div>
-                                                <div class=" p-4  text-gray-700 dark:text-gray-700">{{ customer.tva }}%</div>
-                                            </div>
-                                            <div class="grid grid-cols-2 gap-4">
                                                 <div class="text-gray-700 dark:text-gray-700 p-4 ">SIRET</div>
                                                 <div class=" p-4  text-gray-700 dark:text-gray-700">{{ customer.siret }}</div>
                                             </div>
@@ -80,15 +77,25 @@
                                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.total }}€</td>
                                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ invoice.type }}</td>
                                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                                {% if invoice.status == '1' %}
-                                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-100">
-                                                                        Paid
+                                                                {% if invoice.status == 'Validé' or invoice.status == 'Payée'%}
+                                                                    <span
+                                                                    class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
+                                                                    >{{ invoice.status }}</span
+                                                                    >
+                                                                    {% elseif invoice.status == 'Annulé(e)' %}
+                                                                    <span
+                                                                    class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+                                                                    >{{ invoice.status }}
                                                                     </span>
-                                                                {% else %}
-                                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-100">
-                                                                        Unpaid
-                                                                    </span>
-                                                                {% endif %}
+                                                                    {% elseif invoice.closingDate|date('Y-m-d') < todayDate %}
+                                                                        <span
+                                                                    class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300"
+                                                                    >En retard</span>
+                                                                    {% elseif invoice.status == 'À valider' or invoice.status == 'À payer' %}
+                                                                        <span
+                                                                        class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300"
+                                                                        >{{ invoice.status }}</span>
+                                                                    {% endif %}
                                                             </td>
                                                         </tr>
                                                     {% endfor %}
@@ -98,7 +105,7 @@
                                                     <nav class="flex flex-row items-center justify-between p-4"
                                                          aria-label="Table navigation">
                                                         <button type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                                                            View full report
+                                                            Voir le rapport
                                                         </button>
                                                 {% set totalOfTotals = customer.invoices|reduce((carry, invoice) => carry + invoice.total, 0) %}
                                                         <p class="text-sm">
@@ -112,7 +119,7 @@
                                                 <p></p>
                                                 {# <p>Total HT: {{ totalOfPrices }}</p> #}
                                             {% else %}
-                                                <p>No invoices found for this customer.</p>
+                                                <p>Aucunes factures trouvées pour ce client.</p>
                                             {% endif %}
                                         </div>
                                         </div>
