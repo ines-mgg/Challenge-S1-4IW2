@@ -1,12 +1,16 @@
+controllers_back:
+    resource: ../src/Controller/Back
+    type: attribute
+    prefix: /app
+
 controllers:
-    resource: ../src/Controller/
+    resource: ../src/Controller/*
     type: attribute
 
 
 controllers_security:
     resource: ../src/Controller/SecurityController.php
     type: attribute
-
 
 controllers_front:
     resource: ../src/Controller/Front

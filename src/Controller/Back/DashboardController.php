@@ -7,10 +7,8 @@ use App\Service\ReportGeneratorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/app', name: 'facturo_app_')]
 class DashboardController extends AbstractController
@@ -32,15 +30,4 @@ class DashboardController extends AbstractController
         return $this->render('dashboard/index.html.twig');
     }
 
-    #[Route('/crud-example-user', name: 'crud-example-user')]
-    public function crudExampleUser(): Response
-    {
-        return $this->render('dashboard/crud-example-user.html.twig');
-    }
-
-    #[Route('/crud-example-product', name: 'crud-example-product')]
-    public function crudExampleProduct(): Response
-    {
-        return $this->render('dashboard/crud-example-products.html.twig');
-    }
 }

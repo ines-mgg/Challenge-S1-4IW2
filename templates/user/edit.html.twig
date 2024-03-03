@@ -20,7 +20,7 @@ Utilisateur{% endblock %} {% block body %}
         >
           <a href="{{ path('app_user_index') }}">Retour à la liste</a>
         </button>
-        {% if 'ROLE_ADMIN' in connectedUser.roles %}
+        {% if 'ROLE_ADMIN' in app.user.roles %}
         <form
           method="post"
           action="{{ path('app_user_delete', { id: user.id }) }}"

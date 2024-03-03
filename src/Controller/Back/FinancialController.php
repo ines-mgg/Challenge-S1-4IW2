@@ -7,13 +7,11 @@ use App\Service\ReportGeneratorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/financial')]
-#[Security('is_granted("ROLE_COMPTABLE")')]
 class FinancialController extends AbstractController
 {
     private ReportGeneratorService $reportGeneratorService;
@@ -23,7 +21,7 @@ class FinancialController extends AbstractController
         $this->reportGeneratorService = $reportGeneratorService;
     }
 
-    #[Route('/', name: 'app_financial_index')]
+    #[Route('', name: 'app_financial_index')]
     public function index(Request $request, InvoiceRepository $invoiceRepository): Response
     {
         $user = $this->getUser();
@@ -63,7 +61,6 @@ class FinancialController extends AbstractController
             'form' => $form->createView(),
             'report' => $report,
             'invoices' => $invoices,
-            'connectedUser' => $this->getUser()
         ]);
     }
 }

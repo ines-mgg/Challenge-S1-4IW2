@@ -19,7 +19,7 @@ Compagnie{% endblock %} {% block body %}
         >
           <a href="{{ path('app_company_index') }}">Retour à la liste</a>
         </button>
-        {% if 'ROLE_ADMIN' in connectedUser.roles %}
+        {% if 'ROLE_ADMIN' in app.user.roles %}
         <form
           method="post"
           action="{{ path('app_prestation_delete', { id: company.id }) }}"

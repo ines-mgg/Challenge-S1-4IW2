@@ -12,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Dompdf\Dompdf;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -170,7 +170,7 @@ class InvoiceController extends AbstractController
         }
     }
 
-    #[Route('invoice/', name: 'app_invoice_index', methods: ['GET'])]
+    #[Route('invoice', name: 'app_invoice_index', methods: ['GET'])]
     public function index(InvoiceRepository $invoiceRepository): Response
     {
         if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
@@ -180,7 +180,6 @@ class InvoiceController extends AbstractController
         }
         return $this->render('invoice/index.html.twig', [
             'invoices' => $invoices,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -206,7 +205,6 @@ class InvoiceController extends AbstractController
             'form' => $form,
             'customers' => $customers,
             'prestations' => $prestations,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -233,7 +231,6 @@ class InvoiceController extends AbstractController
         }
         return $this->render('invoice/show.html.twig', [
             'invoice' => $invoice,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -276,7 +273,6 @@ class InvoiceController extends AbstractController
         return $this->render('invoice/edit.html.twig', [
             'invoice' => $invoice,
             'form' => $form,
-            'connectedUser' => $this->getUser()
         ]);
     }
 

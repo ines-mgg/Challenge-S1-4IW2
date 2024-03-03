@@ -6,30 +6,28 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/user')]
-#[Security('is_granted("ROLE_ADMIN") or (is_granted("ROLE_USER"))')]
+#[Security('is_granted("ROLE_ADMIN")')]
 class UserController extends AbstractController
 {
-    #[Route('/', name: 'app_user_index', methods: ['GET'])]
+    #[Route('', name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
         if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
             
             return $this->render('user/index.html.twig', [
                 'users' => $userRepository->findAll(),
-                'connectedUser' => $this->getUser()
             ]);
         } else {
             return $this->render('user/index.html.twig', [
                 'users' => $userRepository->findAllUsers($this->getUser()->getCompany()->getId()),
-                'connectedUser' => $this->getUser()
             ]);
         }
     }
@@ -59,7 +57,6 @@ class UserController extends AbstractController
         return $this->render('user/new.html.twig', [
             'user' => $user,
             'form' => $form,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -68,7 +65,6 @@ class UserController extends AbstractController
     {
         return $this->render('user/show.html.twig', [
             'user' => $user,
-            'connectedUser' => $this->getUser()
         ]);
     }
 
@@ -89,7 +85,6 @@ class UserController extends AbstractController
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
-            'connectedUser' => $this->getUser()
         ]);
     }
 

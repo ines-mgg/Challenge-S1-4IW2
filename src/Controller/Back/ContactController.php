@@ -7,6 +7,7 @@ use App\Form\ContactType;
 use App\Form\MailReply;
 use App\Repository\ContactRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,14 +15,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/contact')]
-#[IsGranted('ROLE_ADMIN')]
+#[Security('is_granted("ROLE_ADMIN")')]
 class ContactController extends AbstractController
 {
-    #[Route('/', name: 'showcase_contact', methods: ['GET', 'POST'])]
+    #[Route('', name: 'showcase_contact', methods: ['GET', 'POST'])]
     public function index(MailerInterface $mailer,Request $request,ContactRepository $contactRepository, EntityManagerInterface $entityManager): Response
     {
         $mail = new Contact();
