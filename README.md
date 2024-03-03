@@ -1,6 +1,6 @@
 ![Logo](https://github.com/ines-mgg/Challenge-S1-4IW2/assets/72012584/aa8a9e9b-3ca9-4817-9662-1a28032674f1)
 
-Facturo est un logociel de gestion et de facturation dans lequel vous pouvez :
+Facturo est un logiciel de gestion et de facturation dans lequel vous pouvez :
 - Gérer vos clients
 - Créer et envoyer par email vos devis et factures à vos clients
 - Gérer vos prestations
