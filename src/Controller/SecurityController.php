@@ -17,7 +17,7 @@ class SecurityController extends AbstractController
         // if logged in, redirect to homepage
         $user = $this->getUser();
         if ($user && $user->isVerified()) {
-            return $this->redirectToRoute('showcase_index');
+            return $this->redirectToRoute('front_showcase_index');
         }
 
         $form = $this->createForm(LoginType::class);
