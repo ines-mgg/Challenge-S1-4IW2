@@ -71,11 +71,11 @@ class ShowcaseController extends AbstractController
         ]);
     }
 
-    // #[Route('/tarifs', name: 'pricing')]
-    // public function pricing(): Response
-    // {
-    //     return $this->render('showcase/tarifs.html.twig', [
-    //         'controller_name' => 'ShowcaseController',
-    //     ]);
-    // }
+     #[Route('/tarifs', name: 'pricing')]
+     public function pricing(): Response
+     {
+         return $this->render('showcase/tarifs.html.twig', [
+             'controller_name' => 'ShowcaseController',
+         ]);
+    }
 }
