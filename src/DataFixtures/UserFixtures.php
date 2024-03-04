@@ -12,46 +12,51 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     const USER_REFERENCE = 'user';
-    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher) {}
+
+    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)
+    {
+    }
+
     public function load(ObjectManager $manager): void
     {
         $faker = \Faker\Factory::create('fr_FR');
         $pwd = 'test';
-        $companies = $manager->getRepository(Company::class)->findAll();
-        foreach($companies as $company){
-            $user = (new User())
-                ->setFirstname($faker->firstName())
-                ->setLastname($faker->lastName())
-                ->setCreatedAt(new \DateTimeImmutable())
-                ->setUpdatedAt(new \DateTimeImmutable())
-                ->setCompany($company)
-                ->setEmail('user@user.fr')
-                ->setIsVerified($faker->boolean())
-                ->setEmail('coordinator@user.fr')
-                ->setRoles(['ROLE_COMPTABLE']);
-            $user->setPassword($this->passwordHasher->hashPassword($user, $pwd));
-            $manager->persist($user);
 
         $user = (new User())
             ->setFirstname($faker->firstName())
             ->setLastname($faker->lastName())
             ->setCreatedAt(new \DateTimeImmutable())
             ->setUpdatedAt(new \DateTimeImmutable())
-            ->setCompany($company)
+            ->setCompany(null)
             ->setIsVerified(true)
             ->setEmail('admin@user.fr')
             ->setRoles(['ROLE_ADMIN']);
         $user->setPassword($this->passwordHasher->hashPassword($user, $pwd));
         $manager->persist($user);
 
+        $companies = $manager->getRepository(Company::class)->findAll();
+        foreach ($companies as $key => $company) {
+
+            $user = (new User())
+                ->setFirstname($faker->firstName())
+                ->setLastname($faker->lastName())
+                ->setCreatedAt(new \DateTimeImmutable())
+                ->setUpdatedAt(new \DateTimeImmutable())
+                ->setCompany($company)
+                ->setIsVerified($faker->boolean())
+                ->setEmail('coordinator'.$key.'@user.fr')
+                ->setRoles(['ROLE_COMPTABLE']);
+            $user->setPassword($this->passwordHasher->hashPassword($user, $pwd));
+            $manager->persist($user);
+
             for ($i = 0; $i < $faker->numberBetween(1, 10); ++$i) {
-                    $user = (new User())
-                        ->setFirstname($faker->firstName())
-                        ->setLastname($faker->lastName())
-                        ->setCreatedAt(new \DateTimeImmutable())
-                        ->setUpdatedAt(new \DateTimeImmutable())
-                        ->setCompany($company)
-                        ->setEmail('user'.$i.'@user.fr')
+                $user = (new User())
+                    ->setFirstname($faker->firstName())
+                    ->setLastname($faker->lastName())
+                    ->setCreatedAt(new \DateTimeImmutable())
+                    ->setUpdatedAt(new \DateTimeImmutable())
+                    ->setCompany($company)
+                    ->setEmail('user' . $i . 'c'.$key.'@user.fr')
                     ->setIsVerified($faker->boolean())
                     ->setRoles(['ROLE_USER']);
                 $user->setPassword($this->passwordHasher->hashPassword($user, $pwd));
@@ -70,6 +75,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         }
         $manager->flush();
     }
+
     public function getDependencies(): array
     {
         return [

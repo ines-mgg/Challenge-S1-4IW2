@@ -18,7 +18,7 @@ block body %}
   Nom Complet
 </th>
 <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
-  Compagnie Id
+  Nom de l'entreprise
 </th>
 <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">
   Email
@@ -47,7 +47,11 @@ block body %}
   <td
     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
   >
-    {{ user.company.id }}
+    {% if 'ROLE_ADMIN' in user.roles %}
+      Administrateur Facturo
+    {% else %}
+      {{ user.company.name }}
+    {% endif %}
   </td>
   <td
     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
