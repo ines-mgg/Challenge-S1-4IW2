@@ -39,19 +39,19 @@ class ContactController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $email = (new TemplatedEmail())
                 ->from(new Address($_ENV['MAILER_NOREPLY_EMAIL_ADDRESS'], $_ENV['MAILER_NOREPLY_EMAIL_NAME']))
-                ->to($form->get('email'))
-                ->subject($form->get('subject'))
+                ->to($form->get('email')->getData())
+                ->subject($form->get('subject')->getData())
                 ->htmlTemplate('emails/contact.html.twig')
                 ->context([
                     'firstName' => $form->get('firstName')->getData(),
                     'lastName' => $form->get('lastName')->getData(),
                     'userEmail' => $form->get('email')->getData(),
                     'phoneNumber' => $form->get('phone')->getData(),
-                    'company' => $form->get('society_name')->getData(),
+                    'companyName' => $form->get('society_name')->getData(),
+                    'companySize' => $form->get('society_size')->getData(),
                     'subject' => $form->get('subject')->getData(),
                     'message' => $form->get('message')->getData()
-                ])
-            ;
+                ]);
             try {
                 $mailer->send($email);
                 $this->addFlash('success', 'Votre message a bien été envoyé');
@@ -75,16 +75,16 @@ class ContactController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_contact_edit', methods: ['GET', 'POST'])]
-    public function edit(MailerInterface $mailer,Request $request, Contact $contact, EntityManagerInterface $entityManager ): Response
+    public function edit(MailerInterface $mailer, Request $request, Contact $contact, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(MailReply::class);
-        $form->get('subject')->setData('Re: '.$contact->getSubject());
+        $form->get('subject')->setData('Re: ' . $contact->getSubject());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $email = (new TemplatedEmail())
                 ->from(new Address($_ENV['MAILER_NOREPLY_EMAIL_ADDRESS'], $_ENV['MAILER_NOREPLY_EMAIL_NAME']))
-                ->to($form->get('email')->getData())
-                ->subject($form->get('subject')->setData('Re: '.$contact->getSubject()))
+                ->to($contact->getEmail())
+                ->subject('Re: ' . $contact->getSubject())
                 ->htmlTemplate('emails/contactReply.html.twig')
                 ->context([
                     'subject' => $form->get('subject')->getData(),
@@ -95,7 +95,7 @@ class ContactController extends AbstractController
                 $this->addFlash('success', 'Votre message a bien été envoyé');
                 return $this->redirectToRoute('app_contact_index', [], Response::HTTP_SEE_OTHER);
             } catch (TransportExceptionInterface $e) {
-                 $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi du mail');
+                $this->addFlash('danger', 'Une erreur est survenue lors de l\'envoi du mail');
             }
         }
 
@@ -107,13 +107,11 @@ class ContactController extends AbstractController
     #[Route('/{id}', name: 'app_contact_delete', methods: ['POST'])]
     public function delete(Request $request, Contact $contact, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$contact->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $contact->getId(), $request->request->get('_token'))) {
             $entityManager->remove($contact);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_contact_index', [], Response::HTTP_SEE_OTHER);
     }
-
 }
-
