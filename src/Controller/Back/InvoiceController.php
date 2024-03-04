@@ -189,6 +189,9 @@ class InvoiceController extends AbstractController
         if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
             $customers = $customerRepository->findAllCustomers($this->getUser()->getCompany()->getId());
             $prestations = $prestationRepository->findAllPrestations($this->getUser()->getCompany()->getId());
+        } else {
+            $customers = $customerRepository->findAll();
+            $prestations = $prestationRepository->findAll();
         }
         $invoice = new Invoice();
         $form = $this->createForm(InvoiceType::class, $invoice, [
