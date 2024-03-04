@@ -43,7 +43,7 @@ class CustomerType extends AbstractType
                 ]
             ])
             ->add('siret',NumberType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => 'Numéro de SIRET',
                 'attr' => [
                     'placeholder' => '12345678912345',
