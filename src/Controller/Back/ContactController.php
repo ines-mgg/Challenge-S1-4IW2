@@ -83,8 +83,8 @@ class ContactController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $email = (new TemplatedEmail())
                 ->from(new Address($_ENV['MAILER_NOREPLY_EMAIL_ADDRESS'], $_ENV['MAILER_NOREPLY_EMAIL_NAME']))
-                ->to($form->get('email')->getData())
-                ->subject($form->get('subject')->setData('Re: ' . $contact->getSubject()))
+                ->to($contact->getEmail())
+                ->subject('Re: ' . $contact->getSubject())
                 ->htmlTemplate('emails/contactReply.html.twig')
                 ->context([
                     'subject' => $form->get('subject')->getData(),
