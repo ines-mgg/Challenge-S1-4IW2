@@ -29,8 +29,10 @@ class InvoiceType extends AbstractType
                 'query_builder' => function (\Doctrine\ORM\EntityRepository $er) use ($options) {
                     return $er->createQueryBuilder('c')
                         ->where('c.company = :company')
-                        ->andWhere('c.isDeleted = false')
-                        ->setParameter('company', $options['user']->getCompany()->getId());
+                        ->andWhere('c.isDeleted = false');
+                        if (!in_array('ROLE_ADMIN', $options['user']->getRoles())) {
+                        $er = $er->setParameter('company', $options['user']->getCompany()->getId());
+                        }
                 }
             ])
             ->add('type', ChoiceType::class, [
