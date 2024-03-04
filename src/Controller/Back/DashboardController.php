@@ -36,10 +36,4 @@ class DashboardController extends AbstractController
         return $this->render('dashboard/design-guide.html.twig', [
         ]);
     }
-
-    #[Route('/crud-example-product', name: 'crud-example-product')]
-    public function crudExampleProduct(): Response
-    {
-        return $this->render('dashboard/crud-example-products.html.twig');
-    }
 }

@@ -6,7 +6,51 @@
 
 {% block body %}
     <div class="pb-4 px-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
-        <h1>paramètres</h1>
+        <div class="flex flex-col py-3 px-2 w-full">
+            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Paramètres</h1>
+            <div class="flex gap-x-16 flex-wrap">
+                <div class="flex flex-col mt-8 flex-grow">
+                    <h2 class="text-lg font-semibold text-gray-900 sm:text-xl dark:text-white">Informations personnelles</h2>
+                    {{ form_start(userInformationsForm, {
+                        'attr': {
+                            'novalidate': 'novalidate',
+                            'class': 'mt-8 flex flex-row gap-8 flex-wrap'
+                        }
+                    }) }}
+
+                    {{ form_rest(userInformationsForm) }}
+
+                    <div class="block w-full">
+                        <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                            Enregistrer
+                        </button>
+                    </div>
+                    {{ form_end(userInformationsForm) }}
+                </div>
+                {% if 'ROLE_USER' in app.user.roles and app.user.roles|length == 1 %}
+                    <div class="flex flex-col mt-8 flex-grow">
+                        <h2 class="text-lg font-semibold text-gray-900 sm:text-xl dark:text-white">Informations de l'entreprise</h2>
+                        {{ form_start(userCompanyInformationsForm, {
+                            'attr': {
+                                'novalidate': 'novalidate',
+                                'class': 'mt-8 flex flex-row gap-8 flex-wrap'
+                            }
+                        }) }}
+
+                        {{ form_rest(userCompanyInformationsForm) }}
+
+                        <div class="block w-full">
+                            <button type="submit" class="inline-flex items-center px-5 text-light-white py-2.5 text-sm font-medium text-center bg-black bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                                Enregistrer
+                            </button>
+                        </div>
+
+                        {{ form_end(userCompanyInformationsForm) }}
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
 
     </div>
 {% endblock %}
