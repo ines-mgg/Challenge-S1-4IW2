@@ -6,6 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,7 +16,7 @@ class ContactType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstName', null, [
+            ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
                 'attr' => [
                     'placeholder' => 'Prénom',
@@ -23,7 +25,7 @@ class ContactType extends AbstractType
                     'label_html' => true
                 ]
             ])
-            ->add('lastName', null, [
+            ->add('lastName', TextType::class, [
                 'label' => 'Nom',
                 'attr' => [
                     'placeholder' => 'Nom',
@@ -31,7 +33,7 @@ class ContactType extends AbstractType
                     'required' => true
                 ]
             ])
-            ->add('email', null, [
+            ->add('email', EmailType::class, [
                 'label' => 'Adresse email',
                 'attr' => [
                     'placeholder' => 'Adresse e-mail',
@@ -46,21 +48,21 @@ class ContactType extends AbstractType
                     'type' => 'tel'
                 ]
             ])
-            ->add('society_name', null, [
+            ->add('society_name', TextType::class, [
                 'label' => 'Nom de l\'entreprise',
                 'attr' => [
                     'placeholder' => 'Nom de l\'entreprise',
                     'type' => 'text'
                 ]
             ])
-            ->add('society_size', null, [
+            ->add('society_size', NumberType::class, [
                 'label' => 'Taille de l\'entreprise',
                 'attr' => [
                     'placeholder' => 'Nombre de salariés',
                     'type' => 'number'
                 ]
             ])
-            ->add('subject', null, [
+            ->add('subject', TextType::class, [
                 'label' => 'Sujet',
                 'attr' => [
                     'placeholder' => 'Nom de l\'entreprise',
