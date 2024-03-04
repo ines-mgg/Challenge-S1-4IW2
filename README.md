@@ -12,6 +12,47 @@ Symfony - PHP - TailwindCSS
 
 ![image](https://github.com/ines-mgg/Challenge-S1-4IW2/assets/72012584/05972a58-004a-47a2-918c-80ab00695966)
 
+## Tâches réalisées par chaque membre de l'équipe
+| Nom du membre | Tâches                                                                                                  | Autre colonne |
+|---------------|---------------------------------------------------------------------------------------------------------|---------------|
+| Estelle       | Génération de PDF                                                                                       |               |
+|               | CRUD Company                                                                                            |               |
+|               | CRUD Prestation                                                                                         |               |
+|               | Contact (+CRUD Contact)                                                                                 |               |
+|               | Tentative envoi de mail (bip etc.)                                                                      |               |
+|               | CSS divers                                                                                              |               |
+|               | Bugfix divers                                                                                           |               |
+|               | Templates de certains mails                                                                             |               |
+|               | Participation au Figma (maquettage)                                                                     |               |
+|               | Design Guide                                                                                            |               |
+|               | Data Fixtures                                                                                           |               |
+|               | Sécurité des routes                                                                                     |               |
+|               |                                                                                                         |               |
+| Inès          | Intégration du site vitrine entier                                                                      |               |
+|               | Bonne partie du Figma                                                                                   |               |
+|               | Intégration des composants de la maquette (réutilisable et modulable partout sur le site)               |               |
+|               | CRUD Invoice                                                                                            |               |
+|               | Schéma BDD (réflexion et ajustements)                                                                   |               |
+|               | Templates de certains mails                                                                             |               |
+|               | Beaucoup de bugfixes divers & tests fonctionnels                                                        |               |
+|               | Ajout de certaines règles de sécurité                                                                   |               |
+|               | Template de forms & page d'erreur Facturo au max                                                        |               |
+|               |                                                                                                         |               |
+| Victor        | Partie de l'API Siret                                                                                   |               |
+|               | Réalisation du register multi-step (avec API Siret en bonus & reprise de register si register non fini) |               |
+|               | Forgot Password                                                                                         |               |
+|               | Serveur et mise en prod                                                                                 |               |
+|               | Envoi de mail effectif (serveur mail & templates)                                                       |               |
+|               | Maquette figma                                                                                          |               |
+|               | Bugfix & divers                                                                                         |               |
+|               | Templates de certains mails                                                                             |               |
+|               | CSS Dashboard (intégration)                                                                             |               |
+|               |                                                                                                         |               |
+| Alexandre     | API Siret                                                                                               |               |
+|               | CRUD Customer                                                                                           |               |
+|               | Rapports financiers                                                                                     |               |
+|               |                                                                                                         |               |
+
 ## Design de l'application
 
 | Couleur principale             | Hex                                                                |
